@@ -1,0 +1,74 @@
+﻿<ion-header>
+  <ion-navbar>
+  
+	<!--caso a pag não tenha cabeçalho voc apaga tudo (a header e as coisas dentro-->
+	   <div  id="topo">
+		   <div id="btn_menu">
+			<ion-buttons left> 
+				<button ion-button icon-only menuToggle> 
+					<p class="menu"><ion-icon name="menu"> </ion-icon></p>
+				</button>
+
+			</ion-buttons>
+				</div>
+			<div id="titulo">
+			<ion-title>
+			 <span text-color="fonte-laranja"> Login </span>
+			</ion-title>
+			</div>
+		</div>
+	
+  </ion-navbar>
+</ion-header>
+
+<ion-content class="body" padding>
+ 
+	<div id="principal">
+
+  <!--Aqui é o modelo para os formularios-->
+  
+    <div id="formulario">
+		
+		<form [formGroup]="loginForm"  (submit)="login()" novalidate>	
+			 <div id="linha_form">
+				<div id="input_form">
+					 <ion-item>
+						 <ion-input [(ngModel)]="usuario"
+							 formControlName="usuario"
+							 type="textarea"
+							 placeholder="Usuário"
+							 clearInput clearOnEdit="false">
+						</ion-input>
+					 </ion-item>
+					 <h6 *ngIf="errorUsuario" class="error"> {{messageUsuario}}</h6>
+				</div> <!-- input_form -->
+			</div> <!-- linha_form -->
+			<br> <br>
+			<div id="linha_form">
+				<div id="input_form">
+					<ion-item>
+						<ion-input [(ngModel)]="password"
+							 formControlName="password"
+							 type="password"
+							 placeholder="Senha"
+							 clearInput clearOnEdit="false">
+						</ion-input>
+					</ion-item>
+					<h6 *ngIf="errorPassword" class="error"> {{messagePassword}}</h6>
+				</div> <!-- input_form -->
+			
+			</div> <!-- linha_form -->
+			<br>
+			<button ion-button round class="botao">Entrar</button>
+		</form>	
+		<br>
+	<button ion-button round class="botao"[navPush]="cadastroPage" >Ainda não sou cadastrado</button>
+	    <br>
+		<br>
+	<button ion-button round class="botao"[navPush]="esquecisenhaPage" >Esqueci minha senha</button>
+   
+   </div> <!-- formulario -->
+  
+  </div> <!--principal-->
+
+</ion-content>
