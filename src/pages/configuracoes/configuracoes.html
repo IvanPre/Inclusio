@@ -1,0 +1,50 @@
+﻿<ion-header>
+  <ion-navbar>
+	
+	   <div  id="topo">
+		   <div id="btn_menu">
+			<ion-buttons left> 
+				<button ion-button icon-only menuToggle> 
+					<p class="menu"><ion-icon name="menu"> </ion-icon></p>
+				</button>
+
+			</ion-buttons>
+				</div>
+			<div id="titulo">
+			<ion-title>
+			 <span text-color="fonte-laranja"> Configurações </span>
+			</ion-title>
+			</div>
+		</div>
+	
+  </ion-navbar>
+</ion-header>
+<ion-content class="body" padding>
+	<div id="principal">
+		 <div id="formulario">
+			<div id="linha_form">
+				<br>
+				<h1><ion-icon name="apps"></ion-icon>&nbsp;Palavras por tela </h1>
+          <div id="input_form">
+    				<p><input type="radio" [(ngModel)]="ck_palavrastela" id="rb1"  name="qtde_tela" value="oito">   8 palavras </p> <br>
+    				<p><input type="radio" [(ngModel)]="ck_palavrastela" id="rb2" name="qtde_tela" value="seis">  6 palavras </p><br>
+    				<p><input type="radio" [(ngModel)]="ck_palavrastela" id="rb3" name="qtde_tela" value="quatro">  4 palavras </p><br>
+    				<p><input type="radio" [(ngModel)]="ck_palavrastela" id="rb4" name="qtde_tela" value="dois">  2 palavras  </p><br>
+    				<p><input type="radio" [(ngModel)]="ck_palavrastela" id="rb5" name="qtde_tela"  value="um">  1 palavra  </p><br>       
+          </div>
+			</div>
+      
+      		<br>
+      
+			<div id="linha_form">
+				<h1> <ion-icon ios="ios-photos" md="md-photos"></ion-icon>&nbsp;Imagem e texto</h1>
+         <div id="input_form">
+				<p><input type="radio" name="img_txt" id="rb6" value="s">  Texto e imagem  </p><br>
+				<p><input type="radio" name="img_txt" id="rb7" value="n">  Apenas texto  </p><br>
+				<br>
+        </div>
+			</div>
+        <button (click)="aplicar()" class="botao">Aplicar</button>
+		</div>  
+	</div>
+</ion-content>
