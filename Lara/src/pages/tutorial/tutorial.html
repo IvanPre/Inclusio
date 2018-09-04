@@ -1,0 +1,100 @@
+﻿<ion-header>
+  <ion-navbar>
+  	   <div  id="topo">
+		   <div id="btn_menu">
+			<ion-buttons left> 
+				<button ion-button icon-only menuToggle> 
+					<p class="menu"><ion-icon name="menu"> </ion-icon></p>
+				</button>
+
+			</ion-buttons>
+				</div>
+			<div id="titulo">
+			<ion-title>
+			 <span text-color="fonte-laranja"> Criar Palavras </span>
+			</ion-title>
+			</div>
+		</div>
+	
+  </ion-navbar>
+</ion-header>
+
+<meta charset="utf-8">
+
+<ion-content class="body" padding>
+  <div id="principal">
+    <div id="formulario">
+      <form action="" >
+      
+      <div id="linha_form"  >
+        <h1>  <ion-icon ios="ios-image" md="md-book"></ion-icon> Palavra</h1>
+        <div id="input_form">
+          <input type="text" maxlength="50" [(ngModel)]="palavra" name="palavra" id="nomePalavra" placeholder="Meu nome é..." >
+          <br>
+          <br>
+        </div>
+      </div> <!--Linha form-->
+
+      <div id="linha_tutorial" *ngIf="mostra_campoimg" >
+        <img src="./assets/imgs/lara.png"  class="lara_tutorial">
+        <p class="balao1" id="balao1"> Nesse campo insira o seu nome para cadastra-lo!</p>
+        <br>
+        <br>
+        <button ion-button *ngIf="mostra_campoimg" (click)="aparece_img()" class="botao_tut"> Próximo &nbsp; <ion-icon name="ios-arrow-forward-outline"></ion-icon></button>
+        <br>
+        <br>
+        <br>
+      </div> <!--Linha tutorial-->
+
+
+      <div id="linha_form" *ngFor="let att of campoimg; ">
+        <h1>  <ion-icon ios="ios-image" md="md-image"></ion-icon> Imagem</h1>
+        <div id="input_form">
+        <input type="text" [(ngModel)]="imagem" (input)="mudaImg()" name="imagem" id="txtimg" placeholder="Sua imagem"><br><br>
+        <img [src]="imagem" height="100px">
+        </div>
+        <br>
+        <br>
+      </div> <!--Linha form-->
+
+      <div id="linha_tutorial" *ngIf="mostra_campocat" >
+        <img src="./assets/imgs/lara.png" class="lara_tutorial">
+        <p class="balao2"> Aqui insira uma foto sua!</p>
+        <br>
+        <br>
+        <button ion-button  *ngIf="mostra_campocat" (click)="aparece_cat()" class="botao_tut"> Próximo &nbsp; <ion-icon name="ios-arrow-forward-outline"></ion-icon></button>
+        <br>
+        <br>
+        <br>
+      </div> <!--Linha tutorial-->
+
+
+      <div id="linha_form" *ngFor="let att of campocat;">
+        <h1>   <ion-icon ios="ios-image" md="md-image"></ion-icon> Categoria</h1>
+        <div id="input_form">
+          <input type="text"  maxlength="50" id="nomeCategoria"><br><br>
+        </div>
+        <img src="./assets/imgs/lara.png" class="lara_tutorial">
+        <p class="balao3"> Por fim, selecione uma catogoria, eu sugiro "Pessoas" já que você é um humano.</p>
+        <br>
+        <br>
+        <br>
+
+        <button ion-button round (click)="enviar()" class="botao">Enviar</button>
+        <br>
+        <br>
+        <button ion-button round (click)="limpar()" class="botao">Limpar</button>
+     
+      </div> <!--Linha form-->
+     
+      <!--div id="icone">
+      <ion-icon [name]="seta()" (click)="mostraPalavras();"></ion-icon>
+      <input type="checkbox" name="Categorias" value="Categoria 1" id="categoria1">&nbsp;&nbsp;Categoria 1<br>
+      <table id = "palavras"></table><br>
+      </div-->
+      
+       </form>
+    
+    </div> <!--Formulário-->
+  </div> <!--Principal-->
+</ion-content>

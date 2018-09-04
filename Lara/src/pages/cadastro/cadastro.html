@@ -1,0 +1,71 @@
+﻿
+<ion-header>
+  <ion-navbar color = "inclusio_2">
+    <div id="titulo">
+	  <ion-title>
+	   <span text-color="fonte-laranja"> Cadastro </span>
+	  </ion-title>
+    </div>
+	
+  </ion-navbar>
+</ion-header>
+
+<ion-content class="body" padding>
+ 
+<div id="caixa_cadastro">
+	&nbsp; &nbsp;  <p class="icon"><ion-icon ios="ios-person" md="md-person"></ion-icon></p> <!-- <h1>Cadastro</h1>-->
+	<form  [formGroup]="cadastroForm" (submit)="cadastro()" novalidate>
+      <ion-row>
+        <ion-col>
+          <ion-list inset>
+           <div id = "input_form">
+		   <div id="texto"> Usuário:</div>
+            <ion-item>
+              <ion-input [(ngModel)]="nome" formControlName="nome" type="textarea" placeholder="Nome do Usuário" clearInput clearOnEdit="false" id="usuario"></ion-input>
+            </ion-item>
+            
+            <h6 *ngIf="errorNome" class="error"> {{messageNome}}</h6>
+			<br><br>
+            <div id="texto"> E-mail:</div>
+            <ion-item>
+              <ion-input [(ngModel)]="email" formControlName="email"  type="email" placeholder="exemplo@hotmail.com" clearInput clearOnEdit="false"></ion-input>
+            </ion-item>
+        
+            <h6 *ngIf="errorEmail" class="error"> {{messageEmail}}</h6>
+			<br><br>
+			<div id="texto"> Senha:</div>
+            <ion-item>
+              <ion-input [(ngModel)]="password" formControlName="password" type="password" placeholder="Senha" clearInput clearOnEdit="false"></ion-input>
+            </ion-item>
+
+            <h6 *ngIf="errorPassword" class="error"> {{messagePassword}}</h6>
+			<br><br>
+            <div id="texto"> Confirma senha:</div>
+            <ion-item>
+                <ion-input [(ngModel)]="password_1" formControlName="password_1" type="password" placeholder="Confirma Senha" clearInput clearOnEdit="false"></ion-input>
+            </ion-item>
+			
+            <h6 *ngIf="errorPassword_1" class="error"> {{messagePassword_1}}</h6>
+            </div>
+          </ion-list>  
+        </ion-col>
+      </ion-row>
+      
+      <ion-row>
+        <div id="botoes">
+          <button ion-button round class="botaoCad" >CADASTRAR</button><br><br>
+          <a class ="login" (click)="ir_login()">Já sou cadastrado</a>
+          
+        </div>
+      </ion-row>
+	</form>
+</div>
+</ion-content>
+
+
+
+
+
+
+
+

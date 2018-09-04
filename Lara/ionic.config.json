@@ -1,0 +1,7 @@
+{
+  "name": "Lara",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "ionic-angular"
+}
