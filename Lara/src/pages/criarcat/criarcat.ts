@@ -15,6 +15,7 @@ import { Usuario } from '../../app/models/usuario';
 //confifuracoes
 import { SessionconfiguracoesProvider } from '../../providers/sessionconfiguracoes/sessionconfiguracoes';
 import { Configuracoes } from '../../app/models/configuracoes';
+import { createElement } from '@angular/core/src/view/element';
 
 @IonicPage()
 @Component({
@@ -144,7 +145,7 @@ converte(date){
 			for(let a = 0; a < ckbs.length; a++){
 				let ckb = <HTMLInputElement> ckbs[a];
 				if(ckb.checked)
-					palavras.push(ckb.id.substring(3));
+					palavras.push(ckb.id);
 			}
 			let objeto = {
 				nome_categoria:nomeCategoria.value,
@@ -340,11 +341,24 @@ converte(date){
 	// 	});*/
 	// }
 
+	palavras(id){
+		let objeto = {
+			id_categoria: id
+		};
+
+		let path = 'http://inclusio.engynios.com/api/read/id/categoria-palavra.php';
+		this.http.get(path, objeto, {}).then(data =>{
+			return this.converte(data.data);
+		}).catch(error =>{
+			alert(JSON.stringify(error));
+		});
+	}	
+
 	carregaCategorias(){
 		let objeto = {
 			id_usuario: null
 		};
-		let path = 'http://inclusio.engynios.com/api/read/id_usuario/palavra.php';
+		let path = 'http://inclusio.engynios.com/api/read/id_usuario/categoria.php';
 		this.http.get(path, objeto, {}).then(data =>{
 			let dados = this.converte(data.data);
 			// alert(JSON.stringify(data.data));
@@ -353,29 +367,57 @@ converte(date){
 			// alert(dados[0].id_categoria);	
 
 			for(let a = 0; a < dados.length; a++){
-				if(dados[a].nome_palavra.indexOf('capa_') != -1 || dados[a].nome_palavra.indexOf('capa ') != -1)
-					continue;
-				dados[a].nome_palavra = dados[a].nome_palavra.replace(/_/gi, " ");
-
-				let ion = document.createElement('ion-item');
-				ion.className = 'palavra';
-				let ckb = <HTMLInputElement> document.createElement('input');
-				ckb.type = "checkbox";
-				ckb.id = "ckb"+dados[a]['id_palavra'];
-				ckb.className = 'checkbox';
-				let cat = <HTMLParagraphElement> document.createElement('p');
-				cat.innerText = dados[a]['nome_palavra'];
-				cat.className = 'palavra';
-				ion.appendChild(ckb);
-				ion.appendChild(cat);
-				div.appendChild(ion);
+				dados[a].nome_categoria = dados[a].nome_categoria.replace(/_/gi, " ");
+				let seta = <HTMLImageElement> document.createElement('img');
+				seta.src = 'assets/imgs/seta_dir.png';
+				seta.className = 'seta-direita';
+				seta.setAttribute('id', dados[a].id_categoria);
+				seta.addEventListener('click', function(){
+					if(document.getElementById('p'+this.id).hidden){
+						this.src = 'assets/imgs/seta_esq';
+						document.getElementById('p'+this.id).hidden = false;
+					}
+					else{
+						this.src = 'assets/imgs/seta_dir';
+						document.getElementById('p'+this.id).hidden = true;
+					}
+				});
+				this.http.get('http://inclusio.engynios.com/api/read/id/categoria-palavra.php', {id_categoria: dados[a].id_categoria}, {}).then(date =>{
+					let pala = this.converte(date.data);
+					let p = <HTMLDivElement> document.createElement('div');
+					p.hidden = true;
+					p.id = 'p'+dados[a].id_categoria;
+					for(let count = 0; count < pala.length; count++){
+						let mdiv = <HTMLDivElement> document.createElement('div');
+						let ckb = <HTMLInputElement> document.createElement('input');
+						ckb.type = 'checkbox';
+						ckb.id = 'ckb'+pala[count].id_palavra;
+						mdiv.appendChild(ckb);
+						let palavra = <HTMLParagraphElement> document.createElement('p');
+						palavra.innerText = pala[count].nome_palavra;
+						mdiv.appendChild(palavra);
+						p.appendChild(mdiv);
+					}
+					let ion = document.createElement('ion-item');
+					let cat = <HTMLParagraphElement> document.createElement('p');
+					cat.innerText = dados[a]['nome_categoria'];	
+					ion.appendChild(seta);
+					ion.appendChild(cat);
+					ion.appendChild(p);
+					div.appendChild(ion);	
+				}).catch(e=>{
+					alert(JSON.stringify(e));
+				});
 			}
-			
-			}
+		}
 		).catch(error => {
-			  alert(JSON.stringify(error));
-		});
-	}
+			alert(JSON.stringify(error));
+	  });
+ 	}
+				
+	
+	/////////////////////let ckbs = document.getElementsByClassName('checkbox');
+	/////////////////////let n = <HTMLInputElement> ckbs[a];
 
 	// "envia" os dados do form (por enquanto ta indo no console, F12 para ver)
 	enviar(){
