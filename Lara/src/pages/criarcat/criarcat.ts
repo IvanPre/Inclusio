@@ -40,7 +40,7 @@ export class CriarcatPage implements OnInit //implementar OnInit
   constructor(public navCtrl: NavController,
   				  public navParams: NavParams,
   				  public http: HTTP, //banco 
-  				   formBuilder: FormBuilder, //form
+  				formBuilder: FormBuilder, //form
   				  public session_login: SessionloginProvider, //session
   				  public session_config: SessionconfiguracoesProvider, //session
   				  public storage: Storage //session
@@ -91,6 +91,8 @@ converte(date){
     }
     return retorno;
   }
+
+
 	criar()
     {
 		
@@ -356,9 +358,9 @@ converte(date){
 
 	carregaCategorias(){
 		let objeto = {
-			id_usuario: null
+			id_usuario: null// tenho que mudar para o valor do id usuario da session
 		};
-		let path = 'http://inclusio.engynios.com/api/read/id_usuario/categoria.php';
+		let path = 'http://inclusio.engynios.com/api/read/id_usuario/categoria-null.php';
 		this.http.get(path, objeto, {}).then(data =>{
 			let dados = this.converte(data.data);
 			// alert(JSON.stringify(data.data));
@@ -374,15 +376,15 @@ converte(date){
 				seta.setAttribute('id', dados[a].id_categoria);
 				seta.addEventListener('click', function(){
 					if(document.getElementById('p'+this.id).hidden){
-						this.src = 'assets/imgs/seta_esq';
+						this.src = 'assets/imgs/seta_esq.png';
 						document.getElementById('p'+this.id).hidden = false;
 					}
 					else{
-						this.src = 'assets/imgs/seta_dir';
+						this.src = 'assets/imgs/seta_dir.png';
 						document.getElementById('p'+this.id).hidden = true;
 					}
 				});
-				this.http.get('http://inclusio.engynios.com/api/read/id/categoria-palavra.php', {id_categoria: dados[a].id_categoria}, {}).then(date =>{
+				this.http.get('http://inclusio.engynios.com/api/read/id/categoria-palavra.php', {id_categoria: dados[a].id_categoria}, {}).then(date =>{	
 					let pala = this.converte(date.data);
 					let p = <HTMLDivElement> document.createElement('div');
 					p.hidden = true;
