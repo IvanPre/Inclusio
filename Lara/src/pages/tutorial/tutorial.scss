@@ -14,7 +14,7 @@ page-tutorial {
 }
 
 .balao1 {
-  background: #fae69d;
+  background: #c3bef0;
   color: #fff;
   //padding: 15px;
   position: relative;
@@ -27,14 +27,14 @@ page-tutorial {
 
 .balao1:before {
   border: 10px solid transparent;
-  border-right-color: #fae69d;
+  border-right-color: #c3bef0;
   content: "";
   left: -20px;
   position: absolute;
 }
 
 .balao2 {
-  background: #fae69d;
+  background: #c3bef0;
   color: #fff;
   //padding: 15px;
   position: relative;
@@ -46,14 +46,14 @@ page-tutorial {
 
 .balao2:after {
   border: 10px solid transparent;
-  border-left-color: #fae69d;
+  border-left-color: #c3bef0;
   content: "";
   right:-20px;
   position: absolute;
 }
 
 .balao3 {
-  background: #fae69d;
+  background: #c3bef0;
   color: #fff;
   //padding: 15px;
   position: relative;
@@ -65,7 +65,7 @@ page-tutorial {
 
 .balao3:before {
   border: 10px solid transparent;
-  border-right-color: #fae69d;
+  border-right-color: #c3bef0;
   content: "";
   left: -20px;
   position: absolute;

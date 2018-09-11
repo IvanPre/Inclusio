@@ -15,6 +15,8 @@ import { CriarpalPage } from '../pages/criarpal/criarpal'; //criarcat
 import { SobrePage } from '../pages/sobre/sobre'; //configuracoes
 import { SairPage } from '../pages/sair/sair'; //sair
 import { AjudaPage } from '../pages/ajuda/ajuda'; //configuracoes
+import { TutorialPage } from '../pages/tutorial/tutorial'; //configuracoes
+
 
 
 @Component({
@@ -33,14 +35,13 @@ export class MyApp {
     // used for an example of ngFor and navigation
     this.pages = [
       { title: 'Home', component: HomePage },
-      { title: 'Cadastro', component: CadastroPage },
-      { title: 'Login', component: LoginPage },
       { title: 'Perfil', component: PerfilPage },
       { title: 'Criar Categoria', component: CriarcatPage },
       { title: 'Criar Palavra', component: CriarpalPage },
       { title: 'Configurações', component: ConfiguracoesPage },
       { title: 'Ajuda', component: AjudaPage },
       { title: 'Sobre', component: SobrePage },
+      { title: 'TUTORIAL', component: TutorialPage },
       { title: 'Sair', component: SairPage }
       
     ];
