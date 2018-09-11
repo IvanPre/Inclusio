@@ -19,6 +19,11 @@ import 'rxjs/add/operator/timeout';
 
 
 
+///TESTES
+import { MenuController } from 'ionic-angular';
+
+
+
 @IonicPage()
 @Component({
   selector: 'page-tutorial',
@@ -51,17 +56,29 @@ export class TutorialPage implements OnInit
 	endereco = "https://inclusio.engynios.com/api/insert/palavra.php";
 	endereco2= "https://inclusio.engynios.com/api/insert/uniao.php";
 	
+	//TESTE
+	activeMenu: string;
 
   constructor(public navCtrl: NavController,
-  				  public navParams: NavParams, 
-  				  private alertCtrl: AlertController,
-  				  public session_login: SessionloginProvider,
-  				  public session_config: SessionconfiguracoesProvider,
-  				  public http: HTTP,
-  				  public storage: Storage) 
+  				public navParams: NavParams, 
+  				private alertCtrl: AlertController,
+  				public session_login: SessionloginProvider,
+  				public session_config: SessionconfiguracoesProvider,
+  				public http: HTTP,
+				public storage: Storage,
+				public menu: MenuController) 
   {
+	//TESTE
+	this.menu1Active();
   }
 	
+	  //TESTE
+	  menu1Active() {
+		this.menu.enable(false, 'menu');
+	  }
+
+
+
 		//assim que o component existir capture a sessão do usuário
 	ngOnInit()
   {
