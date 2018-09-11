@@ -28,10 +28,8 @@ export class CriarcatPage implements OnInit //implementar OnInit
 	criarCategoriaForm: any;
 	messagenomeCategoria = "";
     messageImagem = "";
-	messagePalavras="";
-    errornomeCategoria = false;
+	errornomeCategoria = false;
     errorImagem= false;
-	errorPalavras=false;
 	// variável que será o src da imagem mostrada (mickey putaço)
 	imagem:string = "https://img.olx.com.br/images/86/864708037631038.jpg";
 	
@@ -40,7 +38,7 @@ export class CriarcatPage implements OnInit //implementar OnInit
   constructor(public navCtrl: NavController,
   				  public navParams: NavParams,
   				  public http: HTTP, //banco 
-  				formBuilder: FormBuilder, //form
+  				  formBuilder: FormBuilder, //form
   				  public session_login: SessionloginProvider, //session
   				  public session_config: SessionconfiguracoesProvider, //session
   				  public storage: Storage //session
@@ -51,7 +49,7 @@ export class CriarcatPage implements OnInit //implementar OnInit
       {
         nomeCategoria: ['', Validators.compose([Validators.required, Validators.pattern('^[a-zA-Z]+$')])],
 		txtimg: ['',Validators.required],
-		//palavras:['',Validators.required]
+		
       });
   }
 
@@ -96,12 +94,12 @@ converte(date){
 	criar()
     {
 		
-        let {nomeCategoria,txtimg/*,palavras*/} = this.criarCategoriaForm.controls;
+        let {nomeCategoria,txtimg} = this.criarCategoriaForm.controls;
 
         if (!this.criarCategoriaForm.valid)
         {
 
-			if (!nomeCategoria.valid )
+			if (!nomeCategoria.valid)
 			{
 				if(	nomeCategoria.value== null || nomeCategoria.value=="")
 				{
@@ -115,39 +113,38 @@ converte(date){
 				}
 			}
 			  
-			else
-			{
-				this.messagenomeCategoria = "";
-			}
-			  
+		
+
 			if (!txtimg.valid)
 			{
 				this.errorImagem = true;
 				this.messageImagem = "Campo obrigatorio";
 			}
-			else
-			{
-				this.messageImagem= "";
-			}
-			/*if (document.getElementById('palavras') == null)
-			{
-				this.errorPalavras= true;
-				this.messagePalavras = "campo obrigatorio";
-			}
-			else
-			{
-				this.messagePalavras= "";
-			}*/
+	
 		}
-		if(this.criarCategoriaForm.valid)
+		else
 		{
+			this.messagenomeCategoria = "";
+			this.messageImagem= "";
 
-			let palavras = [];
+			let f = false;
 			let ckbs = document.getElementsByClassName('checkbox');
+			for(let c = 0; c < ckbs.length; c++){
+				let ckb = <HTMLInputElement> ckbs[c];
+				if(ckb.checked){
+					f = true;
+					break;
+				}
+			}
+			if(!f){
+				alert("Selecione no minimo um checkbox!");
+				return;
+			}
+			let palavras = [];
 			for(let a = 0; a < ckbs.length; a++){
 				let ckb = <HTMLInputElement> ckbs[a];
 				if(ckb.checked)
-					palavras.push(ckb.id);
+					palavras.push(ckb.id.substring(3));
 			}
 			let objeto = {
 				nome_categoria:nomeCategoria.value,
@@ -157,21 +154,22 @@ converte(date){
 
 	
 			this.http.post(this.endereco, objeto, { headers: { 'Content-Type': 'application/json' }})
-			.then(() => {
-				
-				// setTimeout(() => {
+			.then(() => {}).catch(error => {
+				alert(JSON.stringify(error) + " erro na inclusão de categorias. Favor contactar os desenvolvedores");
+			  	return;
+			});
+
+			setTimeout(() => {
 				this.http.get('http://inclusio.engynios.com/api/read/nome/categoria.php', {nome_categoria: '"'+nomeCategoria.value+'"'}, {headers: { 'Content-Type': 'application/json' }})
 				.then(data => {
 					let dados = this.converte(data.data);
-					// alert(JSON.stringify(dados[dados.length-1]['id_categoria']));
 					for(let a = 0; a < palavras.length; a++){
 						let ad = {
-							id_categoria: dados[dados.length-1]['id_categoria'],
+							id_categoria: dados[dados.length-1]['id_categoria'],//pegar a ultima categoria
 							id_palavra: palavras[a],
-							id_usuario: '5'
+							id_usuario: null// usuario da session
 						}
 
-						//alert(JSON.stringify(ad));
 
 						this.http.post('http://inclusio.engynios.com/api/insert/uniao.php', ad, {headers: { 'Content-Type': 'application/json' }})
 						.then().catch(error => {
@@ -184,56 +182,14 @@ converte(date){
 					alert(JSON.stringify(error) + " erro no acesso ao banco. Favor contactar os desenvolvedores");
 					return;
 				});
-				// }, 5000);
-			  	//alert(JSON.stringify(data.data));
-			}).catch(error => {
-			
-				alert(JSON.stringify(error) + " erro na inclusão de categorias. Favor contactar os desenvolvedores");
-			  return;
-			});
+			}, 5000);
+
 		}
 	}
 
 	ngOnInit() {
 		this.carregaCategorias();
 	}
-
-// abre/fecha a categoria exemplo do form
-	mostraPalavras(id){
-		let objeto = {
-			id_categoria: id
-		};
-		let seta = <HTMLImageElement> document.getElementById('seta'+id);
-		seta.src = 'assets/imgs/arrow-down';
-		seta.className = 'seta-baixo';
-		seta.setAttribute('click', 'escondePalavras(' +id+ ')');
-		let path = 'http://inclusio.engynios.com/api/read/id/categoria-palavra.php';
-		this.http.get(path, objeto, {}).then(data =>{
-			let dados = this.converte(data.data);
-			alert(JSON.stringify(dados));
-		}).catch(error =>{
-			alert(JSON.stringify(error));
-		});
-	}
-
-	escondePalavras(id){
-
-	}
-
-	// muda a seta da categoria
-	// seta(e){
-	// 	alert(e);
-	// 	if(document.getElementById('palavras') == null)
-	// 		return;
-		
-	// 	// verifica se existem elementos na tabela de palavras da categoria
-	// 	if(document.getElementById("palavras").childElementCount == 0)
-	// 		// se não existirem elementos, coloca a seta para a direita
-	// 		return "arrow-dropright";
-	// 	else
-	// 		// se existirem elementos, seta para baixo
-	// 		return "arrow-dropdown";
-	// }
 
 	// muda a imagem com base no input do usuário
 	mudaImg(){
@@ -244,129 +200,37 @@ converte(date){
 	// limpa todos os campos
 	limpar(){
 		// limpa o campo de nome da categoria
-		let {nomeCategoria} = this.criarCategoriaForm.controls;
-		nomeCategoria.value = "";
-		// let nomeCategoria = document.getElementById('nomeCategoria');
+		this.nomeCategoria= null;
 		// nomeCategoria.nodeValue = null;
 		
 		// limpa o campo do link da imagem
-		let txtimg = <HTMLInputElement> document.getElementById('txtimg');
-		txtimg.value = "";
+		// let {txtimg}= this.criarCategoriaForm.controls;
+		this.txtimg= null;
 
+		let f = false;
 		let ckbs = document.getElementsByClassName('checkbox');
-		// alert(ckbs.length);
-		for(let a = 0; a < ckbs.length; a++){
-			let ckb = <HTMLInputElement> ckbs[a];
-			ckb.checked = false;
+		for(let c = 0; c < ckbs.length; c++){
+			let ckb = <HTMLInputElement> ckbs[c];
+			ckb.checked=false;
+			}
 		}
-
+	
 		// se existirem elementos dentro da table palavras, fica no while
 		// while(palavras.childElementCount > 0){
 		// 	// remove o último elemento de palavras
 		// 	palavras.removeChild(palavras.lastChild);
 		// }
-	}
 	
-	// carregaCategorias(){
-	// 	let objeto = {
-	// 		id_usuario: null
-	// 	};
-	// 	let path = 'http://inclusio.engynios.com/api/read/id_usuario/categoria.php';
-	// 	this.http.get(path, objeto, {}).then(data =>{
-	// 		let dados = this.converte(data.data);
-	// 		// alert(JSON.stringify(data.data));
-	// 		// alert(JSON.stringify(dados));
-	// 		let div = document.getElementById('div_categorias');
-	// 		// alert(dados[0].id_categoria);	
-
-	// 		for(let a = 0; a < dados.length; a++){
-	// 			let ion = document.createElement('ion-item');
-	// 			// let icon = document.getElementById('hiddenIcon');
-	// 			// let icon = document.createElement('ion-icon');
-	// 			// icon.setAttribute('[name]', 'arrow-dropright')
-	// 			let icon = <HTMLImageElement> document.createElement('img');
-	// 			icon.id = 'seta'+dados[a]['id_categoria'];
-	// 			icon.src = 'assets/imgs/arrow-right.png'; 
-	// 			icon.className = 'seta-direita';
-	// 			let chama = function(){
-	// 				this.mostraPalavras(dados[a].id_categoria);
-	// 			}
-	// 			icon.onclick = chama;
-	// 			let ckb = <HTMLInputElement> document.createElement('input');
-	// 			ckb.type = "checkbox";
-	// 			ckb.id = "ckb"+dados[a]['id_categoria'];
-	// 			ckb.className = 'checkbox';
-	// 			let cat = document.createElement('p');
-	// 			cat.innerText = dados[a]['nome_categoria'];
-	// 			cat.appendChild(document.createElement('br'));
-	// 			ion.appendChild(icon);
-	// 			ion.appendChild(ckb);
-	// 			ion.appendChild(cat);
-	// 			div.appendChild(ion);
-	// 		}
-			
-	// 		}
-	// 	).catch(error => {
-	// 		  alert(JSON.stringify(error));
-	// 	});
-			
-			
-		
-	// 	/*objeto.id_usuario = 3;
-	// 	this.http.get(path, objeto, {}).then(data =>{
-	// 		data = data.data;
-	// 		let div = document.getElementById('div_categorias');
-			
-	// 		div.name
-			
-	// 		for(let a = 0; a < data.length; a++){
-	// 			let ion = document.createElement('ion-item');
-	// 			let icon = document.createElement('ion-icon');
-	// 			icon.name = "seta()";
-	// 			icon.click = mostraPalavras;
-	// 			icon.id = "seta"+a;
-	// 			let ckb = document.createElement('input');
-	// 			ckb.type = "checkbox";
-	// 			ckb.id = "ckb"+a;
-	// 			ckb.name = dados.id_categoria;
-	// 			let cat = document.createElement(p);
-	// 			cat.innerText = dados.nome_categoria;
-	// 			cat.appendChild(document.createElement('br'));
-	// 			ion.appendChild(icon);
-	// 			ion.appendChild(ckb);
-	// 			ion.appendChild(cat);
-	// 			div.appendChild(ion);
-	// 		}
-	// 		}
-	// 	).catch(error => {
-	// 		  alert(JSON.stringify(error));
-	// 	});*/
-	// }
-
-	palavras(id){
-		let objeto = {
-			id_categoria: id
-		};
-
-		let path = 'http://inclusio.engynios.com/api/read/id/categoria-palavra.php';
-		this.http.get(path, objeto, {}).then(data =>{
-			return this.converte(data.data);
-		}).catch(error =>{
-			alert(JSON.stringify(error));
-		});
-	}	
 
 	carregaCategorias(){
 		let objeto = {
-			id_usuario: null// tenho que mudar para o valor do id usuario da session
+			id_usuario: '1'// tenho que mudar para o valor do id usuario da session
 		};
 		let path = 'http://inclusio.engynios.com/api/read/id_usuario/categoria-null.php';
 		this.http.get(path, objeto, {}).then(data =>{
 			let dados = this.converte(data.data);
-			// alert(JSON.stringify(data.data));
-			// alert(JSON.stringify(dados));
 			let div = document.getElementById('div_categorias');
-			// alert(dados[0].id_categoria);	
+	
 
 			for(let a = 0; a < dados.length; a++){
 				dados[a].nome_categoria = dados[a].nome_categoria.replace(/_/gi, " ");
@@ -390,9 +254,12 @@ converte(date){
 					p.hidden = true;
 					p.id = 'p'+dados[a].id_categoria;
 					for(let count = 0; count < pala.length; count++){
+						if(pala[count].nome_palavra.indexOf('capa ') != -1 || pala[count].nome_palavra.indexOf('capa_') != -1)
+							continue;
 						let mdiv = <HTMLDivElement> document.createElement('div');
 						let ckb = <HTMLInputElement> document.createElement('input');
 						ckb.type = 'checkbox';
+						ckb.className='checkbox';
 						ckb.id = 'ckb'+pala[count].id_palavra;
 						mdiv.appendChild(ckb);
 						let palavra = <HTMLParagraphElement> document.createElement('p');
@@ -408,7 +275,7 @@ converte(date){
 					ion.appendChild(p);
 					div.appendChild(ion);	
 				}).catch(e=>{
-					alert(JSON.stringify(e));
+					alert(JSON.stringify(e) + 'erro de select palavras');
 				});
 			}
 		}
