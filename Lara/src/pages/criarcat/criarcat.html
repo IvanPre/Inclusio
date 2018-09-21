@@ -38,13 +38,14 @@
 			<br>
 			
 			<div id="texto"> Imagem:</div>
-			<ion-item>
-				<ion-input [(ngModel)]="txtimg" formControlName="txtimg" (input)="mudaImg()" id="txtimg" type="textarea" placeholder="Imagem" clearInput clearOnEdit="false"></ion-input><br><br>
-				<img [src]="imagem" height="100px"><br><br>
-            </ion-item>
-        
-            <h6 *ngIf="errorImagem" class="error"> {{messageImagem}}</h6>
-			<br>
+			<button ion-button full (click)="captureImage()">Acessar a galeria</button>
+				<button ion-button full (click)="takePicture()">Tirar Foto</button>
+				<ion-card>
+					<ion-card-header>Imagem</ion-card-header>
+					<ion-card-content>
+							<img src = "{{base64Image}}"/> 
+					</ion-card-content>
+				</ion-card>
 		
 			
 			<div id="texto"> Palavras disponíveis:</div>

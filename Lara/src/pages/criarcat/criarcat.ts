@@ -15,6 +15,8 @@ import { Usuario } from '../../app/models/usuario';
 //confifuracoes
 import { SessionconfiguracoesProvider } from '../../providers/sessionconfiguracoes/sessionconfiguracoes';
 import { Configuracoes } from '../../app/models/configuracoes';
+//camera
+import { Camera, CameraOptions } from '@ionic-native/camera';
 
 @IonicPage()
 @Component({
@@ -23,7 +25,7 @@ import { Configuracoes } from '../../app/models/configuracoes';
 })
 export class CriarcatPage implements OnInit //implementar OnInit
  {
-
+	[x: string]: any;
 	criarCategoriaForm: any;
 	messagenomeCategoria = "";
     messageImagem = "";
@@ -31,20 +33,19 @@ export class CriarcatPage implements OnInit //implementar OnInit
     errorImagem= false;
 	// variável que será o src da imagem mostrada (mickey putaço)
 	imagem:string = "https://img.olx.com.br/images/86/864708037631038.jpg";
+	categoriasG:any;
+	public base64Image: string;
 	
 	endereco:string ="http://inclusio.engynios.com/api/insert/categoria.php";
 
   constructor(public navCtrl: NavController,
   				  public navParams: NavParams,
   				  public http: HTTP, //banco 
-<<<<<<< HEAD
-  				  formBuilder: FormBuilder, //form
-=======
   				   formBuilder: FormBuilder, //form
->>>>>>> 867e67960b626c0045efd6c77c1299551dafb340
   				  public session_login: SessionloginProvider, //session
   				  public session_config: SessionconfiguracoesProvider, //session
-  				  public storage: Storage //session
+				  public storage: Storage, //session
+				 private camera: Camera
   				  
   				  )
   {
@@ -94,7 +95,11 @@ converte(date){
   }
 	criar()
     {
-		
+		let nomes = [];
+		for(let n = 0; n < this.categoriasG.length; n++)
+			nomes.push(this.categoriasG[n]['nome_categoria'].toLowerCase());
+
+
         let {nomeCategoria,txtimg} = this.criarCategoriaForm.controls;
 
         if (!this.criarCategoriaForm.valid)
@@ -112,10 +117,9 @@ converte(date){
 					this.errornomeCategoria= true;
 					this.messagenomeCategoria = "Deve conter apenas letras";
 				}
+				
+				
 			}
-			  
-		
-
 			if (!txtimg.valid)
 			{
 				this.errorImagem = true;
@@ -127,6 +131,12 @@ converte(date){
 		{
 			this.messagenomeCategoria = "";
 			this.messageImagem= "";
+
+			if(nomes.indexOf(nomeCategoria.value.toLowerCase()) != -1){
+				this.errornomeCategoria = true;
+				this.messagenomeCategoria = "Já existe uma categoria com esse nome";
+				return;
+			}
 
 			let f = false;
 			let ckbs = document.getElementsByClassName('checkbox');
@@ -192,6 +202,39 @@ converte(date){
 		this.carregaCategorias();
 	}
 
+	currentImage = null;
+	captureImage() {
+	  const options: CameraOptions = {
+		sourceType: this.camera.PictureSourceType.PHOTOLIBRARY,
+		destinationType: this.camera.DestinationType.DATA_URL,
+		quality : 100,
+		targetWidth: 1000,
+		targetHeight: 1000,
+		correctOrientation: true
+	  }
+	  this.camera.getPicture(options).then((imageData) => {
+		  this.base64Image = "data:image/jpeg;base64," + imageData;    }, (err) => {
+			  console.log(err);
+		// Handle error
+		console.log('Image error: ', err);
+	  });
+	}
+	takePicture(){
+	  this.camera.getPicture({
+		  destinationType: this.camera.DestinationType.DATA_URL,
+		  targetWidth: 1000,
+		  targetHeight: 1000
+	  }).then((imageData) => {
+		// imageData is a base64 encoded string
+		  this.base64Image = "data:image/jpeg;base64," + imageData;
+	  }, (err) => {
+		  console.log(err);
+	  });
+	}
+	ionViewDidLoad() {
+		console.log('ionViewDidLoad InserecodPage');
+	  }
+
 	// muda a imagem com base no input do usuário
 	mudaImg(){
 		// define a variável "imagem" como o texto colocado no input
@@ -200,6 +243,7 @@ converte(date){
 
 	// limpa todos os campos
 	limpar(){
+		
 		// limpa o campo de nome da categoria
 		this.nomeCategoria= null;
 		// nomeCategoria.nodeValue = null;
@@ -222,12 +266,6 @@ converte(date){
 		// 	palavras.removeChild(palavras.lastChild);
 		// }
 	
-<<<<<<< HEAD
-
-	carregaCategorias(){
-		let objeto = {
-			id_usuario: '1'// tenho que mudar para o valor do id usuario da session
-=======
 	// carregaCategorias(){
 	// 	let objeto = {
 	// 		id_usuario: null
@@ -307,11 +345,11 @@ converte(date){
 	carregaCategorias(){
 		let objeto = {
 			id_usuario: null
->>>>>>> 867e67960b626c0045efd6c77c1299551dafb340
 		};
 		let path = 'http://inclusio.engynios.com/api/read/id_usuario/categoria.php';
 		this.http.get(path, objeto, {}).then(data =>{
 			let dados = this.converte(data.data);
+			this.categoriasG = dados;
 			let div = document.getElementById('div_categorias');
 	
 
@@ -323,7 +361,6 @@ converte(date){
 				let ion = document.createElement('ion-item');
 				ion.className = 'palavra';
 				let seta = <HTMLImageElement> document.createElement('img');
-<<<<<<< HEAD
 				seta.src = 'assets/imgs/seta_dir.png';
 				seta.className = 'seta-direita';
 				seta.setAttribute('id', dados[a].id_categoria);
@@ -366,23 +403,8 @@ converte(date){
 				}).catch(e=>{
 					alert(JSON.stringify(e) + 'erro de select palavras');
 				});
-=======
-				seta.src = './assets/imgs/seta-direita';
-				seta.id = dados[a]['id_palavra'];
-				seta.onclick = function(){
-				
-				}
-				let cat = <HTMLParagraphElement> document.createElement('p');
-				cat.innerText = dados[a]['nome_palavra'];
-				cat.className = 'palavra';
-				ion.appendChild(seta);
-				ion.appendChild(cat);
-				div.appendChild(ion);
 			}
-			
->>>>>>> 867e67960b626c0045efd6c77c1299551dafb340
-			}
-		).catch(error => {
+		}).catch(error => {
 			  alert(JSON.stringify(error));
 		});
 	}
