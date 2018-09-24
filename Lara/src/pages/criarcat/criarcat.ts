@@ -18,6 +18,9 @@ import { Configuracoes } from '../../app/models/configuracoes';
 //camera
 import { Camera, CameraOptions } from '@ionic-native/camera';
 
+import { FileTransfer, FileUploadOptions, FileTransferObject } from '@ionic-native/file-transfer';
+import { File } from '@ionic-native/file';
+
 @IonicPage()
 @Component({
   selector: 'page-criarcat',
@@ -42,12 +45,13 @@ export class CriarcatPage implements OnInit //implementar OnInit
   constructor(public navCtrl: NavController,
   				  public navParams: NavParams,
   				  public http: HTTP, //banco 
-  				   formBuilder: FormBuilder, //form
+  				  formBuilder: FormBuilder, //form
   				  public session_login: SessionloginProvider, //session
   				  public session_config: SessionconfiguracoesProvider, //session
 				  public storage: Storage, //session
-				 private camera: Camera
-  				  
+				  private camera: Camera,
+				  private transfer: FileTransfer, 
+				  private file: File
   				  )
   {
   		 this.criarCategoriaForm = formBuilder.group(
@@ -57,7 +61,6 @@ export class CriarcatPage implements OnInit //implementar OnInit
 		
       });
   }
-
 
 converte(date){
     let data = JSON.stringify(date);
@@ -98,27 +101,24 @@ converte(date){
 	captureImage() {
 	  const options: CameraOptions = {
 		sourceType: this.camera.PictureSourceType.PHOTOLIBRARY,
-		destinationType: this.camera.DestinationType.DATA_URL,
-		quality : 25,
+		destinationType: this.camera.DestinationType.FILE_URI,
+		quality : 50,
 		targetWidth: 512,
 		targetHeight: 512,
-		encodingType: 1,
-		correctOrientation: true
+		correctOrientation: true,
+		encodingType: this.camera.EncodingType.JPEG
 	  }
 	  this.camera.getPicture(options).then((imageData) => {
 		  this.base64Image = "data:image/jpeg;base64," + imageData;    }, (err) => {
-			  console.log(err);
-		// Handle error
-		console.log('Image error: ', err);
+			console.log('Image error: ', err);
 	  });
 	}
 	takePicture(){
 	  this.camera.getPicture({
-		  destinationType: this.camera.DestinationType.DATA_URL,
-		  quality: 25,
+		  destinationType: this.camera.DestinationType.FILE_URI,
 		  targetWidth: 512,
 		  targetHeight: 512,
-		  encodingType: 1
+		  encodingType: this.camera.EncodingType.JPEG
 	  }).then((imageData) => {
 		// imageData is a base64 encoded string
 		  this.base64Image = "data:image/jpeg;base64," + imageData;
@@ -132,11 +132,12 @@ converte(date){
 
 	criar()
     {
+
 		let nomes = [];
 		for(let n = 0; n < this.categoriasG.length; n++)
 			nomes.push(this.categoriasG[n]['nome_categoria'].toLowerCase());
 
-        let {nomeCategoria/*,txtimg*/} = this.criarCategoriaForm.controls;
+        let {nomeCategoria} = this.criarCategoriaForm.controls;
 
         if (!this.criarCategoriaForm.valid)
         {
@@ -160,8 +161,6 @@ converte(date){
 		else
 		{
 			this.messagenomeCategoria = "";
-			//this.messageImagem= "";
-
 			if(nomes.indexOf(nomeCategoria.value.toLowerCase()) != -1){
 				this.errornomeCategoria = true;
 				this.messagenomeCategoria = "Já existe uma categoria com esse nome";
@@ -181,11 +180,10 @@ converte(date){
 				alert("Selecione no minimo um checkbox!");
 				return;
 			}
-			// if (!txtimg.valid)
-			// {
-			// 	this.errorImagem = true;
-			// 	this.messageImagem = "Campo obrigatorio";
-			// }
+			if (this.base64Image==null)
+			{
+				alert("Campo imagem obrigatorio");
+			}
 	
 			let palavras = [];
 			for(let a = 0; a < ckbs.length; a++){
@@ -200,7 +198,6 @@ converte(date){
 				
 			};
 
-	
 			this.http.post(this.endereco, objeto, { headers: { 'Content-Type': 'application/json' }})
 			.then(() => {}).catch(error => {
 				alert(JSON.stringify(error) + " erro na inclusão de categorias. Favor contactar os desenvolvedores");
@@ -218,14 +215,18 @@ converte(date){
 							id_usuario: this.usuario.id_usuario
 						}
 
-
 						this.http.post('http://inclusio.engynios.com/api/insert/uniao.php', ad, {headers: { 'Content-Type': 'application/json' }})
 						.then().catch(error => {
 							alert(JSON.stringify(error) + " erro na inclusão de palavra. Favor contactar os desenvolvedores");
 							return;
 						});
 					}
-					alert("Cadastro de Categoria Realizado");
+					this.fileTransfer.upload('<file path>', '<api endpoint>', {fileName: nomeCategoria.value+'.jpeg'})
+					.then((data) => {
+						alert("Cadastro de Categoria Realizado");
+					}, (err) => {
+					  alert('Erro no upload da imagem, ' + err);
+					})
 				}).catch(error => {
 					alert(JSON.stringify(error) + " erro no acesso ao banco. Favor contactar os desenvolvedores");
 					return;
@@ -239,12 +240,6 @@ converte(date){
 		setTimeout(() => {
 			this.carregaCategorias();
 		}, 3000);
-	}
-
-	// muda a imagem com base no input do usuário
-	mudaImg(){
-		// define a variável "imagem" como o texto colocado no input
-		this.imagem = document.getElementById("txtimg").nodeValue;
 	}
 
 	getSession(){
@@ -274,7 +269,6 @@ converte(date){
 			ckb.checked=false;
 			}
 		}
-	
 
 	carregaCategorias(){
 	
@@ -286,7 +280,6 @@ converte(date){
 			let dados = this.converte(data.data);
 			this.categoriasG = dados;
 			let div = document.getElementById('div_categorias');
-	
 
 			for(let a = 0; a < dados.length; a++){
 				// if(dados[a].nome_palavra.indexOf('capa_') != -1 || dados[a].nome_palavra.indexOf('capa ') != -1)
@@ -342,38 +335,6 @@ converte(date){
 		}).catch(error => {
 			  alert(JSON.stringify(error));
 		});
-	}
-
-	// "envia" os dados do form (por enquanto ta indo no console, F12 para ver)
-	enviar(){
-		// cria um objeto dados para guardar tudo
-		let dados = {};
-
-		// pega o campo com o nome da nova categoria
-		let novaCategoria = <HTMLInputElement> document.getElementById('nomeCategoria');
-
-		// cria um campo nome_categoria no objeto a ser enviado
-		dados["nome_categoria"] = novaCategoria.value;
-
-		// pega o campo com o link da imagem
-		let imgLink = <HTMLInputElement> document.getElementById('txtimg');
-
-		// cria um campo imagem no objeto a ser enviado
-		// dados["imagem"] = imgLink.value;
-
-		// pega o checkbox da categoria para verificar se o usuário selecionou ela inteira
-		
-		let palavras = [];
-		let ckbs = document.getElementsByClassName('checkbox');
-		for(let a = 0; a < ckbs.length; a++){
-			let ckb = <HTMLInputElement> ckbs[a];
-			if(ckb.checked)
-				palavras.push(ckb.id.substring(4));
-		}
-		alert(palavras.length);
-
-		// mostra no console (F12) os dados
-		console.log(dados);
 	}
 
 }

@@ -42,6 +42,10 @@ import { ConfiguracoesPage } from '../pages/configuracoes/configuracoes'; //conf
 import { AjudaPage } from '../pages/ajuda/ajuda'; //configuracoes
 import { SobrePage } from '../pages/sobre/sobre'; //configuracoes
 import { SairPage } from '../pages/sair/sair'; //sair
+import { FileTransfer } from '@ionic-native/file-transfer';
+import { FileUploadOptions } from '@ionic-native/file-transfer';
+import { FileTransferObject } from '@ionic-native/file-transfer';
+import { File } from '@ionic-native/file';
  
 @NgModule(
 {
@@ -88,6 +92,9 @@ import { SairPage } from '../pages/sair/sair'; //sair
     TutorialPage
   ],
   providers: [
+    File,
+    FileTransferObject,
+    FileTransfer,
   	 HTTP, //banco
     StatusBar,
     SplashScreen,
