@@ -38,7 +38,7 @@ export class CriarcatPage implements OnInit //implementar OnInit
 	imagem:string = "https://img.olx.com.br/images/86/864708037631038.jpg";
 	usuario: Usuario;
 	categoriasG:any;
-	public base64Image: string;
+	base64Image: string;
 	
 	endereco:string ="http://inclusio.engynios.com/api/insert/categoria.php";
 
@@ -49,9 +49,9 @@ export class CriarcatPage implements OnInit //implementar OnInit
   				  public session_login: SessionloginProvider, //session
   				  public session_config: SessionconfiguracoesProvider, //session
 				  public storage: Storage, //session
-				  private camera: Camera,
-				  private transfer: FileTransfer, 
-				  private file: File
+				  public camera: Camera,
+				  public transfer: FileTransfer, 
+				  public file: File
   				  )
   {
   		 this.criarCategoriaForm = formBuilder.group(
@@ -61,6 +61,17 @@ export class CriarcatPage implements OnInit //implementar OnInit
 		
       });
   }
+
+    options: CameraOptions = {
+		quality: 100,
+		correctOrientation: true,
+		destinationType: this.camera.DestinationType.FILE_URI,
+		saveToPhotoAlbum: true,
+		targetWidth: 100,
+		targetHeight: 100,
+		encodingType: this.camera.EncodingType.JPEG,
+		mediaType: this.camera.MediaType.PICTURE
+	}
 
 converte(date){
     let data = JSON.stringify(date);
@@ -99,31 +110,20 @@ converte(date){
   }
   currentImage = null;
 	captureImage() {
-	  const options: CameraOptions = {
-		sourceType: this.camera.PictureSourceType.PHOTOLIBRARY,
-		destinationType: this.camera.DestinationType.FILE_URI,
-		quality : 50,
-		targetWidth: 512,
-		targetHeight: 512,
-		correctOrientation: true,
-		encodingType: this.camera.EncodingType.JPEG
-	  }
-	  this.camera.getPicture(options).then((imageData) => {
+		this.options.sourceType = this.camera.PictureSourceType.PHOTOLIBRARY;
+	  this.camera.getPicture(this.options).then((imageData) => {
 		  this.base64Image = "data:image/jpeg;base64," + imageData;    }, (err) => {
-			console.log('Image error: ', err);
+			alert('Image error: ' + JSON.stringify(err));
 	  });
 	}
 	takePicture(){
-	  this.camera.getPicture({
-		  destinationType: this.camera.DestinationType.FILE_URI,
-		  targetWidth: 512,
-		  targetHeight: 512,
-		  encodingType: this.camera.EncodingType.JPEG
-	  }).then((imageData) => {
+		this.options.sourceType = this.camera.PictureSourceType.CAMERA;
+	  this.camera.getPicture(this.options).then((imageData) => {
+		  alert(imageData);
 		// imageData is a base64 encoded string
-		  this.base64Image = "data:image/jpeg;base64," + imageData;
+		//   this.base64Image = "data:image/jpeg;base64," + imageData;
 	  }, (err) => {
-		  console.log(err);
+		alert('Image error: ' + JSON.stringify(err));
 	  });
 	}
 	ionViewDidLoad() {
@@ -183,6 +183,7 @@ converte(date){
 			if (this.base64Image==null)
 			{
 				alert("Campo imagem obrigatorio");
+				return;
 			}
 	
 			let palavras = [];
@@ -221,11 +222,11 @@ converte(date){
 							return;
 						});
 					}
-					this.fileTransfer.upload('<file path>', '<api endpoint>', {fileName: nomeCategoria.value+'.jpeg'})
+					this.fileTransfer.upload(this.base64Image, 'https://inclusio.engynios.com/imagens/categorias_usuarios', {fileName: nomeCategoria.value+'.jpeg'})
 					.then((data) => {
 						alert("Cadastro de Categoria Realizado");
 					}, (err) => {
-					  alert('Erro no upload da imagem, ' + err);
+					  alert('Erro no upload da imagem, ' + JSON.stringify(err));
 					})
 				}).catch(error => {
 					alert(JSON.stringify(error) + " erro no acesso ao banco. Favor contactar os desenvolvedores");
@@ -260,8 +261,7 @@ converte(date){
 		
 		// limpa o campo do link da imagem
 		// let {txtimg}= this.criarCategoriaForm.controls;
-		this.txtimg= null;
-
+		this.base64Image=null;
 		let f = false;
 		let ckbs = document.getElementsByClassName('checkbox');
 		for(let c = 0; c < ckbs.length; c++){
