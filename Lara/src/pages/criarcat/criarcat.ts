@@ -62,17 +62,6 @@ export class CriarcatPage implements OnInit //implementar OnInit
       });
   }
 
-    options: CameraOptions = {
-		quality: 100,
-		correctOrientation: true,
-		destinationType: this.camera.DestinationType.FILE_URI,
-		saveToPhotoAlbum: true,
-		targetWidth: 100,
-		targetHeight: 100,
-		encodingType: this.camera.EncodingType.JPEG,
-		mediaType: this.camera.MediaType.PICTURE
-	}
-
 converte(date){
     let data = JSON.stringify(date);
     let re = /\\\\\\\"/gi;
@@ -109,23 +98,37 @@ converte(date){
     return retorno;
   }
   currentImage = null;
-	captureImage() {
-		this.options.sourceType = this.camera.PictureSourceType.PHOTOLIBRARY;
-	  this.camera.getPicture(this.options).then((imageData) => {
-		  this.base64Image = "data:image/jpeg;base64," + imageData;    }, (err) => {
-			alert('Image error: ' + JSON.stringify(err));
-	  });
+  captureImage() {
+	const options: CameraOptions = {
+	  sourceType: this.camera.PictureSourceType.PHOTOLIBRARY,
+	  destinationType: this.camera.DestinationType.DATA_URL,
+	  quality : 25,
+	  targetWidth: 512,
+	  targetHeight: 512,
+	  //encodingType: 1,
+	  correctOrientation: true
 	}
-	takePicture(){
-		this.options.sourceType = this.camera.PictureSourceType.CAMERA;
-	  this.camera.getPicture(this.options).then((imageData) => {
-		  alert(imageData);
-		// imageData is a base64 encoded string
-		//   this.base64Image = "data:image/jpeg;base64," + imageData;
-	  }, (err) => {
-		alert('Image error: ' + JSON.stringify(err));
-	  });
-	}
+	this.camera.getPicture(options).then((imageData) => {
+		this.base64Image = "data:image/jpeg;base64," + imageData;    }, (err) => {
+			console.log(err);
+	  // Handle error
+	  console.log('Image error: ', err);
+	});
+  }
+  takePicture(){
+	this.camera.getPicture({
+		destinationType: this.camera.DestinationType.DATA_URL,
+		quality: 25,
+		targetWidth: 512,
+		targetHeight: 512,
+	  //  encodingType: 1
+	}).then((imageData) => {
+	  // imageData is a base64 encoded string
+		this.base64Image = "data:image/jpeg;base64," + imageData;
+	}, (err) => {
+		console.log(err);
+	});
+  }
 	ionViewDidLoad() {
 		console.log('ionViewDidLoad InserecodPage');
 	  }
@@ -195,8 +198,8 @@ converte(date){
 	
 			let objeto = {
 				nome_categoria:nomeCategoria.value,
-				id_usuario: this.usuario.id_usuario			
-				
+				id_usuario: this.usuario.id_usuario,			
+				imagem_categoria: this.base64Image
 			};
 
 			this.http.post(this.endereco, objeto, { headers: { 'Content-Type': 'application/json' }})
@@ -222,12 +225,6 @@ converte(date){
 							return;
 						});
 					}
-					this.fileTransfer.upload(this.base64Image, 'https://inclusio.engynios.com/imagens/categorias_usuarios', {fileName: nomeCategoria.value+'.jpeg'})
-					.then((data) => {
-						alert("Cadastro de Categoria Realizado");
-					}, (err) => {
-					  alert('Erro no upload da imagem, ' + JSON.stringify(err));
-					})
 				}).catch(error => {
 					alert(JSON.stringify(error) + " erro no acesso ao banco. Favor contactar os desenvolvedores");
 					return;

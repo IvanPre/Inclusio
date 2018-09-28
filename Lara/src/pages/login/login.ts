@@ -82,7 +82,6 @@ export class LoginPage {
 			let teste =
 			{
 				login_usuario: usuario.value
-
 			}
 						
 			this.http.get(this.endereco_select, teste, {})
@@ -100,7 +99,6 @@ export class LoginPage {
 				//alert(JSON.stringify(converter));
 				if(converter[0]==null)
 				{
-					
 					this.erro_usuario="true";
 				}	
 				else if(converter[0]['login_usuario']==this.nome)
