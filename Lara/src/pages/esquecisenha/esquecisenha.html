@@ -1,18 +1,36 @@
-<!--
-  Generated template for the EsquecisenhaPage page.
+﻿<meta charset="utf-8">
 
-  See http://ionicframework.com/docs/components/#navigation for more info on
-  Ionic pages and navigation.
--->
-<ion-header>
-
-  <ion-navbar>
-    <ion-title>esquecisenha</ion-title>
-  </ion-navbar>
-
-</ion-header>
-
-
-<ion-content padding>
+<ion-content class="body" padding>
+ 
+	<div id="principal">
+  
+    <div id="formulario">
+    
+    <div id="linha_form">
+     
+     <h1><ion-icon name="md-mail"></ion-icon>&nbsp;Confirme seu e-mail</h1> 
+   
+      <div id="input_form">
+      	<form [formGroup]="esqueciForm" (submit)="ir_inserecod()" novalidate>  <!--manda p uma função de consistência de email-->
+          <ion-item>
+              <ion-input [(ngModel)]="email" formControlName="email"  type="email" placeholder="exemplo@hotmail.com" clearInput clearOnEdit="false"></ion-input>
+            </ion-item>
+            <h6 *ngIf="errorEmail" class="error"> {{messageEmail}}</h6>
+            <br><br>  
+          <br>
+          <button ion-button round class="botao">Ok</button>
+        <!--  <button ion-button round class="botao" (click)="ir_inserecod()"  </button>>Ok</button>       -->   
+  			</form>
+      </div> <!-- input_form -->
+    	
+    </div> <!-- linha_form -->
+    
+    <div id="centraliza_texto">
+    	<p>Um link para redefinir a senha será enviado em seu e-mail, não se esqueça de checar também a caixa de spam!</p>
+    </div>
+    
+   </div> <!-- formulario -->
+  
+  </div> <!--principal-->
 
 </ion-content>

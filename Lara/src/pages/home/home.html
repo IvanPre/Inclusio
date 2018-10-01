@@ -1,103 +1,29 @@
-﻿<ion-header>
-  <ion-navbar>
-  
-	<!--caso a pag não tenha cabeçalho voc apaga tudo (a header e as coisas dentro-->
-	   <div  id="topo">
-		   <div id="btn_menu">
-			<ion-buttons left> 
-				<button ion-button icon-only menuToggle> 
-					<p class="menu"><ion-icon name="menu"> </ion-icon></p>
-				</button>
-
-			</ion-buttons>
-				</div>
-			<div id="titulo">
-			<ion-title>
-			 <span text-color="fonte-laranja"> Teclado </span>
-			</ion-title>
-			</div>
-		</div>
+<ion-header>
+  <ion-navbar color = "inclusio_2">
+    <div id="titulo">
+	  <ion-title>
+	   <span text-color="fonte-laranja"> Cadastro </span>
+	  </ion-title>
+    </div>
 	
   </ion-navbar>
 </ion-header>
-<ion-content padding>
 
+<ion-content class="body" padding>
+ 
+<div id="caixa_cadastro">
+  <div id="botoes"> 
+    <h1>Nossas Categorias</h1>
 
-<ion-content >
-  <div id="main">
-    <div id="top-tab">
-      <div id="frase">
-        <!--p class="frase" id="fraseFormada">
-        &nbsp;FRASE FORMADA</p-->
-        <input type = "text" id="fraseFormada" [(ngModel)]="fraseFormada" name ="fraseFormada">
-      
-      </div>
-      <button (click)="sintetizador()" class="sintetizador">
-        <img (click)="sintetizador()" src="assets/imgs/volume.png">
-      </button>
-    </div>
-    <br>
-    <div id="cat">
-      <div id="nossas_categorias"><h1>Nossas Categorias</h1></div>
-      <!--div id="usuario_categorias"><h1>Suas Categorias</h1></div-->
-    </div>
-    <!--ion-slides #slider (ionSlideNextEnd)="loadNext()" (ionSlidePrevEnd)="loadPrev()" [initialSlide]="1">
-      <ion-slide *ngFor="let n of numbers">
-        <ion-grid padding-top="3%">
-         
-           
-        
-          <ion-row>
-            <ion-col>
-              <img class="principal" id={{n*6+1}} [src]="imagem1" *ngIf="mostra_img" (click) ="addPalavra($event)">
-              <!--<p (click) ="addPalavra($event)">COMIDAS</p>
-                <p>{{converter}} oi bb</p>
-            </ion-col>
-            <ion-col *ngIf="mostra_img2">
-              <img class="principal" id={{n*6+2}} [src]="imagem2" *ngIf="mostra_img"  (click) ="addPalavra($event)">
-                <p (click) ="addPalavra($event)">SENTIDOS</p>
-            </ion-col>
-          </ion-row>
-          
-          <ion-row *ngIf="mostra_img4">
-            <ion-col>
-              <img class="principal" id={{n*6+3}} [src]="imagem3" *ngIf="mostra_img" (click) ="addPalavra($event)">
-                <p (click) ="addPalavra($event)"> PESSOAS</p>
-            </ion-col>
-            
-            <ion-col>
-              <img class="principal" id={{n*6+4}} [src]="imagem4" *ngIf="mostra_img" (click) ="addPalavra($event)">
-               <p (click) ="addPalavra($event)">CORPO</p>
-            </ion-col>
-          </ion-row>
-          
-          <ion-row *ngIf="mostra_img6">
-            <ion-col>
-              <img class="principal" id={{n*6+5}} [src]="imagem5" *ngIf="mostra_img" (click) ="addPalavra($event)">
-                <p (click) ="addPalavra($event)">ANIMAIS</p>
-            </ion-col>
-            <ion-col>
-              <img class="principal" id={{n*6+6}} [src]="imagem6" *ngIf="mostra_img" (click) ="addPalavra($event)">
-                <p (click) ="addPalavra($event)">LETRAS</p>
-            </ion-col>
-          </ion-row>
-          
-                
-          <ion-row *ngIf="mostra_img8">
-            <ion-col>
-              <img class="principal" id={{n*6+5}} [src]="imagem5" *ngIf="mostra_img" (click) ="addPalavra($event)">
-                <p>Palavra</p>
-            </ion-col>
-            <ion-col>
-              <img class="principal" id={{n*6+6}} [src]="imagem6" *ngIf="mostra_img" (click) ="addPalavra($event)">
-                <p (click) ="addPalavra($event)">Palavra</p>
-              <input type = "text" id="frase" [(ngModel)]="frase" name ="frase">
-              
-            </ion-col>
-          </ion-row>
-          
-        </ion-grid>
-      </ion-slide>
-    </ion-slides-->
   </div>
+</div>
 </ion-content>
+
+
+
+
+
+
+
+
+

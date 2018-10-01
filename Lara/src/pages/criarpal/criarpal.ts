@@ -1,10 +1,23 @@
+import { Component, OnInit } from '@angular/core';
+import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { Validators, FormBuilder } from '@angular/forms';
-import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+
+//banco
 import { HTTP } from '@ionic-native/http';
-import { Camera, CameraOptions } from '@ionic-native/camera';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/timeout';
+
+//imports da session:
+import { Storage } from "@ionic/storage";
+//usuario
+import { SessionloginProvider } from '../../providers/sessionlogin/sessionlogin';
+import { Usuario } from '../../app/models/usuario';
+//confifuracoes
+import { SessionconfiguracoesProvider } from '../../providers/sessionconfiguracoes/sessionconfiguracoes';
+import { Configuracoes } from '../../app/models/configuracoes';
+//camera
+import { Camera, CameraOptions } from '@ionic-native/camera';
+
 @Component({
   selector: 'page-criarpal',
   templateUrl: 'criarpal.html'
@@ -12,7 +25,6 @@ import 'rxjs/add/operator/timeout';
 
 export class CriarpalPage {
     [x: string]: any;
-	public base64Image: string;
 	criarPalavraForm: any;
 	messagenomePalavra = "";
     messageImagem = "";
@@ -22,7 +34,9 @@ export class CriarpalPage {
 	errorPalavras=false;
 	// variável que será o src da imagem mostrada (mickey putaço)
 	imagem:string = "https://img.olx.com.br/images/86/864708037631038.jpg";
-	
+	usuario: Usuario;
+	categoriasG:any;
+	public base64Image: string;
 	endereco ="http://inclusio.engynios.com/api/insert/palavra.php";
     constructor(public navCtrl: NavController, formBuilder: FormBuilder, public navParams: NavParams, public http: HTTP, private camera: Camera)
     {
@@ -107,6 +121,10 @@ export class CriarpalPage {
   }
 	criar()
     {
+		let nomes = [];
+		for(let n = 0;n<this.categoriasG.length;n++)
+			nomes.push(this.categoriasG[n]['nome_categoria'].toLowerCase());
+
 		let {nomePalavra/*txtimg,palavras*/} = this.criarPalavraForm.controls;
 		
         if (!this.criarPalavraForm.valid)
@@ -125,43 +143,43 @@ export class CriarpalPage {
 				}
 			}
 			  
-			else
-			{
-				this.messagenomePalavra = "";
-			}
-			  
-			/*if (!txtimg.valid)
-			{
-				this.errorImagem = true;
-				this.messageImagem = "Campo obrigatorio";
-			}
-			else
-			{
-				this.messageImagem= "";
-			}
-			if (document.getElementById('palavras') == null)
-			{
-				this.errorPalavras= true;
-				this.messagePalavras = "campo obrigatorio";
-			}
-			else
-			{
-				this.messagePalavras= "";
-			}*/
 		}
 		else
 		{
+			this.messagenomeCategoria = "";
+			//this.messageImagem= "";
+
+			if(nomes.indexOf(nomePalavra.value.toLowerCase()) != -1){
+				this.errornomePalavra = true;
+				this.messagenomePalavra = "Já existe uma palavra com esse nome";
+				return;
+			}
+			let f = false;
 			let ckbs = document.getElementsByClassName('checkbox');
+			//let id_categoria = [];
+			for(let a = 0; a < ckbs.length; a++){
+				let ckb = <HTMLInputElement> ckbs[a];
+				if(ckb.checked)
+				{
+					//id_categoria.push(parseInt(ckb.id.substring(3)));
+					f = true;
+					break;
+				}
+			}
+			if(!f){
+				alert("Selecione no minimo um checkbox!");
+				return;
+			}
+
 			let id_categoria = [];
 			for(let a = 0; a < ckbs.length; a++){
 				let ckb = <HTMLInputElement> ckbs[a];
 				if(ckb.checked)
-					id_categoria.push(parseInt(ckb.id.substring(3)));
-			}
-
+					id_categoria.push(ckb.id.substring(3));
+			}	
 			let objeto = {
 				nome_palavra:nomePalavra.value,
-				id_usuario:null,
+				id_usuario:this.usuario.id_usuario,
 				versao:null,
 				id_categoria: id_categoria
 			};
@@ -173,42 +191,11 @@ export class CriarpalPage {
 			 alert("Palavra criada!");
 			  //alert(JSON.stringify(data.data));
 			}).catch(error => {
-			  alert(JSON.stringify(error));
+			  alert(JSON.stringify(error)+"erro na inclusão de categorias. Favor contactar os desenvolvedores");
 			});
 		}
 	}
 
-// abre/fecha a categoria exemplo do form
-	mostraPalavras(){
-		let id = this.id;
-		let objeto = {
-			id_categoria: id
-		};
-		this.src = 'assets/imgs/arrow-down';
-		this.className = 'seta-baixo';
-		let path = 'http://inclusio.engynios.com/api/read/id/categoria-palavra.php';
-		this.http.get(path, objeto, {}).then(data =>{
-			let dados = this.converte(data.data);
-			alert(JSON.stringify(dados));
-		}).catch(error =>{
-			alert(JSON.stringify(error));
-		});
-	}
-
-	// muda a seta da categoria
-	// seta(e){
-	// 	alert(e);
-	// 	if(document.getElementById('palavras') == null)
-	// 		return;
-		
-	// 	// verifica se existem elementos na tabela de palavras da categoria
-	// 	if(document.getElementById("palavras").childElementCount == 0)
-	// 		// se não existirem elementos, coloca a seta para a direita
-	// 		return "arrow-dropright";
-	// 	else
-	// 		// se existirem elementos, seta para baixo
-	// 		return "arrow-dropdown";
-	// }
 
 	// muda a imagem com base no input do usuário
 	mudaImg(){
