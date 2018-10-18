@@ -4,6 +4,9 @@ import { NavController, NavParams } from 'ionic-angular';
 import { HTTP } from '@ionic-native/http';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/timeout';
+import { LoginPage } from '../login/login';
+import { SobrePage } from '../sobre/sobre';
+
 
 // import { PalavrasPage } from '../palavras/palavras'; 
  
@@ -14,13 +17,14 @@ import 'rxjs/add/operator/timeout';
 })
 export class HomePage
 {
-	// palavrasPage = PalavrasPage;
+	loginPage= LoginPage;
    palavras:any;
 	timeoutMS:any;
 	imagens:any;
     id_cat: string;
 	resultados:any;
 	resultados2:any;
+	pag:any;
 	
 	
 	
@@ -30,7 +34,8 @@ export class HomePage
     constructor(public navCtrl: NavController, formBuilder: FormBuilder, public navParams: NavParams, public http: HTTP)
     {
 			this.carrega_imagem();
-			
+			//this.carrega_palavra();
+			this.pag = this.pagina;
 
 	}
 		
@@ -81,7 +86,7 @@ export class HomePage
   {
         let teste =
 		{
-			id_usuario: null
+			id_usuario: 1
 
 		}
 					
@@ -104,27 +109,33 @@ export class HomePage
 				table.appendChild(tr); //coloca o tr na tabela
 				for(let p=0;p<2 && l*2+p < converter.length;p++)
 				{
-					var td = document.createElement("td");
-					let img = document.createElement("img");
+					
+					//let img = document.createElement("img");
 					if(converter[l*2+p]['imagem\\\\'] == undefined)
 						alert(JSON.stringify(converter[l*2+p]));
 					let s = converter[l*2+p]['imagem\\\\'].replace(/\"/gi, "");
 					s= s.replace(/\\/gi, "");
 					s = s.replace(/\//gi, "/");
+					var td = "<button id = "+ converter[l*2+p]['id_categoria\\\\'] +" (click)='this.pagina()'> <img   src= 'https://inclusio.engynios.com/imagens/"+s+"'>  </button>";
 					//alert(s);
-					img.setAttribute('src', 'https://inclusio.engynios.com/imagens/'+s);
-					img.setAttribute('alt', 'imagemmm');
-				
-					td.setAttribute('id',''+converter[l*2+p]['id_categoria\\\\']);
-					td.appendChild(img); //coloca a img no td
-					td.onclick= this.pushPage;
-					tr.appendChild(td);
+					//img.setAttribute('src', 'https://inclusio.engynios.com/imagens/'+s);
+					//img.setAttribute('alt', 'imagemmm');
+					// td.onclick= this.pagina;
+					//td.setAttribute('id',''+converter[l*2+p]['id_categoria\\\\']);
+					
+					//td.appendChild(img); //coloca a img no td
+					
+					// td.setAttribute('onclick', '{{pag}}');
+					// alert(td.onclick)
+					let tdReal = document.createElement('td');
+					tdReal.innerHTML = td;
+					tr.appendChild(tdReal);
 				}
 			}
 
 			document.getElementById('botoes').appendChild(table);
 			
-
+			
 
 			
 
@@ -139,7 +150,72 @@ export class HomePage
 
 	}
 
-	pushPage() 
+	pagina()
+	{
+		alert('entrou');
+		try{
+			this.navCtrl.push(SobrePage);
+		}
+		catch(e){
+			alert(JSON.stringify(e));
+		}
+	}
+
+	carrega_palavra()
+	{
+		let teste =
+		{
+			id_categoria: 1
+
+		}
+					
+		this.http.get(this.endereco_palavras, teste, {})
+		.then(data => 
+		{	
+			
+			
+			let converter = this.converte(data.data);
+			this.imagens=[];
+			this.resultados = converter.length;
+			// alert(JSON.stringify(converter));
+			let table = document.createElement("table"); //cria uma tabela
+			table.setAttribute('border', '1');
+			for(let l=0;l<this.resultados/2;l++)
+			{
+
+				let tr = document.createElement("tr"); //cria um tr
+				table.appendChild(tr); //coloca o tr na tabela
+				for(let p=0;p<2 && l*2+p < converter.length;p++)
+				{
+					var td = document.createElement("td");
+					let img = document.createElement("img");
+					if(converter[l*2+p]['imagem\\\\'] == undefined)
+						alert(JSON.stringify(converter[l*2+p]));
+					let s = converter[l*2+p]['imagem\\\\'].replace(/\"/gi, "");
+					s= s.replace(/\\/gi, "");
+					s = s.replace(/\//gi, "/");
+					img.setAttribute('src', 'https://inclusio.engynios.com/imagens/'+s);
+					img.setAttribute('alt', 'imagemmm');
+					td.setAttribute('id',''+converter[l*2+p]['id_palavra\\\\']);
+					td.appendChild(img); //coloca a img no td
+					td.onclick= this.sintetizador;
+					tr.appendChild(td);
+				}
+			}
+
+			document.getElementById('botoes').appendChild(table);
+
+		})
+		.catch(error => 
+		{
+			console.log(error.status);
+			alert(error);
+		});
+		
+	}
+
+
+	/*pushPage() 
 	{
 		
 
@@ -148,29 +224,17 @@ export class HomePage
 		  let w = document.getElementById('tabela_cat');
 		  w.remove();
 		 
-
-
-		 
 		 
 
-		  let palavras =
-		  {
-			  id_categoria: this.id_cat
-  
-		  }
-					  
-		  this.http.get(this.endereco_palavras, palavras, {})
-		  .then(data => 
-		  {	
-			  
-			  
-			  let converter2 = this.converte(data.data);
-			  alert("nem entra aqui");
-			  alert(converter2[0]["imagem"]);
-		  });
 
 		 
        
+	}*/
+
+	sintetizador()
+	{
+		alert("Aqui entra");
+
 	}
 
 	
