@@ -1,12 +1,21 @@
-﻿import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+﻿import { Component, OnInit } from '@angular/core';
+import { IonicPage, NavController, NavParams } from 'ionic-angular';
+
+//banco
 import { HTTP } from '@ionic-native/http';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/timeout';
-import { SessionloginProvider } from '../../providers/sessionlogin/sessionlogin';
+
+//imports da session:
 import { Storage } from "@ionic/storage";
+//usuario
+import { SessionloginProvider } from '../../providers/sessionlogin/sessionlogin';
 import { Usuario } from '../../app/models/usuario';
+import { SessionconfiguracoesProvider } from '../../providers/sessionconfiguracoes/sessionconfiguracoes';
+import { Configuracoes } from '../../app/models/configuracoes';
 import { SplashPage } from '../splash/splash';
+import { AlteradadosPage } from '../alteradados/alteradados';
+import { InseresenhaPage } from '../inseresenha/inseresenha';
 
 
 // @IonicPage()
@@ -16,15 +25,29 @@ import { SplashPage } from '../splash/splash';
 })
 export class PerfilPage {
 
-   nomeUsuario = "";
+	nomeUsuario = "";
+	usuario: Usuario;
   endereco: string;
-  usuarioLogado:any;
-  email = "";
+	//usuarioLogado:any;
+	email = "";
   constructor(public navCtrl: NavController, public navParams: NavParams,  public http: HTTP, 
-    public session_login: SessionloginProvider,public storage: Storage) 
-    {
-      this.banco()
-    }
+    public session_login: SessionloginProvider, public session_config: SessionconfiguracoesProvider, public storage: Storage) {}
+
+		ngOnInit()
+		{
+			this.getSession();
+			setTimeout(() => {
+				this.banco();
+			}, 2000);	
+		}
+		getSession(){
+			this.session_login.get().then(
+				res =>
+				{
+					this.usuario = res;		
+				}
+			);//session		
+		}
    //função para converter dados do banco
 	converte(date)
 	{
@@ -65,39 +88,21 @@ export class PerfilPage {
 		}
 		return retorno;
 	}
-  ngOnInit( )
-    {
-      //1 passo: checar se esta logado:
-      this.session_login.get().then(res =>
-      {
-          
-        this.usuarioLogado = new Usuario(res);
-        if(this.usuarioLogado.id_usuario == null)//se nao esta logado
-        {
-          //vai para o comeco
-          	this.navCtrl.setRoot(SplashPage);
-        }
-    });
-  }
   banco()
   {
-    this.endereco = 'https://inclusio.engynios.com/api/read/login/usuario.php'
-    this.session_login.get().then(
-      res =>
-      {
-        this.usuarioLogado = new Usuario(res);
-			this.http.get(this.endereco, {id_usuario: this.usuarioLogado.id_usuario}, {})
+		this.endereco = 'https://inclusio.engynios.com/api/read/id/usuario.php';
+			this.http.get(this.endereco, {id_usuario: this.usuario.id_usuario}, {})
 			.then(
 			data => 
 			{
 			//caso tenha dado tudo certo
 			let converter_usu = this.converte(data.data);
-			alert(""+ converter_usu[0]['login_usuario']+""+converter_usu[0]['email']);
+			//alert(""+ converter_usu[0]['login_usuario']+""+converter_usu[0]['email']);
 			//this.nomeUsuario = converter_usu[0]['login_usuario'];
 			let usuario = document.getElementById('usuario');
-			usuario.innerHTML = ''+ converter_usu[0]['login_usuario'];
+			usuario.innerHTML = ''+ converter_usu[0]['login_usuario'].replace(/\"/gi,"");
 			let email = document.getElementById('email');
-			email.innerHTML = ''+ converter_usu[0]['email'];
+			email.innerHTML = ''+ converter_usu[0]['email'].replace(/\"/gi,"");
 
 			})
 			.catch(
@@ -110,47 +115,15 @@ export class PerfilPage {
 			console.log(error.headers);
 
 			}); //catch
-			});
-      
-      /*
-      //id session (categorias personalizadas)
-					this.session_login.get().then(
-					res =>
-			      {
-			      
-				      this.usuarioLogado = new Usuario(res);
-				      
-					   this.http.get(this.caminho, {id_usuario: this.usuarioLogado.id_usuario}, {})
-						.then(
-						data => 
-						{
-							//caso tenha dado tudo certo
-							let converter_usu = this.converte(data.data);
-							this.cat_usu = converter_usu.length;		
-							alert ("linha usu" + this.cat_usu);
-							
-							this.tamanho = this.cat_usu + this.cat_null;
-			      		
-			      		alert ("tamanho: " + this.tamanho);
-			      		
-			      		this.paginacao(this.tamanho);
-			      		
-						})
-						.catch(
-						error => 
-						{
-							alert(""+JSON.stringify(error));
-							console.log(error+"\n"); 
-							console.log(error.status);
-							console.log(error.error); // error message as string
-							console.log(error.headers);
-
-						}); //catch
-				    
-			      }); //session   */
-      
-      
-      
-  }
-
+	}
+	altera_dados()
+	{
+		this.navCtrl.push(AlteradadosPage);
+	}
+	altera_senha()
+	{
+		this.navCtrl.push(InseresenhaPage);
+	}
 }
+
+

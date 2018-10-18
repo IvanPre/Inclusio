@@ -1,4 +1,4 @@
-﻿<ion-header>
+<ion-header>
   <ion-navbar>
   
 	<!--caso a pag não tenha cabeçalho voc apaga tudo (a header e as coisas dentro-->
@@ -13,7 +13,7 @@
 				</div>
 			<div id="titulo">
 			<ion-title>
-			 <span text-color="fonte-laranja"> Perfil </span>
+			 <span text-color="fonte-laranja"> Alterar Email </span>
 			</ion-title>
 			</div>
 		</div>
@@ -30,18 +30,7 @@
   <!--Aqui é o modelo para os formularios-->
   
     <div id="formulario">
-		
-		<div id="linha_form">
-     <h1>Usuário:</h1> 
-    <div id="input_form">
-  		<p id="usuario">
-				<ion-item>
-					<ion-input [(ngModel)]="login" type="textarea" id="usuario" [readonly]="true" clearInput clearOnEdit="false"></ion-input>
-					</ion-item>
-			</p>
-    </div> <!-- input_form -->
-    
-    </div> <!-- linha_form -->
+
     <div id="linha_form">
      
       <h1>Email:</h1> 
@@ -55,11 +44,9 @@
      
      </div> <!-- linha_form -->
      <br> <br>
-		<button ion-button round class="botao"[navPush]="alteradadosPage" (click)="altera_dados()" >Alterar Dados</button>
-		<br>
-	<br>
-<button ion-button round class="botao"[navPush]="inseresenhaPage" (click)="altera_senha()">Alterar Senha</button>
- 
+		<button ion-button round class="botao" (click)="altera_dados()" >Alterar</button>
+    <!--<button ion-button round class="botao" [navPush]="alteradadosPage" ></button> (click)="altera_dados()" >Alterar Dados</button>-->
+    <button ion-button round class="botao" (click)="limpar()" >Limpar</button>
    </div> <!-- formulario -->
   </ion-list>  
 </ion-col>

@@ -18,9 +18,6 @@ import { Configuracoes } from '../../app/models/configuracoes';
 //camera
 import { Camera, CameraOptions } from '@ionic-native/camera';
 
-import { FileTransfer, FileUploadOptions, FileTransferObject } from '@ionic-native/file-transfer';
-import { File } from '@ionic-native/file';
-
 @IonicPage()
 @Component({
   selector: 'page-criarcat',
@@ -49,9 +46,7 @@ export class CriarcatPage implements OnInit //implementar OnInit
   				  public session_login: SessionloginProvider, //session
   				  public session_config: SessionconfiguracoesProvider, //session
 				  public storage: Storage, //session
-				  public camera: Camera,
-				  public transfer: FileTransfer, 
-				  public file: File
+				  public camera: Camera
   				  )
   {
   		 this.criarCategoriaForm = formBuilder.group(
@@ -199,7 +194,7 @@ converte(date){
 			let objeto = {
 				nome_categoria:nomeCategoria.value,
 				id_usuario: this.usuario.id_usuario,			
-				imagem_categoria: this.base64Image
+				imagem_categoria: null
 			};
 
 			this.http.post(this.endereco, objeto, { headers: { 'Content-Type': 'application/json' }})
@@ -211,6 +206,7 @@ converte(date){
 				this.http.get('http://inclusio.engynios.com/api/read/nome/categoria.php', {nome_categoria: '"'+nomeCategoria.value+'"'}, {headers: { 'Content-Type': 'application/json' }})
 				.then(data => {
 					let dados = this.converte(data.data);
+					alert('Entrou');
 					for(let a = 0; a < palavras.length; a++){
 	
 						let ad = {

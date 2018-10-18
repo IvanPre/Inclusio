@@ -42,6 +42,8 @@ import { ConfiguracoesPage } from '../pages/configuracoes/configuracoes'; //conf
 import { AjudaPage } from '../pages/ajuda/ajuda'; //configuracoes
 import { SobrePage } from '../pages/sobre/sobre'; //configuracoes
 import { SairPage } from '../pages/sair/sair'; //sair
+import {InseresenhaPage} from '../pages/inseresenha/inseresenha';
+import {AlteradadosPage} from '../pages/alteradados/alteradados';
 
 
 @NgModule(
@@ -61,6 +63,8 @@ import { SairPage } from '../pages/sair/sair'; //sair
     SobrePage,
     PerfilPage,
     SairPage,
+    InseresenhaPage,
+    AlteradadosPage,
     TutorialPage
     
   ],
@@ -86,6 +90,8 @@ import { SairPage } from '../pages/sair/sair'; //sair
     SobrePage,
     PerfilPage,
     SairPage,
+    InseresenhaPage,
+    AlteradadosPage,
     TutorialPage
   ],
   providers: [

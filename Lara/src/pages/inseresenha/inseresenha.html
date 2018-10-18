@@ -1,0 +1,58 @@
+<ion-header>
+  <ion-navbar>
+
+	<!--caso a pag n�o tenha cabe�alho voc apaga tudo (a header e as coisas dentro-->
+	   <div  id="topo">
+		   <div id="btn_menu">
+			<ion-buttons left> 
+				<button ion-button icon-only menuToggle> 
+					<p class="menu"><ion-icon name="menu"> </ion-icon></p>
+				</button>
+
+			</ion-buttons>
+				</div>
+			<div id="titulo">
+			<ion-title>
+			 <span text-color="fonte-laranja"> Alterar Senha</span>
+			</ion-title>
+			</div>
+		</div>
+  	
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content class="body" padding>
+   
+		 <div id="caixa_cadastro">
+				&nbsp; &nbsp;  <!--p class="icon"><ion-icon ios="ios-person" md="md-person"></ion-icon></p> <!-- <h1>Criar Categoria</h1>-->
+				<form  [formGroup]="alteraSenhaForm" novalidate>
+						<ion-row>
+							<ion-col>
+								<ion-list inset>
+					<div id="input_form">
+							<div id="texto"> Senha:</div>
+							<ion-item>
+							<ion-input [(ngModel)]="senha" formControlName="senha" type="password" placeholder="Nova Senha" id="senha" clearInput clearOnEdit="false"></ion-input>
+							</ion-item>
+						<h6 *ngIf="errorSenha" class="error"> {{messageSenha}}</h6>
+						<br>
+						<div id="texto"> Confirma Senha:</div>
+						<ion-item>
+							<ion-input [(ngModel)]="senha_conf" formControlName="senha_conf" type="password" placeholder="Confirma Senha" id="senha_conf" clearInput clearOnEdit="false"></ion-input>
+						</ion-item>
+						<h6 *ngIf="errorSenha_1" class="error"> {{messageSenha_1}}</h6>
+						<br>
+					</div>
+				</ion-list>  
+					</ion-col>
+				</ion-row>	
+				<ion-row>
+						<div id="botoes">
+							<button ion-button round class="botaoCad" (click)="criar()">Alterar</button>
+							<button ion-button round class="botaoCad" (click)="limpar()">Limpar</button>
+						</div>
+					</ion-row>
+			</form>
+			</div>
+</ion-content>
