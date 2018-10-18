@@ -24,9 +24,16 @@
 <ion-content class="body" padding>
  
 <div id="caixa_cadastro">
-  <div id="botoes"> 
-    <h1>Nossas Categorias</h1>
-
+		<p id = "palavras" hidden="true"></p>
+		<p id = "categorias" hidden="true"></p>
+ <div class="imagem">	<img id="btn_voltar" (click)="voltar()"   hidden src = "assets/imgs/setaVoltar.png"> </div>
+ 
+	
+		
+  <div class="caixa"> <textarea readonly id="texto" placeholder="Frase Formada" style="float:left;"></textarea> </div>
+  <div id="botoes" > 
+    <h1 id="h1"> </h1>
+    
   </div>
 </div>
 </ion-content>
