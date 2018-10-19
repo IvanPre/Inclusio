@@ -194,7 +194,7 @@ converte(date){
 			let objeto = {
 				nome_categoria:nomeCategoria.value,
 				id_usuario: this.usuario.id_usuario,			
-				imagem_categoria: null
+				imagem_categoria: this.base64Image
 			};
 
 			this.http.post(this.endereco, objeto, { headers: { 'Content-Type': 'application/json' }})
