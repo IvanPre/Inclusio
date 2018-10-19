@@ -18,6 +18,10 @@ import { Configuracoes } from '../../app/models/configuracoes';
 //camera
 import { Camera, CameraOptions } from '@ionic-native/camera';
 
+import { File } from '@ionic-native/file';
+import { Transfer, TransferObject } from '@ionic-native/transfer';
+import { FilePath } from '@ionic-native/file-path';
+
 @IonicPage()
 @Component({
   selector: 'page-criarcat',
@@ -46,7 +50,10 @@ export class CriarcatPage implements OnInit //implementar OnInit
   				  public session_login: SessionloginProvider, //session
   				  public session_config: SessionconfiguracoesProvider, //session
 				  public storage: Storage, //session
-				  public camera: Camera
+				  public camera: Camera,
+				  private transfer: Transfer, 
+				  private file: File, 
+				  private filePath: FilePath
   				  )
   {
   		 this.criarCategoriaForm = formBuilder.group(
@@ -56,6 +63,30 @@ export class CriarcatPage implements OnInit //implementar OnInit
 		
       });
   }
+
+  private getBlob(b64Data:string, contentType:string, sliceSize:number= 512) {
+    contentType = contentType || '';
+    sliceSize = sliceSize || 512;
+
+    let byteCharacters = atob(b64Data);
+    let byteArrays = [];
+
+    for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+        let slice = byteCharacters.slice(offset, offset + sliceSize);
+
+        let byteNumbers = new Array(slice.length);
+        for (let i = 0; i < slice.length; i++) {
+            byteNumbers[i] = slice.charCodeAt(i);
+        }
+
+        let byteArray = new Uint8Array(byteNumbers);
+
+        byteArrays.push(byteArray);
+    }
+
+    let blob = new Blob(byteArrays, {type: contentType});
+    return blob;
+}
 
 converte(date){
     let data = JSON.stringify(date);
@@ -194,7 +225,7 @@ converte(date){
 			let objeto = {
 				nome_categoria:nomeCategoria.value,
 				id_usuario: this.usuario.id_usuario,			
-				imagem_categoria: this.base64Image
+				//imagem_categoria: null
 			};
 
 			this.http.post(this.endereco, objeto, { headers: { 'Content-Type': 'application/json' }})
