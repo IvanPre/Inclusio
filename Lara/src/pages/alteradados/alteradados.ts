@@ -9,8 +9,8 @@ import { PerfilPage } from '../perfil/perfil';
 
 @IonicPage()
 @Component({
-  selector: 'page-inseresenha',
-  templateUrl: 'inseresenha.html',
+  selector: 'page-alteradados',
+  templateUrl: 'alteradados.html',
 })
 
 export class AlteradadosPage {
@@ -24,7 +24,7 @@ export class AlteradadosPage {
   {
   this.alteraDadosForm = formBuilder.group(
     {
-      email: ['', Validators.compose([Validators.minLength(6), Validators.maxLength(20),Validators.required])],
+      email: ['', Validators.compose([Validators.minLength(6), Validators.maxLength(20),Validators.required])]
     });
   }
   converte(date)
@@ -125,6 +125,6 @@ export class AlteradadosPage {
   limpar()
 	{
 		let { email} = this.alteraDadosForm.controls;
-		this.email="";
+		email = "";
 	}
 }
