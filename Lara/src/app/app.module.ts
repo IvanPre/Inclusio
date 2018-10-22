@@ -15,8 +15,7 @@ import { Camera } from '@ionic-native/camera';
 
 //Upload de imagens
 import { File } from '@ionic-native/file';
-import { Transfer } from '@ionic-native/transfer';
-import { FilePath } from '@ionic-native/file-path';
+import { FileTransfer, FileTransferObject, FileUploadOptions } from '@ionic-native/file-transfer';
 
 //session:
 import { IonicStorageModule } from '@ionic/storage';
@@ -107,9 +106,11 @@ import {AlteradadosPage} from '../pages/alteradados/alteradados';
     TextToSpeech, //sintetizador
     SessionconfiguracoesProvider, //session
     File,
-    Transfer,
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    FileTransfer,
+    FileUploadOptions,
+    FileTransferObject,
     Camera,
-    FilePath,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })

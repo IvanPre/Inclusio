@@ -1,7 +1,6 @@
 ﻿import { Component, OnInit } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, LoadingController, ToastController } from 'ionic-angular';
 import { Validators, FormBuilder } from '@angular/forms';
-
 //banco
 import { HTTP } from '@ionic-native/http';
 import 'rxjs/add/operator/map';
@@ -15,12 +14,9 @@ import { Usuario } from '../../app/models/usuario';
 //confifuracoes
 import { SessionconfiguracoesProvider } from '../../providers/sessionconfiguracoes/sessionconfiguracoes';
 import { Configuracoes } from '../../app/models/configuracoes';
+import { FileTransfer, FileUploadOptions, FileTransferObject } from '@ionic-native/file-transfer';
 //camera
 import { Camera, CameraOptions } from '@ionic-native/camera';
-
-import { File } from '@ionic-native/file';
-import { Transfer, TransferObject } from '@ionic-native/transfer';
-import { FilePath } from '@ionic-native/file-path';
 
 @IonicPage()
 @Component({
@@ -39,22 +35,23 @@ export class CriarcatPage implements OnInit //implementar OnInit
 	imagem:string = "https://img.olx.com.br/images/86/864708037631038.jpg";
 	usuario: Usuario;
 	categoriasG:any;
-	base64Image: string;
+	imageURI: any;
+	imageFileName: any;
 	
 	endereco:string ="http://inclusio.engynios.com/api/insert/categoria.php";
 
-  constructor(public navCtrl: NavController,
-  				  public navParams: NavParams,
-  				  public http: HTTP, //banco 
-  				  formBuilder: FormBuilder, //form
-  				  public session_login: SessionloginProvider, //session
-  				  public session_config: SessionconfiguracoesProvider, //session
-				  public storage: Storage, //session
-				  public camera: Camera,
-				  private transfer: Transfer, 
-				  private file: File, 
-				  private filePath: FilePath
-  				  )
+  constructor(
+		public navCtrl: NavController,
+		public navParams: NavParams,
+		public http: HTTP, //banco 
+		formBuilder: FormBuilder, //form
+		public session_login: SessionloginProvider, //session
+		public session_config: SessionconfiguracoesProvider, //session
+		public storage: Storage, //session
+		public camera: Camera,
+		public loadingCtrl: LoadingController,
+		public toastCtrl: ToastController	
+	)
   {
   		 this.criarCategoriaForm = formBuilder.group(
       {
@@ -63,30 +60,6 @@ export class CriarcatPage implements OnInit //implementar OnInit
 		
       });
   }
-
-  private getBlob(b64Data:string, contentType:string, sliceSize:number= 512) {
-    contentType = contentType || '';
-    sliceSize = sliceSize || 512;
-
-    let byteCharacters = atob(b64Data);
-    let byteArrays = [];
-
-    for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-        let slice = byteCharacters.slice(offset, offset + sliceSize);
-
-        let byteNumbers = new Array(slice.length);
-        for (let i = 0; i < slice.length; i++) {
-            byteNumbers[i] = slice.charCodeAt(i);
-        }
-
-        let byteArray = new Uint8Array(byteNumbers);
-
-        byteArrays.push(byteArray);
-    }
-
-    let blob = new Blob(byteArrays, {type: contentType});
-    return blob;
-}
 
 converte(date){
     let data = JSON.stringify(date);
@@ -135,7 +108,7 @@ converte(date){
 	  correctOrientation: true
 	}
 	this.camera.getPicture(options).then((imageData) => {
-		this.base64Image = "data:image/jpeg;base64," + imageData;    }, (err) => {
+		this.imageURI = "data:image/jpeg;base64," + imageData;    }, (err) => {
 			console.log(err);
 	  // Handle error
 	  console.log('Image error: ', err);
@@ -150,13 +123,41 @@ converte(date){
 	  //  encodingType: 1
 	}).then((imageData) => {
 	  // imageData is a base64 encoded string
-		this.base64Image = "data:image/jpeg;base64," + imageData;
+		this.imageURI = imageData;
 	}, (err) => {
 		console.log(err);
 	});
   }
 	ionViewDidLoad() {
 		console.log('ionViewDidLoad InserecodPage');
+	  }
+
+	  uploadFile(name) {
+		let loader = this.loadingCtrl.create({
+		  content: "Uploading..."
+		});
+		loader.present();
+		const fileTransfer: FileTransferObject = this.transfer.create();
+	  
+		let options: FileUploadOptions = {
+		  fileKey: name,
+		  fileName: name,
+		  chunkedMode: false,
+		  mimeType: "image/jpeg",
+		  headers: {}
+		}
+	  
+		fileTransfer.upload(this.imageURI, 'http://192.168.0.7:8080/api/uploadImage', options)
+		  .then((data) => {
+		  console.log(data+" Uploaded Successfully");
+		  this.imageFileName = "http://192.168.0.7:8080/static/images/ionicfile.jpg"
+		  loader.dismiss();
+		  this.presentToast("Image uploaded successfully");
+		}, (err) => {
+		  console.log(err);
+		  loader.dismiss();
+		  this.presentToast(err);
+		});
 	  }
 
 	criar()
@@ -209,7 +210,7 @@ converte(date){
 				alert("Selecione no minimo um checkbox!");
 				return;
 			}
-			if (this.base64Image==null)
+			if (this.imageURI==null)
 			{
 				alert("Campo imagem obrigatorio");
 				return;
@@ -237,6 +238,10 @@ converte(date){
 				this.http.get('http://inclusio.engynios.com/api/read/nome/categoria.php', {nome_categoria: '"'+nomeCategoria.value+'"'}, {headers: { 'Content-Type': 'application/json' }})
 				.then(data => {
 					let dados = this.converte(data.data);
+
+					let nomeImg = "categorias_usuarios/" + this.usuario.id_usuario + nomeCategoria.value + ".jpeg";
+					this.uploadFile(nomeImg);
+
 					alert('Entrou');
 					for(let a = 0; a < palavras.length; a++){
 	
@@ -285,7 +290,7 @@ converte(date){
 		
 		// limpa o campo do link da imagem
 		// let {txtimg}= this.criarCategoriaForm.controls;
-		this.base64Image=null;
+		this.imageURI=null;
 		let f = false;
 		let ckbs = document.getElementsByClassName('checkbox');
 		for(let c = 0; c < ckbs.length; c++){
