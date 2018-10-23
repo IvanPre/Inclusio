@@ -319,7 +319,7 @@ converte(date){
 				ion.className = 'palavra';
 				let seta = <HTMLImageElement> document.createElement('img');
 				seta.src = 'assets/imgs/seta_dir.png';
-				seta.className = 'seta-direita';
+				seta.className = 'seta';
 				seta.setAttribute('id', dados[a].id_categoria);
 				seta.addEventListener('click', function(){
 					if(document.getElementById('p'+this.id).hidden){
@@ -335,6 +335,7 @@ converte(date){
 					let pala = this.converte(date.data);
 					let p = <HTMLDivElement> document.createElement('div');
 					p.hidden = true;
+					// p.className = 'categoria';
 					p.id = 'p'+dados[a].id_categoria;
 					for(let count = 0; count < pala.length; count++){
 						if(pala[count].nome_palavra.indexOf('capa ') != -1 || pala[count].nome_palavra.indexOf('capa_') != -1)
@@ -352,11 +353,13 @@ converte(date){
 					}
 					let ion = document.createElement('ion-item');
 					let cat = <HTMLParagraphElement> document.createElement('p');
+					cat.className = 'categoria'
 					cat.innerText = dados[a]['nome_categoria'];	
 					ion.appendChild(seta);
 					ion.appendChild(cat);
 					ion.appendChild(p);
 					div.appendChild(ion);	
+					// div.appendChild(document.createElement('br'));
 				}).catch(e=>{
 					alert(JSON.stringify(e) + 'erro de select palavras');
 				});

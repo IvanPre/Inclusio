@@ -87,9 +87,22 @@ export class TutorialPage implements OnInit
   			tem que pegar a session
   		*/ 
   		
-      this.session_login.get().then(res => {this.usuarioLogado = new Usuario(res);});
-      
-		  
+	  this.session_login.get().then(res => {this.usuarioLogado = new Usuario(res);});
+	  setTimeout(() => {
+		this.http.get('https://inclusio.engynios.com/api/read/id_usuario/categoria-null', {id_usuario: this.usuarioLogado.id}, {})
+		.then((data) => {
+			let dados = this.converte(data.data);
+			let divCat = <HTMLDivElement> document.getElementById('categorias');
+			dados.forEach(cat => {
+				let ckb = <HTMLInputElement> document.createElement('input');
+				ckb.type = "checkbox";
+				ckb.id = cat.id_palavra;
+				
+				let label = <HTMLLabelElement> document.createElement('label');
+				// label.
+			});
+		})
+	  }, 2000);
 	}
 
 	/*
@@ -98,6 +111,41 @@ export class TutorialPage implements OnInit
 		e assim sucessivamente
 	*/
 
+	converte(date){
+		let data = JSON.stringify(date);
+		let re = /\\\\\\\"/gi;
+		data = data.replace(re, "\"");
+		let retorno = [];
+		
+		while(data.indexOf('{') != -1){
+		  let str = data.substring(data.indexOf('{')+1, data.indexOf('}')+1);
+		  data = data.substring(data.indexOf('}')+1);
+		  let objeto = {};
+		  while(str.lastIndexOf('}') != -1){
+			let campo = str.substring(str.indexOf('"')+1, str.indexOf(':')-1);
+			str = str.substring(str.indexOf(':')+1);
+			// document.getElementById('resposta2').innerText += str;
+			let valor;
+			if(str.indexOf(',') == -1){
+			  valor = str.substring(str.indexOf(':')+1, str.indexOf('}')-1);
+			  str = ' ';
+			}else{
+			  valor = str.substring(0, str.indexOf(',')-1);
+			  str = str.substring(str.indexOf(',')+1);
+			}
+			if(valor == 'nul')
+			  valor = null;
+			else{
+			  valor = valor.replace(/\"/gi, "");
+				valor = valor.replace(/_/gi, " ");
+			}objeto[campo] = valor;
+			// alert(valor);
+			// document.getElementById('resposta2').innerText = str + str.lastIndexOf('}');
+		  }
+		  retorno.push(objeto);
+		}
+		return retorno;
+	  }
 
 	//apos o nome ser preenchido, vamos p a segunda etapa do tutorial, o campo img
 	
@@ -118,12 +166,11 @@ export class TutorialPage implements OnInit
 			balaozinho.innerHTML = 'O campo precisa estar preenchido!';
 			
 		}
-		else if (nomepalavra != "")
+		else
 		{	
 			//esta preenchido, pode avançar:
 			
 			//primeiro ele coloca o campo imagem na tela
-			console.log('this.campoimg',this.campoimg);
 			this.data=true;
 			this.campoimg.push({'value':''});
 
@@ -143,7 +190,6 @@ export class TutorialPage implements OnInit
 	aparece_cat()
 	{
 		//primeiro ele coloca o campo categoria na tela
-		console.log('this.campocat',this.campocat);
 		this.data=true;
 		this.campocat.push({'value':''});
 
