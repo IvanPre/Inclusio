@@ -108,7 +108,6 @@ import {AlteradadosPage} from '../pages/alteradados/alteradados';
     File,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     FileTransfer,
-    FileUploadOptions,
     FileTransferObject,
     Camera,
     {provide: ErrorHandler, useClass: IonicErrorHandler}

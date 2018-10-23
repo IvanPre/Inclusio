@@ -7,7 +7,6 @@ import { HomePage } from '../pages/home/home';
 import { CadastroPage } from '../pages/cadastro/cadastro';
 import { LoginPage } from '../pages/login/login';
 import { SplashPage } from '../pages/splash/splash';
-// import { TutorialPage } from '../pages/tutorial/tutorial';
 import { PerfilPage } from  '../pages/perfil/perfil'; //criar categoria
 import { ConfiguracoesPage } from '../pages/configuracoes/configuracoes'; //configuracoes
 import { CriarcatPage } from '../pages/criarcat/criarcat'; //criarcat
@@ -25,7 +24,7 @@ import { TutorialPage } from '../pages/tutorial/tutorial'; //configuracoes
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
 
-  rootPage: any = HomePage;
+  rootPage: any = LoginPage;
 
   pages: Array<{title: string, component: any}>;
 
