@@ -1,19 +1,138 @@
-<!--
-  Generated template for the AjudaPage page.
-
-  See http://ionicframework.com/docs/components/#navigation for more info on
-  Ionic pages and navigation.
--->
 <ion-header>
   <ion-navbar>
-    <button ion-button menuToggle>
-      <ion-icon name="menu"></ion-icon>
-    </button>
-    <span text-color = "fonte-laranja">Ajuda</span>
+  
+	<!--caso a pag não tenha cabeçalho voc apaga tudo (a header e as coisas dentro-->
+	   <div  id="topo">
+		   <div id="btn_menu">
+			<ion-buttons left> 
+				<button ion-button icon-only menuToggle> 
+					<p class="menu"><ion-icon name="menu"> </ion-icon></p>
+				</button>
+
+			</ion-buttons>
+				</div>
+			<div id="titulo">
+			<ion-title>
+			 <span text-color="fonte-laranja"> Ajuda </span>
+			</ion-title>
+			</div>
+		</div>
+	
   </ion-navbar>
 </ion-header>
 
+<ion-content class="body" padding>
+ 
+	<div id="principal">
+	
 
-<ion-content padding>
-  Página do help do sistema
+  <!--Aqui é o modelo para os formularios-->
+  
+		
+      <div id="formulario" *ngIf="mostra_botoes">
+		
+        <button ion-button round class="botao" *ngIf="mostra_botoes" [navPush]="AjudaslidesPage" (click)="ajuda_slides()" >Como usar o teclado</button>
+        <br>
+        <br>
+        <button ion-button round class="botao" *ngIf="mostra_botoes"  [navPush]="AjudaslidesPage" (click)="ajuda_slides()">Como ouvir a frase formada</button>
+        <br>
+        <br>
+        <button ion-button round class="botao" *ngIf="mostra_botoes"  [navPush]="AjudaslidesPage" (click)="ajuda_slides()">Como criar palavras </button>
+        <br>
+        <br>
+        <button ion-button round class="botao" *ngIf="mostra_botoes"  [navPush]="AjudaslidesPage" (click)="ajuda_slides()">Como criar categorias </button>
+        <!--<br>
+        <br>
+        <button ion-button round class="botao" *ngIf="mostra_botoes"  [navPush]="AjudaslidesPage" (click)="ajuda_slides()">Como gerar PDF</button>
+        -->
+      
+      </div> <!-- formulario -->
+
+      <div id="slides" *ngIf="mostra_slides">
+
+        <ion-slides>
+          
+            <ion-slide>
+            <div id="caixa">
+              <h1 class="h1_inicio">Como usar o teclado?</h1>
+              <div id="texto_inicio">
+              <p class="p_inicio">
+                  Inicialmente, o teclado tem quadrados com imagens e nomes de categorias. 
+                  Ao clicar em um quadrado, você será direcionado para outro teclado mais especifíco. 
+                  com palavras relacionadas à essa categoria.
+                  Este teclado é semelhante a anterior, tendo quadrados com imagens e palavras
+                  Clicar em uma palavra, ela será adicionada em uma barra ao topo da tela principal.
+                  Caso você precise de palavras de outras categorias para formar a sua frase, volte para a tela inicial e escolha o complemento.
+                  Faça isso até formar a frase desejada.
+              <br><br>
+              <b>Deslize para continuar</b> 
+              </p>
+              </div>
+            </div>
+            </ion-slide>
+            
+            <ion-slide>
+            <div id="caixa">
+              <h1 class="h1_inicio">Como ouvir a frase formada?</h1>
+              <div id="texto_inicio">
+              <p class="p_inicio">Ao lado da barra que contém a frase formada, há um símbolo que representa um alto-falante. Ao clicar nesse ícone, sua frase será pronunciada.
+              <br><br>
+              Inclua Palavras, adicione imagens, crie e altere categorias.
+              <br><br>
+              <b>Deslize para continuar</b> 
+              </p>
+              </div>
+            
+            </div>
+            </ion-slide>
+            
+            <ion-slide>
+              <div id="caixa">
+              <h1 class="h1_inicio">Como criar palavras?</h1>
+              <div id="texto_inicio">
+              <p class="p_inicio">Caso as imagens sejam muito infantis e você deseje retirá-las, acesse o menu de configurações
+              determine sua preferência sobre o teclado!
+              <br><br>
+              <b>Deslize para continuar</b> 
+              </p>
+              </div>
+            
+            </div>
+            </ion-slide>
+
+            <ion-slide>
+                <div id="caixa">
+                <h1 class="h1_inicio">Como c</h1>
+                <div id="texto_inicio">
+                <p class="p_inicio">
+                <br><br>
+                <b>Deslize para continuar</b> 
+                </p>
+                </div>
+              
+              </div>
+              </ion-slide>
+            <!--
+            <ion-slide>
+            <div id="caixa">
+              <h1 class="h1_inicio">VAMOS LÁ!</h1>
+              <div id="texto_inicio">
+                <button ion-button round (click)="ir_login()" class="botao">LOGIN</button>
+                <p class="p_inicio"><br>Ou</p>
+                <br>
+                <button ion-button round (click)="ir_cadastro()" class="botao">CADASTRE-SE</button>  
+              </div>
+            
+            </div>
+              
+          </ion-slide>
+        -->
+          </ion-slides>
+
+        </div> <!-- slides -->
+</div> <!--principal-->
+
 </ion-content>
+
+
+
