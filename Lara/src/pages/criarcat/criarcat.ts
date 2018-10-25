@@ -37,6 +37,7 @@ export class CriarcatPage implements OnInit //implementar OnInit
 	categoriasG:any;
 	imageURI: any;
 	imageFileName: any;
+	imgHidden: boolean = true;
 	
 	endereco:string ="http://inclusio.engynios.com/api/insert/categoria.php";
 
@@ -108,7 +109,9 @@ converte(date){
 	  correctOrientation: true
 	}
 	this.camera.getPicture(options).then((imageData) => {
-		this.imageURI = "data:image/jpeg;base64," + imageData;    }, (err) => {
+		this.imageURI = "data:image/jpeg;base64," + imageData; 
+		this.imgHidden = false;
+	}, (err) => {
 			console.log(err);
 	  // Handle error
 	  console.log('Image error: ', err);
@@ -123,7 +126,8 @@ converte(date){
 	  //  encodingType: 1
 	}).then((imageData) => {
 	  // imageData is a base64 encoded string
-		this.imageURI = imageData;
+		this.imageURI = "data:image/jpeg;base64," + imageData;
+		this.imgHidden = false;
 	}, (err) => {
 		console.log(err);
 	});
@@ -143,14 +147,14 @@ converte(date){
 		  fileKey: name,
 		  fileName: name,
 		  chunkedMode: false,
-		  mimeType: "image/jpeg",
+		  mimeType: "image/jpg",
 		  headers: {}
 		}
 	  
 		fileTransfer.upload(this.imageURI, 'http://192.168.0.7:8080/api/uploadImage', options)
 		  .then((data) => {
 		  console.log(data+" Uploaded Successfully");
-		  this.imageFileName = "http://192.168.0.7:8080/static/images/ionicfile.jpg"
+		  this.imageFileName = "http://192.168.0.7:8080/static/images/name.jpg"
 		  loader.dismiss();
 		  this.presentToast("Image uploaded successfully");
 		}, (err) => {
@@ -241,7 +245,15 @@ converte(date){
 
 					let nomeImg = "categorias_usuarios/" + this.usuario.id_usuario + nomeCategoria.value + ".jpeg";
 					this.uploadFile(nomeImg);
-
+					
+					this.http.post('https://api.imgur.com/3/image', {image: this.imageURI}, {headers: { 'Content-Type': 'application/json' }})
+					.then(data => {
+						
+					})
+					.catch(error => {
+						alert('erro no envio da imagem.' + error);
+						return;
+					})
 					alert('Entrou');
 					for(let a = 0; a < palavras.length; a++){
 	

@@ -41,9 +41,9 @@
 			<button ion-button full (click)="captureImage()">Acessar a galeria</button>
 				<button ion-button full (click)="takePicture()">Tirar Foto</button>
 				<ion-card>
-					<ion-card-header>Imagem</ion-card-header>
-					<ion-card-content>
-							<img [src]="base64Image"> 
+					<ion-card-header [hidden]="imgHidden">Imagem</ion-card-header>
+					<ion-card-content [hidden]="imgHidden">
+							<img [src]="imageURI"> 
 					</ion-card-content>
 				</ion-card>
 		
