@@ -121,14 +121,32 @@ page-home{   }
              float: left;
              width:15%;
          }
-         .imagem
+         #limpar
+         {
+             float:right;
+             width:12%;
+         }
+
+         #volume
+         {
+            width:12%;
+         }
+        
+         #texto
+         {
+             margin-top:13px;
+             margin-bottom:20px;
+         }
+        /* .imagem
          {
              margin-bottom: 40px;
          }
          .caixa
          {
             margin-bottom: 60px;
-         }
+         }*/
+
+    
      
 
 

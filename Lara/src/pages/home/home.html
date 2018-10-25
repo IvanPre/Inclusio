@@ -26,8 +26,11 @@
 <div id="caixa_cadastro">
 		<p id = "palavras" hidden="true"></p>
 		<p id = "categorias" hidden="true"></p>
- <div class="imagem">	<img id="btn_voltar" (click)="voltar()"   hidden src = "assets/imgs/setaVoltar.png"> </div>
- 
+		<div class="imagem">	
+			<img id="btn_voltar" (click)="voltar()"   hidden src = "assets/imgs/setaVoltar.png"> 
+			<img id="volume" (click)="sintetizador()"    src = "assets/imgs/volume.png"> 
+			<img id="limpar" (click)="limpar_texto()"    src = "assets/imgs/cancelar.png"> 
+		</div>
 	
 		
   <div class="caixa"> <textarea readonly id="texto" placeholder="Frase Formada" style="float:left;"></textarea> </div>

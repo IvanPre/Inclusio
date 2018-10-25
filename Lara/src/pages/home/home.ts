@@ -5,6 +5,8 @@ import { NavController, NavParams, Button } from 'ionic-angular';
 import { HTTP } from '@ionic-native/http';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/timeout';
+//sintetizador
+import { TextToSpeech } from '@ionic-native/text-to-speech';
 
  
 
@@ -20,11 +22,12 @@ export class HomePage
 	public mostra_img: boolean = true;
 	resultados:any;
 	imagem:string = "https://img.olx.com.br/images/86/864708037631038.jpg";
+	fraseFormada ="";
 	
 	
-	endereco_select = "http://inclusio.engynios.com/api/read/id_usuario/categoria2-null.php";
+	endereco_select = "http://inclusio.engynios.com/api/read/id_usuario/categoria-null.php";
 
-    constructor(public navCtrl: NavController, formBuilder: FormBuilder, public navParams: NavParams, public http: HTTP)
+    constructor(public navCtrl: NavController, formBuilder: FormBuilder, public navParams: NavParams, public http: HTTP,  private tts: TextToSpeech)
     {
 		this.carrega_imagem();
      
@@ -210,10 +213,11 @@ export class HomePage
 		{	
 			
 			
+			//usar aqui
 			let converter = this.converte(data.data);
 
 			for(let a = 0; a < converter.length; a++){
-				this.http.get('https://inclusio.engynios.com/api/read/id/categoria2-palavra2.php', {id_categoria: converter[a]['id_categoria\\\\'].replace(/\\\\\"/gi, '"')}, {}).then(dados => {
+				this.http.get('https://inclusio.engynios.com/api/read/id/categoria-palavra.php', {id_categoria: converter[a]['id_categoria\\\\'].replace(/\\\\\"/gi, '"')}, {}).then(dados => {
 					this.palavras[converter[a]['id_categoria\\\\'].replace(/\\\\\"/gi, "")] = this.converte(dados.data);
 					document.getElementById('palavras').innerText = JSON.stringify(this.palavras);
 				}).catch(e => {
@@ -263,6 +267,7 @@ export class HomePage
 						td.addEventListener('click', function()
 						{
 							let pala = JSON.parse(document.getElementById('palavras').innerText)[this.id.replace(/\\\\"/gi, "")];
+							alert(JSON.stringify(pala));
 							document.getElementById('tabela').remove();
 							
 							document.getElementById('btn_voltar').hidden=false;
@@ -334,7 +339,26 @@ export class HomePage
 
 	}
 	
+	sintetizador()
+	{
+		alert("Sintetizador");
+		let frase = document.getElementById('texto');
+		
+		this.tts.speak(
+		{
+			text: frase.innerText, 
+			rate: 0.75,
+			locale: 'pt-BR'
+			
+		}).then(() => console.log('Success'))
+		.catch((reason: any) => alert(reason));
+		
+	}
 	
+	limpar_texto()
+	{
+		document.getElementById('texto').innerHTML=null;
+	}
 }
 	 
 
