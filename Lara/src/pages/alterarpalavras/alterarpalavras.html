@@ -1,0 +1,72 @@
+<ion-header>
+  <ion-navbar>
+  
+	<!--caso a pag não tenha cabeçalho voc apaga tudo (a header e as coisas dentro-->
+	   <div  id="topo">
+		   <div id="btn_menu">
+			<ion-buttons left> 
+				<button ion-button icon-only menuToggle> 
+					<p class="menu"><ion-icon name="menu"> </ion-icon></p>
+				</button>
+
+			</ion-buttons>
+				</div>
+			<div id="titulo">
+			<ion-title>
+			 <span text-color="fonte-laranja"> Alterar Palavras </span>
+			</ion-title>
+			</div>
+		</div>
+	
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+ <div id="main">
+	<div id="palavras_1"> <!--listar todas as categorias-->
+		
+	</div>
+	<div id="caixa_cadastro" hidden>
+		&nbsp;&nbsp;<!-- ALTERAR-->
+		<form  [formGroup]="alteraPalavraForm" novalidate>
+				<ion-row>
+					<ion-col>
+						<ion-list inset>
+						 <div id = "input_form">
+						 
+							<div id="texto">Palavra:</div>
+							<ion-item>
+								<ion-input [(ngModel)]="palavra" formControlName="palavra" type="textarea" clearInput clearOnEdit="false"></ion-input>
+							</ion-item>
+							<h6 *ngIf="errorPalavra" class="error"> {{messagePalavra}}</h6>
+
+							<div id="texto"> Imagem:</div>
+							<button ion-button full (click)="captureImage()">Acessar a galeria</button>
+							<button ion-button full (click)="takePicture()">Tirar Foto</button>
+							<ion-card>
+							<ion-card-header>Imagem</ion-card-header>
+							<ion-card-content>
+								<img src = "{{base64Image}}"/> 
+							</ion-card-content>
+					  </ion-card>
+							
+					<div id="texto" *ngIf="mostra_alterar"> Palavras disponíveis:</div>
+					<div id="div_categorias" class="div_categorias" *ngIf="mostra_alterar"></div>
+				</div>
+	
+			</ion-list>  
+		</ion-col>
+	</ion-row>
+
+	<ion-row>
+	<div id="botoes"> 	
+		<button ion-button round class="botao" (click)="alterar()" >Alterar</button>
+    	<button ion-button round class="botao" (click)="excluir()">Excluir</button>  
+    	<button ion-button round class="botao" (click)="limpar()">Limpar</button>
+ 	</div>
+ 	</ion-row>
+
+</form>
+</div>
+</div>
+</ion-content>

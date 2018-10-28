@@ -155,7 +155,7 @@ export class InseresenhaPage {
   limpar()
 	{
 		let { senha, senha_conf} = this.alteraSenhaForm.controls;
-		senha="";
-		senha_conf="";
+		this.senha="";
+		this.senha_conf="";
 	}
 }
