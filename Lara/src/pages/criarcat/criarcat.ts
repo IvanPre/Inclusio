@@ -39,6 +39,7 @@ export class CriarcatPage implements OnInit //implementar OnInit
 	imageFileName: any;
 	imgHidden: boolean = true;
 	
+	imgAPI:string = "https://api.imgur.com/3/image";
 	endereco:string ="http://inclusio.engynios.com/api/insert/categoria.php";
 
   constructor(
@@ -136,34 +137,6 @@ converte(date){
 		console.log('ionViewDidLoad InserecodPage');
 	  }
 
-	  uploadFile(name) {
-		let loader = this.loadingCtrl.create({
-		  content: "Uploading..."
-		});
-		loader.present();
-		const fileTransfer: FileTransferObject = this.transfer.create();
-	  
-		let options: FileUploadOptions = {
-		  fileKey: name,
-		  fileName: name,
-		  chunkedMode: false,
-		  mimeType: "image/jpg",
-		  headers: {}
-		}
-	  
-		fileTransfer.upload(this.imageURI, 'http://192.168.0.7:8080/api/uploadImage', options)
-		  .then((data) => {
-		  console.log(data+" Uploaded Successfully");
-		  this.imageFileName = "http://192.168.0.7:8080/static/images/name.jpg"
-		  loader.dismiss();
-		  this.presentToast("Image uploaded successfully");
-		}, (err) => {
-		  console.log(err);
-		  loader.dismiss();
-		  this.presentToast(err);
-		});
-	  }
-
 	criar()
     {
 
@@ -233,47 +206,64 @@ converte(date){
 				//imagem_categoria: null
 			};
 
-			this.http.post(this.endereco, objeto, { headers: { 'Content-Type': 'application/json' }})
-			.then(() => {}).catch(error => {
-				alert(JSON.stringify(error) + " erro na inclusão de categorias. Favor contactar os desenvolvedores");
-			  	return;
-			});
-			setTimeout(() => {
-				this.http.get('http://inclusio.engynios.com/api/read/nome/categoria.php', {nome_categoria: '"'+nomeCategoria.value+'"'}, {headers: { 'Content-Type': 'application/json' }})
-				.then(data => {
-					let dados = this.converte(data.data);
-
-					let nomeImg = "categorias_usuarios/" + this.usuario.id_usuario + nomeCategoria.value + ".jpeg";
-					this.uploadFile(nomeImg);
+			/*this.http.post('https://api.imgur.com/oauth2/token', {
+				response_type: 'token',
+				client_id: '1da58bd02bd879f',
+				client_secret: 'f436db7e06038e7d455c0c5f6cf8e993d6a61c6a',
+				grant_type: 'refresh_token',
+				refresh_token: 'c043f11b2af7be4cec8a067bd394674860d921e0'
+			}, {headers: { 'Content-Type': 'application/json' }})
+			.then(access_token => {
+				let token = access_token.data.substring(16, access_token.data.indexOf(','));
+				let header = {
+					'Content-Type': 'application/json', 
+					'Authorization': ('Bearer ' + token).replace(/\"/gi, '')
+				}
+				alert(JSON.stringify(header));
+				this.http.post(this.imgAPI, {image: this.imageURI}, {headers: header})
+				.then(imgRet => {
+					alert(JSON.stringify(imgRet.data));*/
+						this.http.post(this.endereco, objeto, { headers: { 'Content-Type': 'application/json' }})
+					.then(() => {
+						this.http.get('http://inclusio.engynios.com/api/read/nome/categoria.php', {nome_categoria: '"'+nomeCategoria.value+'"'}, {headers: { 'Content-Type': 'application/json' }})
+						.then(data => {
+							let dados = this.converte(data.data);
+		
+							for(let a = 0; a < palavras.length; a++){
 					
-					this.http.post('https://api.imgur.com/3/image', {image: this.imageURI}, {headers: { 'Content-Type': 'application/json' }})
-					.then(data => {
-						
-					})
-					.catch(error => {
-						alert('erro no envio da imagem.' + error);
-						return;
-					})
-					alert('Entrou');
-					for(let a = 0; a < palavras.length; a++){
-	
-						let ad = {
-							id_categoria: dados[dados.length-1]['id_categoria'],//pegar a ultima categoria
-							id_palavra: palavras[a],
-							id_usuario: this.usuario.id_usuario
-						}
-
-						this.http.post('http://inclusio.engynios.com/api/insert/uniao.php', ad, {headers: { 'Content-Type': 'application/json' }})
-						.then().catch(error => {
-							alert(JSON.stringify(error) + " erro na inclusão de palavra. Favor contactar os desenvolvedores");
+								let ad = {
+									id_categoria: dados[dados.length-1]['id_categoria'],//pegar a ultima categoria
+									id_palavra: palavras[a],
+									id_usuario: this.usuario.id_usuario
+								}
+		
+								this.http.post('http://inclusio.engynios.com/api/insert/uniao.php', ad, {headers: { 'Content-Type': 'application/json' }})
+								.then().catch(error => {
+									alert("Erro na inclusão de palavras na categoria. Favor contactar os desenvolvedores:\n" + JSON.stringify(error));
+									return;
+								});
+							}
+							
+						}).catch(error => {
+							alert("Erro no acesso ao banco. Favor contactar os desenvolvedores:\n" + JSON.stringify(error));
 							return;
 						});
-					}
-				}).catch(error => {
-					alert(JSON.stringify(error) + " erro no acesso ao banco. Favor contactar os desenvolvedores");
+					}).catch(error => {
+						alert(JSON.stringify(error) + " erro na inclusão de categorias. Favor contactar os desenvolvedores");
+							return;
+					});/*
+				})
+				.catch(error => {
+					alert("Erro no envio da imagem:\n" + JSON.stringify(error));
 					return;
 				});
-			}, 5000);
+			})
+			.catch(error => {
+				alert("Erro ao requisitar token:\n" + JSON.stringify(error))
+			});*/
+
+			/*setTimeout(() => {
+			}, 5000);*/
 		}
 	}
 
