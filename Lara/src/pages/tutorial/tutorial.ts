@@ -1,6 +1,7 @@
 ﻿import { Component, OnInit } from '@angular/core';
 import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
 import { HomePage } from '../home/home';
+import { Camera, CameraOptions } from '@ionic-native/camera';
 
 //imports da session:
 import { Storage } from "@ionic/storage";
@@ -59,6 +60,9 @@ export class TutorialPage implements OnInit
 	//TESTE
 	activeMenu: string;
 
+	imgHidden: boolean = true;
+	imageURI: any;
+
   constructor(public navCtrl: NavController,
   				public navParams: NavParams, 
   				private alertCtrl: AlertController,
@@ -66,10 +70,29 @@ export class TutorialPage implements OnInit
   				public session_config: SessionconfiguracoesProvider,
   				public http: HTTP,
 				public storage: Storage,
-				public menu: MenuController) 
+				public menu: MenuController,
+				public camera: Camera) 
   {
 	//TESTE
 	this.menu1Active();
+	// setTimeout(() => {
+	// 	this.carregaCategorias();
+	// }, 3000);
+  }
+
+  	//assim que o component existir capture a sessão do usuário
+	ngOnInit()
+	{
+		/* IMPORTANTE!!!
+			todas as páginas onde o usuario esta logado
+			tem que pegar a session
+		*/ 
+	  this.session_login.get().then(res => {
+		  this.usuarioLogado = new Usuario(res);
+		//   setTimeout(() => {
+		// 	  this.carregaCategorias();
+		//   }, 3000);
+	  });
   }
 	
 	  //TESTE
@@ -78,31 +101,68 @@ export class TutorialPage implements OnInit
 	  }
 
 
+	  captureImage() {
+		const options: CameraOptions = {
+		  sourceType: this.camera.PictureSourceType.PHOTOLIBRARY,
+		  destinationType: this.camera.DestinationType.DATA_URL,
+		  quality : 25,
+		  targetWidth: 512,
+		  targetHeight: 512,
+		  //encodingType: 1,
+		  correctOrientation: true
+		}
+		this.camera.getPicture(options).then((imageData) => {
+			this.imageURI = "data:image/jpeg;base64," + imageData; 
+			this.imgHidden = false;
+		}, (err) => {
+				console.log(err);
+		  // Handle error
+		  console.log('Image error: ', err);
+		});
+	  }
+	  takePicture(){
+		this.camera.getPicture({
+			destinationType: this.camera.DestinationType.DATA_URL,
+			quality: 25,
+			targetWidth: 512,
+			targetHeight: 512,
+		  //  encodingType: 1
+		}).then((imageData) => {
+		  // imageData is a base64 encoded string
+			this.imageURI = "data:image/jpeg;base64," + imageData;
+			this.imgHidden = false;
+		}, (err) => {
+			console.log(err);
+		});
+	  }
 
-		//assim que o component existir capture a sessão do usuário
-	ngOnInit()
-  {
-  		/* IMPORTANTE!!!
-  			todas as páginas onde o usuario esta logado
-  			tem que pegar a session
-  		*/ 
-  		
-	  this.session_login.get().then(res => {this.usuarioLogado = new Usuario(res);});
-	  setTimeout(() => {
-		this.http.get('https://inclusio.engynios.com/api/read/id_usuario/categoria-null', {id_usuario: this.usuarioLogado.id}, {})
-		.then((data) => {
-			let dados = this.converte(data.data);
-			let divCat = <HTMLDivElement> document.getElementById('categorias');
-			dados.forEach(cat => {
-				let ckb = <HTMLInputElement> document.createElement('input');
-				ckb.type = "checkbox";
-				ckb.id = cat.id_palavra;
-				
-				let label = <HTMLLabelElement> document.createElement('label');
-				// label.
+	carregaCategorias(){
+		this.http.get('https://inclusio.engynios.com/api/read/id_usuario/categoria-null.php', {id_usuario: this.usuarioLogado.id_usuario}, {})
+			.then(data => {
+				let divCat = document.getElementById('div_categorias');
+				// alert(divCat);
+				divCat.innerText = '';
+				let dados = this.converte(JSON.stringify(data.data));
+				for(let i = 0; i < dados.length; i++){
+					let cat = <HTMLDivElement> document.createElement('div');
+					let ckb = <HTMLInputElement> document.createElement('input');
+					ckb.type = "checkbox";
+					ckb.name = 'ckbsCat';
+					ckb.id = dados[i].id_categoria;
+					ckb.value = '' + dados[i].nome_categoria;
+
+					let label = <HTMLLabelElement> document.createElement('label');
+					label.setAttribute('for', dados[i].id_categoria);
+					label.innerText = '' + dados[i].nome_categoria;
+					cat.appendChild(ckb);
+					cat.appendChild(label);
+					divCat.appendChild(cat);
+					// label.
+				}
+			})
+			.catch(error => {
+				alert('Erro ao acessar o banco, contactar os desenvolvedores. ' + JSON.stringify(error));
 			});
-		})
-	  }, 2000);
 	}
 
 	/*
@@ -115,6 +175,7 @@ export class TutorialPage implements OnInit
 		let data = JSON.stringify(date);
 		let re = /\\\\\\\"/gi;
 		data = data.replace(re, "\"");
+		data = data.replace(/\\\\/gi, '');
 		let retorno = [];
 		
 		while(data.indexOf('{') != -1){
@@ -138,7 +199,8 @@ export class TutorialPage implements OnInit
 			else{
 			  valor = valor.replace(/\"/gi, "");
 				valor = valor.replace(/_/gi, " ");
-			}objeto[campo] = valor;
+			}
+			objeto[campo] = valor;
 			// alert(valor);
 			// document.getElementById('resposta2').innerText = str + str.lastIndexOf('}');
 		  }
@@ -189,6 +251,7 @@ export class TutorialPage implements OnInit
 	//apos a imagem ser preenchida, vamos p a ultima etapa do tutorial, o campo categoria
 	aparece_cat()
 	{
+		this.carregaCategorias();
 		//primeiro ele coloca o campo categoria na tela
 		this.data=true;
 		this.campocat.push({'value':''});
@@ -316,14 +379,18 @@ export class TutorialPage implements OnInit
 		let palavra = <HTMLInputElement> document.getElementById('nomePalavra');
 		let nomepalavra = palavra.value;
 		let img = <HTMLInputElement> document.getElementById('txtimg');
-		let txtimg = img.value;
-		let categoria = <HTMLInputElement> document.getElementById('nomeCategoria');
-		let nomecategoria = categoria.value;
+		let cats = [];
 		let balao3 = <HTMLElement> document.getElementById('balao3');
+		let ckbs = document.getElementsByName('ckbsCat');
+		for(let i = 0; i < ckbs.length; i++){
+			let cb = <HTMLInputElement> ckbs[i];
+			if(cb.checked)
+				cats.push(cb.id);
+		}
 
 
 		//ve se todos os campos estao preenchidos
-		if( nomepalavra == "" || nomepalavra==null ||txtimg == "" || nomecategoria == "" )
+		if( nomepalavra == "" || nomepalavra==null || cats.length < 1 )
 		{
 			//Lara avisa que esta vazio
 			balao3.innerHTML = 'Todos os campos precisam estar preenchidos!';
@@ -359,64 +426,50 @@ export class TutorialPage implements OnInit
 				})
 				.then(data => 
 				{
-				
+					this.http.get('https://inclusio.engynios.com/api/read/nome/palavra.php', {
+						nome_palavra: "\"" + nomepalavra + "\""
+					}, {headers: { 'Content-Type': 'application/json' }  })
+					.then(palavras => {
+						let retorno = this.converte(JSON.stringify(palavras.data));
+						let ad = retorno[retorno.length - 1];
+						let flag = true;
+						for(let i = 0; i < cats.length; i++){
+							let objetos_uniao = {
+								id_palavra: ad.id_palavra,
+								id_categoria: cats[i],
+								id_usuario: this.usuarioLogado.id_usuario
+							}
+							this.http.post(this.endereco2, objetos_uniao, {headers: {'Content-Type': 'application/json'}})
+							.then(() => {}).catch(error => {
+								flag = false;
+								alert('Erro ao cadastrar a palavra: ' + JSON.stringify(error));
+							});
+						}
+						setTimeout(() => {
+							if(flag){
+								//Cadastou na tabela Uniao	
+								//avisar o fim do tutorial e volta e ao home
+								let alerta = this.alertCtrl.create(
+									{
+										title: 'Tutorial',
+										message: 'Parabéns!! Você adicionou sua primeira palavra! Vamos voltar ao teclado agora',
+										buttons: [{text: 'Ok', handler: () => {this.navCtrl.setRoot(HomePage); }}]
+									}
+								);
+								alerta.present();
+							}
+						}, 3000);
+					}).catch(error => {
+						alert('Erro ao conferir o banco de dados: ' + JSON.stringify(error));
+					});
 					//Cadastou na tabela Palavra
-					
-					//2 PARTE DE INCLUIR PALAVRAS: TABELA UNIÃO
-			
-					//cria um objeto com os campos da tabela uniao
-					let objetos_uniao = 
-					{
-						id_usuario: this.usuarioLogado.id_usuario, //id_usuario -> session
-						id_categoria: 1, //isso deve vir do bd
-						id_palavra:1 //isso deve vir do bd
-					};
-				
-				this.http.post(this.endereco2, objetos_uniao,
-				{
-				  headers: { 'Content-Type': 'application/json' }  
-				})
-				.then(data => 
-				{
-				
-					//Cadastou na tabela Uniao	
-
-					//avisar o fim do tutorial e volta e ao home
-
-					let alerta = this.alertCtrl.create(
-					{
-						title: 'Tutorial',
-						message: 'Parabéns!! Você adicionou sua primeira palavra! Vamos voltar ao teclado agora',
-						buttons: [{text: 'Ok', handler: () => {this.navCtrl.setRoot(HomePage); }}]
-					}
-					);
-
-					alerta.present();
-				  
 				}).catch(error => {
-					//se deu erro na uniao
-				  alert(JSON.stringify(error));
-				});
-		
-				}
-				
-				).catch(error => {
 					//se deu erro na palavra
 				  alert(JSON.stringify(error));
 				});
-			
 			}
-			
 			); //Session
-		
-		
-	
 		}
-		
-	
-	
-		
-		
 	}
 
 
