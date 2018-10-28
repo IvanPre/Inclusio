@@ -28,10 +28,14 @@
 
       <div id="linha_form" *ngFor="let att of campoimg; ">
         <h1>  <ion-icon ios="ios-image" md="md-image"></ion-icon> Imagem</h1>
-        <div id="input_form">
-        <input type="text" [(ngModel)]="imagem" (input)="mudaImg()" name="imagem" id="txtimg" placeholder="Sua imagem"><br><br>
-        <img [src]="imagem" height="100px">
-        </div>
+        <button ion-button full (click)="captureImage()">Acessar a galeria</button>
+				<button ion-button full (click)="takePicture()">Tirar Foto</button>
+				<ion-card>
+					<ion-card-header [hidden]="imgHidden">Imagem</ion-card-header>
+					<ion-card-content [hidden]="imgHidden">
+							<img [src]="imageURI"> 
+					</ion-card-content>
+				</ion-card>
         <br>
         <br>
       </div> <!--Linha form-->
@@ -51,7 +55,7 @@
       <div id="linha_form" *ngFor="let att of campocat;">
         <h1>   <ion-icon ios="ios-image" md="md-image"></ion-icon> Categoria</h1>
         <div id="input_form">
-          <div id="categorias"></div>
+          <div id="div_categorias" class="div_categorias"></div>
           <!-- <input type="text"  maxlength="50" id="nomeCategoria"><br><br> -->
         </div>
         <img src="./assets/imgs/lara.png" class="lara_tutorial">
