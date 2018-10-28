@@ -23,34 +23,33 @@
 
 <ion-content class="body" padding>
  
-	<div id="principal">
-		<ion-row>
-			<ion-col>
-			<ion-list inset>
-  <!--Aqui é o modelo para os formularios-->
-  
-    <div id="formulario">
+	<div id="caixa_cadastro">
+		<form  [formGroup]="alteraDadosForm" novalidate>
+				<ion-row>
+					<ion-col>
+						<ion-list inset>
+						 <div id = "input_form">
+						 
+							<div id="texto"> Email:</div>
+							<ion-item>
+								<ion-input [(ngModel)]="email" formControlName="email" type="textarea" placeholder="exemplo@hotmail.com" clearInput clearOnEdit="false"></ion-input>
+							</ion-item>
+							
+							<h6 *ngIf="errorEmail" class="error"> {{messageEmail}}</h6>
+				<br><br>
+				</div>
+			</ion-list>  
+		</ion-col>
+	</ion-row>
 
-    <div id="linha_form">
-     
-      <h1>Email:</h1> 
-     <div id="input_form">
-        		<p id="email">
-								<ion-item>
-										<ion-input [(ngModel)]="email" type="textarea" id="email" [readonly]="true" clearInput clearOnEdit="false"></ion-input>
-								</ion-item>
-						</p>
-     </div> <!-- input_form -->
-     
-     </div> <!-- linha_form -->
-     <br> <br>
+	<ion-row>
+	<div id="botoes"> 	
 		<button ion-button round class="botao" (click)="altera_dados()" >Alterar</button>
     <!--<button ion-button round class="botao" [navPush]="alteradadosPage" ></button> (click)="altera_dados()" >Alterar Dados</button>-->
-    <button ion-button round class="botao" (click)="limpar()" >Limpar</button>
-   </div> <!-- formulario -->
-  </ion-list>  
-</ion-col>
-</ion-row>		
-  </div> <!--principal-->
+    <button ion-button round class="botao" (click)="limpar()">Limpar</button>
+ </div>
+ </ion-row>
 
+</form>
+</div>
 </ion-content>

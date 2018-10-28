@@ -27,9 +27,9 @@ export class PerfilPage {
 
 	nomeUsuario = "";
 	usuario: Usuario;
-  endereco: string;
+	endereco: string;
+	email="";
 	//usuarioLogado:any;
-	email = "";
   constructor(public navCtrl: NavController, public navParams: NavParams,  public http: HTTP, 
     public session_login: SessionloginProvider, public session_config: SessionconfiguracoesProvider, public storage: Storage) {}
 

@@ -5,7 +5,7 @@ import {HTTP} from '@ionic-native/http';
 import { Storage } from "@ionic/storage";
 import { SessionloginProvider } from '../../providers/sessionlogin/sessionlogin';
 import { Usuario } from '../../app/models/usuario';
-import { PerfilPage } from '../perfil/perfil';
+import { HomePage } from '../home/home';
 
 @IonicPage()
 @Component({
@@ -24,9 +24,22 @@ export class AlteradadosPage {
   {
   this.alteraDadosForm = formBuilder.group(
     {
-      email: ['', Validators.compose([Validators.minLength(6), Validators.maxLength(20),Validators.required])]
+      email:['', Validators.compose([Validators.required,Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+[.][a-zA-Z0-9-.]+$')])]
     });
   }
+  ngOnInit()
+  {
+		this.getSession();
+	}
+
+	getSession(){
+		this.session_login.get().then(
+			res =>
+			{
+				this.usuario = res;	
+			}
+		);//session			
+	}
   converte(date)
 	{
 		let data = JSON.stringify(date);
@@ -68,63 +81,50 @@ export class AlteradadosPage {
   }
   altera_dados() 
   {
-    let { email } = this.alteraDadosForm.controls;
-	  if (!email.valid)
+     let {email} = this.alteraDadosForm.controls;
+    if (!this.alteraDadosForm.valid)
     {
-      
-      if(email.value==null || email.value=="")
+
+      if (!email.valid)
       {
-        this.errorEmail = true;
-        this.messageEmail ="Campo obrigatório";
+        
+        if(email.value==null || email.value=="")
+        {
+          this.errorEmail = true;
+          this.messageEmail ="Campo obrigatório";
+        }
+        else
+        { 
+          this.errorEmail = true;
+          this.messageEmail ="Email inválido!";
+        }
       }
-      else
-      { 
-        this.errorEmail = true;
-        this.messageEmail ="Email inválido!";
-      }
-    }
-    else
-    {
-      this.messageEmail = "";
-    }
-    
+  }
     if(this.alteraDadosForm.valid)
     {
-        let objeto = {
+    
+       this.messageEmail = "";
+       let objeto = {
         id_usuario: this.usuario.id_usuario,
         email: email.value
         
         };
-       // alert (senha.value);
        this.http.post(this.endereco, objeto,
        {
           headers: {'Content-Type': 'application/json'}
       })
         .then(data => {
         alert("Email Alterado!");
-        this.navCtrl.push(PerfilPage);
+        this.navCtrl.push(HomePage);
         }).catch(error => {
         alert(JSON.stringify(error));
         });
     }  
   }
-  ngOnInit()
-  {
-		this.getSession();
-	}
-
-	getSession(){
-		this.session_login.get().then(
-			res =>
-			{
-				this.usuario = res;	
-			}
-		);//session			
-	}
 
   limpar()
 	{
-		let { email} = this.alteraDadosForm.controls;
-		email = "";
+		let {email} = this.alteraDadosForm.controls;
+		this.email="";
 	}
 }

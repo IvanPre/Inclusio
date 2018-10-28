@@ -1,0 +1,25 @@
+<ion-content class="body" padding>
+		<div id="caixa_cadastro">
+				&nbsp; &nbsp;  <!--p class="icon"><ion-icon ios="ios-person" md="md-person"></ion-icon></p> <!-- <h1>Criar Categoria</h1>-->
+				<form  [formGroup]="Form" novalidate>
+						<ion-row>
+							<ion-col>
+								<ion-list inset>
+									<div id="input_form">
+										<div id="texto" *ngIf="mostra_alterar"> Palavras disponíveis:</div>
+										<div id="div_categorias" class="div_categorias" *ngIf="mostra_alterar"></div>
+									</div>
+								</ion-list>  
+							</ion-col>
+						</ion-row>	
+						
+						<ion-row>
+							<div id="botoes">
+								<button ion-button round class="botaoCad" (click)="alterar()">Enviar</button>
+							</div>
+						</ion-row>
+				</form>
+			</div>
+</ion-content>
+	
+  

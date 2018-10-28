@@ -48,6 +48,7 @@ import { SobrePage } from '../pages/sobre/sobre'; //configuracoes
 import { SairPage } from '../pages/sair/sair'; //sair
 import {InseresenhaPage} from '../pages/inseresenha/inseresenha';
 import {AlteradadosPage} from '../pages/alteradados/alteradados';
+import {AlterarpalavrasPage} from '../pages/alterarpalavras/alterarpalavras';
 
 
 @NgModule(
@@ -69,6 +70,7 @@ import {AlteradadosPage} from '../pages/alteradados/alteradados';
     SairPage,
     InseresenhaPage,
     AlteradadosPage,
+    AlterarpalavrasPage,
     TutorialPage
     
   ],

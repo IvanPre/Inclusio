@@ -17,45 +17,37 @@ import { SessionconfiguracoesProvider } from '../../providers/sessionconfiguraco
 import { Configuracoes } from '../../app/models/configuracoes';
 //camera
 import { Camera, CameraOptions } from '@ionic-native/camera';
-
+@IonicPage()
 @Component({
   selector: 'page-criarpal',
-  templateUrl: 'criarpal.html'
+  templateUrl: 'criarpal.html',
 })
 
 export class CriarpalPage {
-    [x: string]: any;
+	[x: string]: any;
 	criarPalavraForm: any;
 	messagenomePalavra = "";
-    messageImagem = "";
-	messagePalavras="";
-    errornomePalavra = false;
-    errorImagem= false;
-	errorPalavras=false;
-	// variável que será o src da imagem mostrada (mickey putaço)
-	imagem:string = "https://img.olx.com.br/images/86/864708037631038.jpg";
+  errornomePalavra = false;
+ 	errorPalavras=false;
 	usuario: Usuario;
-	categoriasG:any;
+	palavrasG:any;
 	public base64Image: string;
 	endereco ="http://inclusio.engynios.com/api/insert/palavra.php";
-    constructor(public navCtrl: NavController, formBuilder: FormBuilder, public navParams: NavParams, public http: HTTP, private camera: Camera)
+		constructor(public navCtrl: NavController, formBuilder: FormBuilder, public navParams: NavParams,
+			public http: HTTP, public camera: Camera, public session_login: SessionloginProvider, //session
+			public session_config: SessionconfiguracoesProvider, //session
+			public storage: Storage )
     {
       this.criarPalavraForm = formBuilder.group(
       {
-        nomePalavra: ['', Validators.compose([Validators.required, Validators.pattern('^[a-zA-Z]+$')])],
-		//txtimg: ['',Validators.required],
-		//palavras:['',Validators.required]
+        nomePalavra: ['', Validators.compose([Validators.required, Validators.pattern('^[a-zA-Z]+$')])]
       });
-	}
-
-	ngOnInit(){
-		this.carregaCategorias();
-	}
-
+		}
+	
 	currentImage = null;
   captureImage() {
     const options: CameraOptions = {
-      sourceType: this.camera.PictureSourceType.PHOTOLIBRARY,
+    sourceType: this.camera.PictureSourceType.PHOTOLIBRARY,
 	  destinationType: this.camera.DestinationType.DATA_URL,
 	  quality : 100,
 	  targetWidth: 1000,
@@ -122,13 +114,13 @@ export class CriarpalPage {
 	criar()
     {
 		let nomes = [];
-		for(let n = 0;n<this.categoriasG.length;n++)
-			nomes.push(this.categoriasG[n]['nome_categoria'].toLowerCase());
+		for(let n = 0;n<this.palavrasG.length;n++)
+			nomes.push(this.palavrasG[n]['nome_palavra'].toLowerCase());
 
-		let {nomePalavra/*txtimg,palavras*/} = this.criarPalavraForm.controls;
+		let {nomePalavra} = this.criarPalavraForm.controls;
 		
-        if (!this.criarPalavraForm.valid)
-        {
+		if (!this.criarPalavraForm.valid)
+		{
 			if (!nomePalavra.valid )
 			{
 				if(	nomePalavra.value== null || nomePalavra.value=="")
@@ -142,13 +134,9 @@ export class CriarpalPage {
 					this.messagenomePalavra = "Deve conter apenas letras";
 				}
 			}
-			  
 		}
 		else
 		{
-			this.messagenomeCategoria = "";
-			//this.messageImagem= "";
-
 			if(nomes.indexOf(nomePalavra.value.toLowerCase()) != -1){
 				this.errornomePalavra = true;
 				this.messagenomePalavra = "Já existe uma palavra com esse nome";
@@ -156,12 +144,10 @@ export class CriarpalPage {
 			}
 			let f = false;
 			let ckbs = document.getElementsByClassName('checkbox');
-			//let id_categoria = [];
 			for(let a = 0; a < ckbs.length; a++){
 				let ckb = <HTMLInputElement> ckbs[a];
 				if(ckb.checked)
 				{
-					//id_categoria.push(parseInt(ckb.id.substring(3)));
 					f = true;
 					break;
 				}
@@ -170,7 +156,11 @@ export class CriarpalPage {
 				alert("Selecione no minimo um checkbox!");
 				return;
 			}
-
+	/*	if (this.base64Image==null)
+			{
+				alert("Campo imagem obrigatorio");
+				return;
+			}*/
 			let id_categoria = [];
 			for(let a = 0; a < ckbs.length; a++){
 				let ckb = <HTMLInputElement> ckbs[a];
@@ -180,8 +170,7 @@ export class CriarpalPage {
 			let objeto = {
 				nome_palavra:nomePalavra.value,
 				id_usuario:this.usuario.id_usuario,
-				versao:null,
-				id_categoria: id_categoria
+				versao:"1.0"
 			};
 	
 			this.http.post(this.endereco, objeto,
@@ -191,69 +180,68 @@ export class CriarpalPage {
 			 alert("Palavra criada!");
 			  //alert(JSON.stringify(data.data));
 			}).catch(error => {
-			  alert(JSON.stringify(error)+"erro na inclusão de categorias. Favor contactar os desenvolvedores");
+			  alert(JSON.stringify(error)+"erro na inclusão de palavras. Favor contactar os desenvolvedores");
 			});
+		
+			setTimeout(() => {
+				this.http.get('http://inclusio.engynios.com/api/read/nome/palavra.php', {nome_palavra: '"'+nomePalavra.value+'"'}, {headers: { 'Content-Type': 'application/json' }})
+				.then(data => {
+					let dados = this.converte(data.data);
+					for(let a = 0; a < id_categoria.length; a++){
+	
+						let ad = {							
+							id_categoria: id_categoria[a],
+							id_palavra: dados[dados.length-1]['id_palavra'],//pegar a ultima palavra
+							id_usuario: this.usuario.id_usuario
+						}
+
+						this.http.post('http://inclusio.engynios.com/api/insert/uniao.php', ad, {headers: { 'Content-Type': 'application/json' }})
+						.then().catch(error => {
+							alert(JSON.stringify(error) + " erro na inclusão de palavra. Favor contactar os desenvolvedores");
+							return;
+						});
+					}
+				}).catch(error => {
+					alert(JSON.stringify(error) + " erro no acesso ao banco. Favor contactar os desenvolvedores");
+					return;
+				});
+			}, 5000);
 		}
 	}
-
-
-	// muda a imagem com base no input do usuário
-	mudaImg(){
-		// define a variável "imagem" como o texto colocado no input
-		this.imagem = document.getElementById("txtimg").nodeValue;
+	ngOnInit() {
+		this.getSession();
+		setTimeout(() => {
+			this.carregapalavras();
+		}, 3000);
 	}
-
-	// limpa todos os campos
+	getSession(){
+		this.session_login.get().then(
+			res =>
+			{
+				this.usuario = res;	
+			}
+		);//session			
+	}
 	limpar(){
-		// limpa o campo de nome da categoria
-		let nomeCategoria = <HTMLInputElement> document.getElementById('nomeCategoria');
-		nomeCategoria.value = null;
-		
-		
-		// limpa o campo do link da imagem
-		let txtimg = <HTMLInputElement> document.getElementById('txtimg');
-		txtimg.value = null;
-
-		let ckbs = document.getElementsByClassName('checkbox');
-		for(let a = 0; a < ckbs.length; a++){
-			let ckb = <HTMLInputElement> ckbs[a];
-			ckb.checked = false;
-		}
-		
-		// reseta a imagem para o mickey putaço
-		this.imagem = "https://img.olx.com.br/images/86/864708037631038.jpg";
-		// cria variável para categoria1
-		let categoria1 = <HTMLInputElement> document.getElementById('categoria1');
-		
-		// tira o checado do elemento
-		categoria1.checked = false;
-
-		// cria variável para as palavras de dentro da categoria
-		let palavras = document.getElementById('palavras');
-
-		// se existirem elementos dentro da table palavras, fica no while
-		while(palavras.childElementCount > 0){
-			// remove o último elemento de palavras
-			palavras.removeChild(palavras.lastChild);
+	this.nomePalavra= null;
+	this.base64Image=null;
+	let f = false;
+	let ckbs = document.getElementsByClassName('checkbox');
+	for(let c = 0; c < ckbs.length; c++){
+		let ckb = <HTMLInputElement> ckbs[c];
+		ckb.checked=false;
 		}
 	}
 
-	/*ngOnInit()
-	{
-		this.carregaCategorias();
-	}*/
-
-	carregaCategorias(){
+	carregapalavras(){
 		let objeto = {
-			id_usuario: null
+			id_usuario: this.usuario.id_usuario
 		};
-		let path = 'http://inclusio.engynios.com/api/read/id_usuario/categoria.php';
+		let path = 'http://inclusio.engynios.com/api/read/id_usuario/palavras-null.php';
 		this.http.get(path, objeto, {}).then(data =>{
 			let dados = this.converte(data.data);
-			// alert(JSON.stringify(data.data));
-			// alert(JSON.stringify(dados));
-			let div = document.getElementById('div_categorias');
-			// alert(dados[0].id_categoria);	
+			this.palavrasG = dados;
+			let div = document.getElementById('div_categorias');	
 
 			for(let a = 0; a < dados.length; a++){
 				let ion = document.createElement('ion-item');
@@ -262,7 +250,7 @@ export class CriarpalPage {
 				ckb.id = "ckb"+dados[a]['id_categoria'];
 				ckb.className = 'checkbox';
 				let cat = document.createElement('p');
-				cat.innerText = dados[a]['nome_categoria'];
+				cat.innerText = dados[a]['nome_categoria'].replace(/\"/gi, "");
 				cat.appendChild(document.createElement('br'));
 				ion.appendChild(ckb);
 				ion.appendChild(cat);
@@ -275,88 +263,5 @@ export class CriarpalPage {
 		});
 			
 			
-		
-		/*objeto.id_usuario = 3;
-		this.http.get(path, objeto, {}).then(data =>{
-			data = data.data;
-			let div = document.getElementById('div_categorias');
-			
-			div.name
-			
-			for(let a = 0; a < data.length; a++){
-				let ion = document.createElement('ion-item');
-				let icon = document.createElement('ion-icon');
-				icon.name = "seta()";
-				icon.click = mostraPalavras;
-				icon.id = "seta"+a;
-				let ckb = document.createElement('input');
-				ckb.type = "checkbox";
-				ckb.id = "ckb"+a;
-				ckb.name = dados.id_categoria;
-				let cat = document.createElement(p);
-				cat.innerText = dados.nome_categoria;
-				cat.appendChild(document.createElement('br'));
-				ion.appendChild(icon);
-				ion.appendChild(ckb);
-				ion.appendChild(cat);
-				div.appendChild(ion);
-			}
-			}
-		).catch(error => {
-			  alert(JSON.stringify(error));
-		});*/
-	}
-
-	// "envia" os dados do form (por enquanto ta indo no console, F12 para ver)
-	enviar(){
-		// cria um objeto dados para guardar tudo
-		let dados = {};
-
-		// pega o campo com o nome da nova categoria
-		let novaCategoria = <HTMLInputElement> document.getElementById('nomeCategoria');
-
-		// cria um campo nome_categoria no objeto a ser enviado
-		dados["nome_categoria"] = novaCategoria.value;
-
-		// pega o campo com o link da imagem
-		let imgLink = <HTMLInputElement> document.getElementById('txtimg');
-
-		// cria um campo imagem no objeto a ser enviado
-		dados["imagem"] = imgLink.value;
-
-		// pega o checkbox da categoria para verificar se o usuário selecionou ela inteira
-		let categoria = <HTMLInputElement> document.getElementById('categoria1');
-		
-		// se tiver selecionado a categoria inteira
-		if(categoria.checked == true){
-
-			// cria um campo categoria para armazenar o valor da categoria
-			dados["categoria"] = categoria.value;
-		}
-		else
-		{
-			// cria um array vazio no campo palavras para adicionar valores depois
-			dados["palavras"] = [];
-
-			// cria uma variável para palavras
-			let palavras = document.getElementById('palavras');
-
-			// fará o for para todos os elementos da table
-			for(let a = 0; a < palavras.childElementCount; a++){
-				
-				// pega o elemento atual (checkbox dentro do primeiro td que está dentro da tr da table das palavras)
-				let elemento = <HTMLInputElement> palavras.children[a].children[0].children[0];
-
-				// se for um checkbox e estiver checado...
-				if(elemento.checked == true){
-					
-					// adiciona o valor ao array de palavras
-					dados["palavras"].push(elemento.value);
-				}
-			}
-		}
-
-		// mostra no console (F12) os dados
-		console.log(dados);
 	}
 }
