@@ -31,69 +31,137 @@
 		
       <div id="formulario" *ngIf="mostra_botoes">
 		
-        <button ion-button round class="botao" *ngIf="mostra_botoes" [navPush]="AjudaslidesPage" (click)="ajuda_slides()" >Como usar o teclado</button>
+        <button ion-button round class="botao" *ngIf="mostra_botoes"  (click)="ajuda_slides(0)" >Como usar o teclado</button>
         <br>
         <br>
-        <button ion-button round class="botao" *ngIf="mostra_botoes"  [navPush]="AjudaslidesPage" (click)="ajuda_slides()">Como ouvir a frase formada</button>
+        
+        <button ion-button round class="botao" *ngIf="mostra_botoes"   (click)="ajuda_slides(1)">Como criar palavras </button>
         <br>
         <br>
-        <button ion-button round class="botao" *ngIf="mostra_botoes"  [navPush]="AjudaslidesPage" (click)="ajuda_slides()">Como criar palavras </button>
-        <br>
-        <br>
-        <button ion-button round class="botao" *ngIf="mostra_botoes"  [navPush]="AjudaslidesPage" (click)="ajuda_slides()">Como criar categorias </button>
-        <!--<br>
-        <br>
-        <button ion-button round class="botao" *ngIf="mostra_botoes"  [navPush]="AjudaslidesPage" (click)="ajuda_slides()">Como gerar PDF</button>
-        -->
+        <button ion-button round class="botao" *ngIf="mostra_botoes"  [navPush]="AjudaslidesPage" (click)="ajuda_slides(2)">Como criar categorias </button>
+      
+      
       
       </div> <!-- formulario -->
 
-      <div id="slides" *ngIf="mostra_slides">
+      
 
-        <ion-slides>
+        <ion-slides  pager="true">
           
             <ion-slide>
-            <div id="caixa">
-              <h1 class="h1_inicio">Como usar o teclado?</h1>
+            <div id="caixa" *ngIf="mostra_slides">
+              <h1 class="h1_inicio">Como usar o teclado</h1>
               <div id="texto_inicio">
               <p class="p_inicio">
+                
+                <!-- VER SE NO CASO DAS CATEGORIAS AS IMAGENS TAMBÉM SÃO RETIRADAS-->
+                  Vá até o menu principal, localizado na parte superior esquerda de qualquer tela principal e clique em Teclado.
+                  <br>
+                  <!--
+                    DEMONSTRAÇAO DE ONDE ESTÁ A TECLADO
+                    NÃO SERIA MELHOR O LINK NO MENU SE CHAMAR TECLADO?
+
+                  -->
+                  
                   Inicialmente, o teclado tem quadrados com imagens e nomes de categorias. 
-                  Ao clicar em um quadrado, você será direcionado para outro teclado mais especifíco. 
-                  com palavras relacionadas à essa categoria.
-                  Este teclado é semelhante a anterior, tendo quadrados com imagens e palavras
-                  Clicar em uma palavra, ela será adicionada em uma barra ao topo da tela principal.
-                  Caso você precise de palavras de outras categorias para formar a sua frase, volte para a tela inicial e escolha o complemento.
+                  <br>
+                  
+                  <!--
+                    1 Imagem teclado
+                    PRIMEIRA TELA DE CATEGORIAS
+                  -->
+                  
+                  Ao clicar em um quadrado, você será direcionado para outro teclado mais especifíco com palavras relacionadas à essa categoria.
+                  <br>
+                  
+                  <!--
+                    2 Imagens do "mouse"
+                    "MOUSE" EM CIMA DA CATEGORIA NA TELA DE CATEGORIAS
+                    SEGUNDA TELA DE PALAVRAS DA CATEGORIA ESCOLHIDA
+
+                  -->
+                  
+                  Este teclado é semelhante ao anterior, tendo quadrados com imagens e palavras
+                  <br>
+                
+                  <!--
+                      2 Imagens da teclado
+                    SEGUNDA TELA DE PALAVRAS
+
+                  -->
+                  
+                  Ao clicar em uma palavra, ela será adicionada à barra com o escrito "FRASE FORMADA", localizada ao topo da tela principal.
+                  <br>
+                  
+                   <!--
+                     2 Imagens
+                    "MOUSE" EM CIMA DA PALAVRA NA TELA DE PALAVRAS, MAS SEM NADA NO INPUT
+                    "MOUSE" CONTINUA EM CIMA, MAS NO INPUT TEM A PALAVRA ESCOLHIDA
+
+                  -->
+                  
+                  Caso você precise de palavras de outras categorias para formar a sua frase, volte para a tela inicial do teclado e escolha o complemento.
+                  <br>
+                  <!--
+                    "MOUSE" EM CIMA Do que FAZ VOLTAR PARA A PRIMEIRA TELA
+                    ETC
+
+                  -->
+                  
                   Faça isso até formar a frase desejada.
-              <br><br>
-              <b>Deslize para continuar</b> 
-              </p>
+                  <!--
+                    por exemplo, eu amo você, eu quero brincar
+                  -->
+                  <br>
+                  <b style="text-align:center;">Deslize e saiba mais</b> 
+                  
+                  <button ion-button round class="botao_volta" style="background-color: transparent;color:#FF6501;"  (click)="volta_links()" >Voltar</button>
+                  
+                </p>
               </div>
             </div>
             </ion-slide>
             
             <ion-slide>
-            <div id="caixa">
-              <h1 class="h1_inicio">Como ouvir a frase formada?</h1>
-              <div id="texto_inicio">
-              <p class="p_inicio">Ao lado da barra que contém a frase formada, há um símbolo que representa um alto-falante. Ao clicar nesse ícone, sua frase será pronunciada.
-              <br><br>
-              Inclua Palavras, adicione imagens, crie e altere categorias.
-              <br><br>
-              <b>Deslize para continuar</b> 
-              </p>
-              </div>
-            
-            </div>
-            </ion-slide>
-            
-            <ion-slide>
-              <div id="caixa">
+              <div id="caixa" *ngIf="mostra_slides">
               <h1 class="h1_inicio">Como criar palavras?</h1>
               <div id="texto_inicio">
-              <p class="p_inicio">Caso as imagens sejam muito infantis e você deseje retirá-las, acesse o menu de configurações
-              determine sua preferência sobre o teclado!
-              <br><br>
-              <b>Deslize para continuar</b> 
+              <p class="p_inicio">
+                  
+                  Vá até o menu principal, localizado na parte superior esquerda de qualquer tela principal.
+                  <br>
+                  <!--
+                    "MOUSE" EM CIMA Do que FAZ VOLTAR PARA A PRIMEIRA TELA
+                    ETC
+
+                  -->
+                  
+                  Clique na a opção "Criar Palavra".
+                  <br>
+                  <!--
+                    "MOUSE" EM CIMA do Criar Palavras
+                    ETC
+
+                  -->
+                  
+                  A Tela de criação de palavras contém os campos "nome", "imagem" e "categoria", todos devem ser preenchidos.
+                  <br>
+                  <!--
+                    não deveria ter o menu no Criar Palavras?
+                    
+
+                  -->
+                  
+                  O campo "imagem" exige o link de uma imagem que represente sua palavra.                
+                  <br>
+                  O campo "categoria" permite a criação de uma nova categoria. Para mais detalhes, veja _Como criar uma categoria?_ (isso é um link)
+                  <br>
+                  Para finalizar, clique no botão "Criar"
+                  <br>
+                <b>Deslize e saiba mais</b> 
+                
+                <button ion-button round class="botao_volta" style="background-color: transparent;color:#FF6501;"  (click)="volta_links()" >Voltar</button>
+                
               </p>
               </div>
             
@@ -101,35 +169,37 @@
             </ion-slide>
 
             <ion-slide>
-                <div id="caixa">
-                <h1 class="h1_inicio">Como c</h1>
+                <div id="caixa" *ngIf="mostra_slides">
+                <h1 class="h1_inicio">Como criar categorias?</h1>
                 <div id="texto_inicio">
                 <p class="p_inicio">
-                <br><br>
-                <b>Deslize para continuar</b> 
-                </p>
+                
+            
+                Para Criar um Categoria, acesse a página "Criar Categoria" pelo menu lateral, encontrado no canto superior esquerdo. 
+                <br>
+                Ao entrar na tela de criação de palavras, dê um nome para a sua categoria e escolha uma imagem para representá-la. 
+                <br>
+                Você pode escolher sua imagem pela galeria clicando no botão "Acessar a galeria" ou tirar uma foto no momento selecionando "Tirar foto". 
+                <br>
+                Em "Palavras disponíveis", marque as palavras que você deseja que façam parte da categoria criada. 
+                <br>
+                Pressione "Enviar" para criar a categoria ou "Limpar" para desfazer o processo.
+                
+                (Video/imagens/gif)
+                <br>
+                <b>Deslize e saiba mais</b> 
+                
+                <button ion-button round class="botao_volta" style="background-color: transparent;color:#FF6501;"  (click)="volta_links()" >Voltar</button>
+                
+              </p>
                 </div>
               
               </div>
               </ion-slide>
-            <!--
-            <ion-slide>
-            <div id="caixa">
-              <h1 class="h1_inicio">VAMOS LÁ!</h1>
-              <div id="texto_inicio">
-                <button ion-button round (click)="ir_login()" class="botao">LOGIN</button>
-                <p class="p_inicio"><br>Ou</p>
-                <br>
-                <button ion-button round (click)="ir_cadastro()" class="botao">CADASTRE-SE</button>  
-              </div>
-            
-            </div>
-              
-          </ion-slide>
-        -->
+         
           </ion-slides>
 
-        </div> <!-- slides -->
+        
 </div> <!--principal-->
 
 </ion-content>
