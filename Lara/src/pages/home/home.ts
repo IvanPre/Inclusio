@@ -211,22 +211,15 @@ export class HomePage
 		this.http.get(this.endereco_select, teste, {})
 		.then(data => 
 		{	
-			
-			
 			//usar aqui
 			let converter = this.converte(data.data);
-
 			for(let a = 0; a < converter.length; a++){
-				this.http.get('https://inclusio.engynios.com/api/read/id/categoria-palavra.php', {id_categoria: converter[a]['id_categoria\\\\'].replace(/\\\\\"/gi, '"')}, {}).then(dados => {
+				this.http.get('https://inclusio.engynios.com/api/read/id/categoria-palavra.php', {id_categoria: converter[a]['id_categoria\\\\'].replace(/\\\\\"/gi, '"')}, {})
+				.then(dados => {
 					this.palavras[converter[a]['id_categoria\\\\'].replace(/\\\\\"/gi, "")] = this.converte(dados.data);
 					document.getElementById('palavras').innerText = JSON.stringify(this.palavras);
-				}).catch(e => {
-					alert(JSON.stringify(e + 'line 97'));
-				});
-			}
-			setTimeout(() => {
-				
-				this.resultados = converter.length;
+
+					this.resultados = converter.length;
 				// alert(JSON.stringify(converter));
 				let table = document.createElement("table"); //cria uma tabela
 				table.setAttribute('id', 'tabela');
@@ -328,12 +321,14 @@ export class HomePage
 				}
 
 				document.getElementById('botoes').appendChild(table);
-		}, 2000);
+				}).catch(e => {
+					alert(JSON.stringify(e) + 'line 97');
+				});
+			}
 		})
 		.catch(error => 
 		{
-			console.log(error.status);
-			alert(error + " linha 141");
+			alert(JSON.stringify(error) + " linha 141");
 		});
 		
 

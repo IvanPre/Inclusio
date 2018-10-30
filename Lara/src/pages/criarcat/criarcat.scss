@@ -119,15 +119,10 @@
           font-family: Arial;
          }
 
-         .seta-baixo
-         {
-            height: 6px;
-         }
-
          .seta
          {
             height: 20px;
-            padding-left:50px; 
+            // padding-left:50px; 
              
             float: left;
          }
@@ -138,14 +133,27 @@
              
          }
 
+         .linhas{
+             text-align: left;
+         }
+
          .categoria{
              text-align: left;
             //  font-size: 20px;
             //  float: left;
          }
 
+         label.palavras{
+            color:#602901;
+             font-size: 110%;
+             text-align: justify;
+             position: relative;
+             left: 10px;
+            //  float: left;
+         }
+
          .div_categorias{
-             width: 100%;
+             width: 150%;
              margin: 0 auto;
          }
 
