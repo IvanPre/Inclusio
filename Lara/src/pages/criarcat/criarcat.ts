@@ -339,6 +339,7 @@ converte(date){
 					p.hidden = true;
 					// p.className = 'categoria';
 					p.id = 'p'+dados[a].id_categoria;
+					p.className = 'linhas';
 					for(let count = 0; count < pala.length; count++){
 						if(pala[count].nome_palavra.indexOf('capa ') != -1 || pala[count].nome_palavra.indexOf('capa_') != -1)
 							continue;
@@ -348,7 +349,9 @@ converte(date){
 						ckb.className='checkbox';
 						ckb.id = 'ckb'+pala[count].id_palavra;
 						mdiv.appendChild(ckb);
-						let palavra = <HTMLParagraphElement> document.createElement('p');
+						let palavra = <HTMLLabelElement> document.createElement('label');
+						palavra.className = 'palavras';
+						palavra.setAttribute('for', 'ckb' + pala[count].id_palavra);
 						palavra.innerText = pala[count].nome_palavra;
 						mdiv.appendChild(palavra);
 						p.appendChild(mdiv);
