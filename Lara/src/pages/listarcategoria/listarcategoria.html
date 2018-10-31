@@ -1,0 +1,74 @@
+<ion-header>
+  <ion-navbar>
+  
+	<!--caso a pag n�o tenha cabe�alho voc apaga tudo (a header e as coisas dentro-->
+	   <div  id="topo">
+		   <div id="btn_menu">
+			<ion-buttons left> 
+				<button ion-button icon-only menuToggle> 
+					<p class="menu"><ion-icon name="menu"> </ion-icon></p>
+				</button>
+
+			</ion-buttons>
+				</div>
+			<div id="titulo">
+			<ion-title>
+			 <span text-color="fonte-laranja"> Categorias </span>
+			</ion-title>
+			</div>
+		</div>
+	
+  </ion-navbar>
+</ion-header>
+<ion-content padding>
+
+
+<ion-content >
+  <div id="main">
+    <div id="categorias"> <!--listar todas as categorias-->
+	
+		</div>
+		
+		<div id="caixa_cadastro" hidden>
+				&nbsp; &nbsp;  <!--p class="icon"><ion-icon ios="ios-person" md="md-person"></ion-icon></p> <!-- <h1>Criar Categoria</h1>-->
+				<form  [formGroup]="criarCategoriaForm" novalidate>
+						<ion-row>
+							<ion-col>
+								<ion-list inset>
+									<div id="input_form">
+							<div id="texto"> Categoria:</div>
+						<ion-item>
+							<ion-input [(ngModel)]="nomeCategoria" id="nomeCategoria" value="" formControlName="nomeCategoria" type="textarea" placeholder="Categoria" id="nomeCategoria" clearInput clearOnEdit="false"></ion-input>
+									</ion-item>
+						<h6 *ngIf="errornomeCategoria" class="error"> {{messagenomeCategoria}}</h6>
+						<br>
+						
+						<div id="texto"> Imagem:</div>
+						
+							<ion-card>
+								<ion-card-header>Imagem</ion-card-header>
+								<ion-card-content>
+										<img [src]="base64Image" id="imagem">
+								</ion-card-content>
+							</ion-card>
+							<button ion-button full (click)="captureImage()">Acessar a galeria</button>
+							<button ion-button full (click)="takePicture()">Tirar Foto</button>
+						
+						<div id="texto"> Palavras disponíveis:</div>
+						<div id="div_categorias" class="div_categorias"></div>
+						</div>
+						</ion-list>  
+							</ion-col>
+						</ion-row>		
+					<p id="flag" hidden></p>
+						<ion-row>
+							<div id="botoes">
+								<button ion-button round class="botaoCad" (click)="alterar()">Alterar</button>
+								<button ion-button round class="botaoCad" (click)="excluir()">Excluir</button>
+							</div>
+						</ion-row>
+				</form>
+			</div>
+
+  </div>
+</ion-content>

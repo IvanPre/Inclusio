@@ -1,0 +1,116 @@
+page-listarcategoria {
+
+    #titulo
+    {
+       float: left;
+    }
+	.error
+	{
+		text-align:left;
+	}
+    #texto
+	{
+		
+		font-family:arial;
+		color: #FF6501;
+        font-size: 130%;
+        font-weight: bold;
+	}
+	
+    .toolbar-background {
+      background-color: #F2E8E1;
+    }
+    
+    [text-color = "fonte-laranja"] 
+    {
+        color: #FF6501;
+        font-size: 130%;
+       font-weight: bold;
+    }
+    .body
+    {
+        background: white;
+        background-image: url("../assets/imgs/fundo.jpg");
+        background-size:100%
+    }
+
+     
+        .logo  //classe do logo
+        {
+            height: 100PX;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+     
+        #caixa_cadastro //caixa onde ficam os itens para o cadastro
+        {
+            background-color: #fff;
+            font-family: arial;
+            border-radius: 30px !important; //define o quão arrendodado serão as caixas de texto        
+            border: 1px solid #ffffff;
+            margin-top:3%;     
+            padding: 10%;
+            padding-top: 5%;
+            box-shadow: 2px 2px 2px whitesmoke;
+            text-align: center;
+         
+        }
+        h1{
+   
+            color:#602901;
+              font-size: 150%;
+            padding: 1%;
+         
+         }
+         input[type=text] {
+            width: 100%;
+            padding: 5%;
+            border: 3px solid #E0E0E0;
+            border-radius: 10px !important; //define o quao arrendodado serao as caixas de texto     
+            color:#602901;
+             font-size: 130%;
+             margin: 0%;        
+             
+        }
+        input[type=text]:focus {
+            width: 100%;
+            padding: 5%;
+            border-radius: 10 px !important; //define o quao arrendodado serao as caixas de texto          
+            border: 3px solid #C0C0C0;
+        }
+         #botoes 
+         {
+           margin: 0px auto;
+           text-align: center;
+         }
+         .botaoCad
+         {
+            width: 100%;
+            padding: 5%;
+            background-color: #FF6501;       
+            color: #fff;
+            font-family: Arial;
+            font-weight: bold;
+            cursor: pointer;
+            height: 3.6rem;
+            font-size: 1.4rem;
+            -webkit-appearance: button;
+            border: 1px solid #FF6501;
+            border-radius: 64px !important; //define o quao arrendodado serao as caixas de texto     
+            padding: 3%;
+            box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+            text-align: center;
+
+         }
+         .login
+         {
+          padding-top: 10px;
+          padding-bottom: 10px;
+          align-items: center;
+          align-content: center;
+          align-self: center;
+          color:#5fbad3;
+          font-family: Arial;
+         }
+    
+}

@@ -19,6 +19,7 @@ import { TutorialPage } from '../pages/tutorial/tutorial'; //configuracoes
 import {AlteradadosPage} from '../pages/alteradados/alteradados';
 import {InseresenhaPage} from '../pages/inseresenha/inseresenha';
 import {AlterarpalavrasPage} from '../pages/alterarpalavras/alterarpalavras';
+import {ListarcategoriaPage} from '../pages/listarcategoria/listarcategoria';
 
 
 
@@ -41,6 +42,8 @@ export class MyApp {
       { title: 'Perfil', component: PerfilPage },
       { title: 'Criar Categoria', component: CriarcatPage },
       { title: 'Criar Palavra', component: CriarpalPage },
+      { title: 'Alterar Palavras', component: AlterarpalavrasPage},
+      { title: 'Alterar Categorias', component: ListarcategoriaPage},
       { title: 'Configurações', component: ConfiguracoesPage },
       { title: 'Ajuda', component: AjudaPage },
       { title: 'Sobre', component: SobrePage },
