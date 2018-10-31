@@ -49,7 +49,7 @@ export class SairPage {
 		      handler: () => {
 		      
 		     	this.session_login.remove(); //remove os valores
-		      this.navCtrl.push(SplashPage); //volta para o comeco
+		      this.navCtrl.setRoot(SplashPage); //volta para o comeco
 		      
 		      }
 		  }

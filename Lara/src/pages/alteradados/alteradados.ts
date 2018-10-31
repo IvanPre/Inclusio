@@ -115,7 +115,7 @@ export class AlteradadosPage {
       })
         .then(data => {
         alert("Email Alterado!");
-        this.navCtrl.push(HomePage);
+        this.navCtrl.setRoot(HomePage);
         }).catch(error => {
         alert(JSON.stringify(error));
         });
