@@ -125,7 +125,6 @@ export class InseresenhaPage {
         senha: senha.value
         
         };
-        alert (senha.value);
        this.http.post(this.endereco, objeto,
        {
           headers: {'Content-Type': 'application/json'}
