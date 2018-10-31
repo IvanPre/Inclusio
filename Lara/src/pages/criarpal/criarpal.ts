@@ -138,7 +138,7 @@ export class CriarpalPage {
 		}
 		else
 		{
-			if(nomes.indexOf(nomePalavra.value.toLowerCase()) != -1){
+			if(JSON.stringify(nomes).indexOf(nomePalavra.value.toLowerCase()) != -1){
 				this.errornomePalavra = true;
 				this.messagenomePalavra = "Já existe uma palavra com esse nome";
 				return;
@@ -178,13 +178,6 @@ export class CriarpalPage {
 			{ headers: { 'Content-Type': 'application/json' }	  
 			})
 			.then(data => {
-			 alert("Palavra criada!");
-			  //alert(JSON.stringify(data.data));
-			}).catch(error => {
-			  alert(JSON.stringify(error)+"erro na inclusão de palavras. Favor contactar os desenvolvedores");
-			});
-		
-			setTimeout(() => {
 				this.http.get('http://inclusio.engynios.com/api/read/nome/palavra.php', {nome_palavra: '"'+nomePalavra.value+'"'}, {headers: { 'Content-Type': 'application/json' }})
 				.then(data => {
 					let dados = this.converte(data.data);
@@ -198,15 +191,23 @@ export class CriarpalPage {
 
 						this.http.post('http://inclusio.engynios.com/api/insert/uniao.php', ad, {headers: { 'Content-Type': 'application/json' }})
 						.then().catch(error => {
-							alert(JSON.stringify(error) + " erro na inclusão de palavra. Favor contactar os desenvolvedores");
+							alert("Erro na associação da palavra com a categoria. Favor contactar os desenvolvedores: " + JSON.stringify(error));
 							return;
 						});
 					}
 				}).catch(error => {
-					alert(JSON.stringify(error) + " erro no acesso ao banco. Favor contactar os desenvolvedores");
+					alert("Erro no acesso ao banco. Favor verificar a conexão com a internet ou contactar os desenvolvedores: " + JSON.stringify(error));
 					return;
 				});
-			}, 5000);
+			  //alert(JSON.stringify(data.data));
+			}).catch(error => {
+				alert("Erro na inclusão de palavras. Favor verificar a conexão com a internet ou contactar os desenvolvedores: " + JSON.stringify(error));
+				return;
+			});
+		
+			setTimeout(() => {
+				alert("Palavra criada!");
+			}, 3000);
 		}
 	}
 	getSession(){
@@ -218,21 +219,26 @@ export class CriarpalPage {
 		);//session			
 	}
 	ngOnInit() {
-		this.getSession();
-		setTimeout(() => {
-			this.carregapalavras();
-			let objeto = {
-				id_usuario: this.usuario.id_usuario
-			};
-			let path2 = 'https://inclusio.engynios.com/api/read/id_usuario/palavra.php';
-			this.http.get(path2, objeto, {}).then(data =>{
-				let dados = this.converte(data.data);
-				this.palavrasG=dados;
-			}
-		).catch(error => {
-			alert(JSON.stringify(error));
-		});
-		}, 3000);
+		this.session_login.get().then(
+			res =>
+			{
+						this.usuario = res;	
+				setTimeout(() => {
+					let objeto = {
+						id_usuario: this.usuario.id_usuario
+					};
+					let path2 = 'https://inclusio.engynios.com/api/read/id_usuario/palavra-null.php';
+					this.http.get(path2, objeto, {}).then(data =>{
+						let dados = this.converte(data.data);
+						this.palavrasG = JSON.parse(JSON.stringify(dados).toLowerCase());
+					}).catch(error => {
+						alert(JSON.stringify(error));
+					});
+					this.carregapalavras();
+				}, 3000);
+			}).catch(error => {
+				alert('Erro ao identificar o usuário: ' + JSON.stringify(error));
+			})	
 	}
 	
 	limpar(){
@@ -263,7 +269,7 @@ export class CriarpalPage {
 				ckb.id = "ckb"+dados[a]['id_categoria'];
 				ckb.className = 'checkbox';
 				let cat = <HTMLParagraphElement> document.createElement('p');
-				alert(JSON.stringify(dados[a]));
+				// alert(JSON.stringify(dados[a]));
 				cat.innerText = dados[a]['nome_categoria'].replace(/\"/gi, "");
 			//	alert('entrou7');
 				cat.appendChild(document.createElement('br'));
