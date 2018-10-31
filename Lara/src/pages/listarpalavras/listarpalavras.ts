@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
-import { EditarcategoriaPage } from '../editarcategoria/editarcategoria';
+// import { EditarcategoriaPage } from '../editarcategoria/editarcategoria';
 import {Validators, FormBuilder, FormGroup, FormControl} from '@angular/forms';
 import { Storage } from "@ionic/storage";
 import { SessionloginProvider } from '../../providers/sessionlogin/sessionlogin';
