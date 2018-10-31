@@ -8,6 +8,8 @@ import { Usuario } from '../../app/models/usuario';
 //paginas
 import { SplashPage } from '../splash/splash';
 
+import { HomePage } from '../home/home';
+
 
 
 @IonicPage()
@@ -40,7 +42,7 @@ export class SairPage {
 		  {
 		      text: 'Não',
 	         role: 'cancel',
-		        handler: () => { console.log('Cancel clicked');   }
+		        handler: () => { this.navCtrl.setRoot(HomePage);  }
 		  },
 		  {
 		  		text: 'Sim',
