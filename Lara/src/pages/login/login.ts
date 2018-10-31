@@ -1,6 +1,6 @@
 ﻿import { Validators, FormBuilder } from '@angular/forms';
 import { Component } from '@angular/core';
-import { NavController, AlertController } from 'ionic-angular';
+import { NavController, AlertController, MenuController} from 'ionic-angular';
 import { HTTP } from '@ionic-native/http';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/timeout';
@@ -38,9 +38,11 @@ export class LoginPage {
    constructor(public navCtrl: NavController,
    				 formBuilder: FormBuilder,
    				 public http: HTTP, 
-   				 public session: SessionloginProvider, 
+						public session: SessionloginProvider, 
+						public menuCtrl: MenuController,
    				 private alertCtrl: AlertController) 
   {
+		this.menuCtrl.swipeEnable(false);
 	  this.loginForm = formBuilder.group
 	  ({
 		  usuario: ['', Validators.required],
@@ -125,11 +127,17 @@ export class LoginPage {
 					  buttons: [
 					  {
 					      text: 'Não',
-			  	        handler: () => {this.navCtrl.setRoot(HomePage);}
+			  	        handler: () => {
+										this.menuCtrl.swipeEnable(true);
+										this.navCtrl.setRoot(HomePage);
+									}
 					  },
 					  {
 					  		text: 'Sim',
-					      handler: () => {this.navCtrl.setRoot(TutorialPage);}
+					      handler: () => {
+									this.menuCtrl.swipeEnable(true);
+									this.navCtrl.setRoot(TutorialPage);
+								}
 					  }
 					    ]
 					  });
