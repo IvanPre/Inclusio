@@ -263,15 +263,18 @@ export class CriarpalPage {
 			let div = document.getElementById('div_categorias');	
 
 			for(let a = 0; a < dados.length; a++){
-				let ion = document.createElement('ion-item');
+				let ion = document.createElement('div');
+				ion.className = 'linhas';
 				let ckb = document.createElement('input');
 				ckb.type = "checkbox";
 				ckb.id = "ckb"+dados[a]['id_categoria'];
 				ckb.className = 'checkbox';
-				let cat = <HTMLParagraphElement> document.createElement('p');
+				let cat = <HTMLLabelElement> document.createElement('label');
 				// alert(JSON.stringify(dados[a]));
 				cat.innerText = dados[a]['nome_categoria'].replace(/\"/gi, "");
 			//	alert('entrou7');
+				cat.setAttribute('for', 'ckb' + dados[a]['id_categoria']);
+				cat.className = 'categorias';
 				cat.appendChild(document.createElement('br'));
 				ion.appendChild(ckb);
 				ion.appendChild(cat);
