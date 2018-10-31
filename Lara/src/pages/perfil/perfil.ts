@@ -23,7 +23,8 @@ import { InseresenhaPage } from '../inseresenha/inseresenha';
   selector: 'page-perfil',
   templateUrl: 'perfil.html',
 })
-export class PerfilPage {
+export class PerfilPage implements OnInit
+{
 
 	nomeUsuario = "";
 	usuario: Usuario;
@@ -35,10 +36,13 @@ export class PerfilPage {
 
 		ngOnInit()
 		{
-			this.getSession();
-			setTimeout(() => {
-				this.banco();
-			}, 2000);	
+			this.session_login.get().then(
+				res =>
+				{
+					this.usuario = res;	
+					this.banco();	
+				}
+			);//session	
 		}
 		getSession(){
 			this.session_login.get().then(
@@ -100,9 +104,9 @@ export class PerfilPage {
 			//alert(""+ converter_usu[0]['login_usuario']+""+converter_usu[0]['email']);
 			//this.nomeUsuario = converter_usu[0]['login_usuario'];
 			let usuario = document.getElementById('usuario');
-			usuario.innerHTML = ''+ converter_usu[0]['login_usuario'].replace(/\"/gi,"");
+			usuario.innerText = ''+ converter_usu[0]['login_usuario'].replace(/\"/gi,"");
 			let email = document.getElementById('email');
-			email.innerHTML = ''+ converter_usu[0]['email'].replace(/\"/gi,"");
+			email.innerText = ''+ converter_usu[0]['email'].replace(/\"/gi,"");
 
 			})
 			.catch(
