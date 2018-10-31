@@ -13,10 +13,6 @@ import { TextToSpeech } from '@ionic-native/text-to-speech';
 //Camera
 import { Camera } from '@ionic-native/camera';
 
-//Upload de imagens
-import { File } from '@ionic-native/file';
-import { FileTransfer, FileTransferObject, FileUploadOptions } from '@ionic-native/file-transfer';
-
 //session:
 import { IonicStorageModule } from '@ionic/storage';
 import { SessionloginProvider } from '../providers/sessionlogin/sessionlogin';
@@ -107,10 +103,7 @@ import {AlterarpalavrasPage} from '../pages/alterarpalavras/alterarpalavras';
     SessionloginProvider, //session
     TextToSpeech, //sintetizador
     SessionconfiguracoesProvider, //session
-    File,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    FileTransfer,
-    FileTransferObject,
     Camera,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]

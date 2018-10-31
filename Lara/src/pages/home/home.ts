@@ -1,12 +1,16 @@
-
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { NavController, NavParams, Button } from 'ionic-angular';
 import { HTTP } from '@ionic-native/http';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/timeout';
 //sintetizador
 import { TextToSpeech } from '@ionic-native/text-to-speech';
+import { Storage } from "@ionic/storage";
+import { Configuracoes } from '../../app/models/configuracoes';
+import { SessionloginProvider } from '../../providers/sessionlogin/sessionlogin';
+import { SessionconfiguracoesProvider } from '../../providers/sessionconfiguracoes/sessionconfiguracoes';
+import { Usuario } from '../../app/models/usuario';
 
  
 
@@ -14,7 +18,7 @@ import { TextToSpeech } from '@ionic-native/text-to-speech';
   selector: 'page-home',
   templateUrl: 'home.html'
 })
-export class HomePage
+export class HomePage implements OnInit
 {
     palavras:any = {};
 	timeoutMS:any;
@@ -27,24 +31,48 @@ export class HomePage
 	
 	endereco_select = "http://inclusio.engynios.com/api/read/id_usuario/categoria-null.php";
 
-    constructor(public navCtrl: NavController, formBuilder: FormBuilder, public navParams: NavParams, public http: HTTP,  private tts: TextToSpeech)
-    {
-		this.carrega_imagem();
-     
-	  
+	constructor(public navCtrl: NavController,
+		formBuilder: FormBuilder,
+		public navParams: NavParams,
+		public http: HTTP,
+		public session_login: SessionloginProvider, //session
+		public session_config: SessionconfiguracoesProvider, //session
+		public storage: Storage, //session
+		public tts: TextToSpeech)
+	{}
+	
+	usuario: Usuario;
+	config: Configuracoes;
+
+		ngOnInit(){
+			this.session_login.get().then(
+				res =>
+				{
+					this.usuario = res;	
+					// alert(JSON.stringify(this.usuario));
+					// callback();
+					this.session_config.get().then(ret => {
+						this.config = ret;
+						document.getElementById('config').innerText = JSON.stringify(ret);
+						this.carrega_imagem();
+					}).catch(error => {
+						alert('Erro ao verificar as configurações do usuário ' + JSON.stringify(error));
+					});
+				}
+			).catch(error => {
+				alert('Erro ao reconhecer o usuário ' + JSON.stringify(error));
+			});
 		}
 
 	voltar()
 	{
-		alert('entrou');
-
 			document.getElementById('tabela').remove();
 			document.getElementById('btn_voltar').hidden=true;
 			let table = document.createElement("tabela"); //cria uma tabela
 			table.setAttribute('id', 'tabela');
 			table.setAttribute('border', '1');
 			let h1= document.getElementById("h1");
-			h1.innerHTML= "Nossas Categorias";
+			h1.innerText= "Nossas Categorias";
 		
 			let objeto = JSON.parse(document.getElementById('categorias').innerText);
 			
@@ -57,7 +85,6 @@ export class HomePage
 				return size;
 			}
 			
-			alert(objeto.length(objeto));
 			for(let l=0;l<objeto.length(objeto)/2;l++)
 			{
 				
@@ -66,15 +93,11 @@ export class HomePage
 				for(let p=0;p<2 && l*2+p < objeto.length(objeto);p++)
 				{
 					var td = document.createElement("td");
-					let img = document.createElement("img");
 					if(objeto[l*2+p]['imagem\\\\'] == undefined)
 						alert(JSON.stringify(objeto[l*2+p]));
 					let s = objeto[l*2+p]['imagem\\\\'].replace(/\"/gi, "");
 					s= s.replace(/\\/gi, "");
 					s = s.replace(/\//gi, "/");
-					img.setAttribute('src', 'https://inclusio.engynios.com/imagens/'+s);
-					img.setAttribute('alt', 'imagemmm');
-					img.setAttribute('id', 'imagem'+l*2+p);
 					td.setAttribute('id', objeto[l*2+p]['id_categoria\\\\']);
 					td.setAttribute('name', objeto[l*2+p]['nome_palavra\\\\']);
 					//alert(JSON.stringify(converter[l*2+p]));
@@ -82,11 +105,17 @@ export class HomePage
 					nome= nome.replace(/\\/gi, "");
 					nome = nome.replace(/\//gi, "/");
 					//alert(JSON.stringify(objeto));
-					td.innerHTML = ''+nome.toUpperCase()+'';
-					td.appendChild(img); //coloca a img no td
+					td.innerText = ''+nome.toUpperCase()+'';
+					if(JSON.parse(document.getElementById('config').innerText).imagem == 's'){
+						let img = document.createElement("img");
+						img.setAttribute('src', 'https://inclusio.engynios.com/imagens/'+s);
+						img.setAttribute('alt', 'imagem');
+						img.setAttribute('style', 'max-width: 100px; max-heigth: 100px;');
+						img.setAttribute('id', 'imagem'+l*2+p);
+						td.appendChild(img); //coloca a img no td
+					}
 					td.addEventListener('click', function()
 					{
-						alert(this.id);
 						let pala = JSON.parse(document.getElementById('palavras').innerText)[this.id.replace(/\\\\\"/gi, "")];
 						
 						
@@ -94,7 +123,7 @@ export class HomePage
 						document.getElementById('tabela').remove();
 						
 						document.getElementById('btn_voltar').hidden=false;
-						h1.innerHTML= "Nossas Palavras";
+						h1.innerText= "Nossas Palavras";
 						
 						//criação da tabela de palavras
 						
@@ -115,28 +144,31 @@ export class HomePage
 							{
 								
 								var td = document.createElement("td");
-								let img = document.createElement("img");
-								if(pala[l*2+p]['imagem\\\\'] == undefined)
-									alert(JSON.stringify(pala[l*2+p]));
+								// if(pala[l*2+p]['imagem\\\\'] == undefined)
+								// 	alert(JSON.stringify(pala[l*2+p]));
 								let s = pala[l*2+p]['imagem\\\\'].replace(/\"/gi, "");
 								s= s.replace(/\\/gi, "");
 								s = s.replace(/\//gi, "/");
-								img.setAttribute('src', 'https://inclusio.engynios.com/imagens/'+s);
-								img.setAttribute('alt', 'imagemmm');
-								img.setAttribute('id', 'imagem'+l*2+p);
 								td.setAttribute('id', pala[l*2+p]['id_categoria\\\\']);
 								//alert(JSON.stringify( pala[l*2+p]['nome_palavra\\\\']));
 								let nome = pala[l*2+p]['nome_palavra\\\\'].replace(/\"/gi, "");
 								nome= nome.replace(/\\/gi, "");
 								nome = nome.replace(/\//gi, "/");
 
-								td.innerHTML = ''+nome.toUpperCase()+'';
-								td.appendChild(img); //coloca a img no td
+								td.innerText = ''+nome.toUpperCase()+'';
+								if(JSON.parse(document.getElementById('config').innerText).imagem == 's'){
+									let img = document.createElement("img");
+									img.setAttribute('src', 'https://inclusio.engynios.com/imagens/'+s);
+									img.setAttribute('alt', 'imagem');
+									img.setAttribute('style', 'max-width: 100px; max-heigth: 100px;');
+									img.setAttribute('id', 'imagem'+l*2+p);
+									td.appendChild(img); //coloca a img no td
+								}
 								
 								td.addEventListener('click', function()
 								{
 									
-									document.getElementById('texto').innerHTML+=' '+nome.toUpperCase()+'';
+									document.getElementById('texto').innerText+=' '+nome.toUpperCase()+'';
 		
 									
 								});
@@ -201,31 +233,38 @@ export class HomePage
 	
   carrega_imagem()
   {
-        let teste =
-		{
-			id_usuario: null
-
-		}
-	
+        let user ={
+			id_usuario: this.usuario.id_usuario
+		};
 					
-		this.http.get(this.endereco_select, teste, {})
+		this.http.get(this.endereco_select, user, {})
 		.then(data => 
 		{	
+			
+			
 			//usar aqui
 			let converter = this.converte(data.data);
-			for(let a = 0; a < converter.length; a++){
-				this.http.get('https://inclusio.engynios.com/api/read/id/categoria-palavra.php', {id_categoria: converter[a]['id_categoria\\\\'].replace(/\\\\\"/gi, '"')}, {})
-				.then(dados => {
-					this.palavras[converter[a]['id_categoria\\\\'].replace(/\\\\\"/gi, "")] = this.converte(dados.data);
-					document.getElementById('palavras').innerText = JSON.stringify(this.palavras);
 
-					this.resultados = converter.length;
+			for(let a = 0; a < converter.length; a++){
+				this.http.get('https://inclusio.engynios.com/api/read/id/categoria-palavra.php', {id_categoria: converter[a]['id_categoria\\\\'].replace(/\\\\\"/gi, '"')}, {}).then(dados => {
+					if(JSON.stringify(this.converte(dados.data)).length < 5){
+						converter.splice(a);
+						a--;
+					}else
+						this.palavras[converter[a]['id_categoria\\\\'].replace(/\\\\\"/gi, "")] = this.converte(dados.data);
+				}).catch(e => {
+					alert('Erro ao acessar as palavras. Favor verificar a conexão com a internet ou contactar os desenvolvedores: ' + JSON.stringify(e));
+				});
+			}
+			setTimeout(() => {
+				document.getElementById('palavras').innerText = JSON.stringify(this.palavras);
+				this.resultados = converter.length;
 				// alert(JSON.stringify(converter));
 				let table = document.createElement("table"); //cria uma tabela
 				table.setAttribute('id', 'tabela');
 				table.setAttribute('border', '1');
 				let h1= document.getElementById("h1");
-				h1.innerHTML= "Nossas Categorias";
+				h1.innerText= "Nossas Categorias";
 				
 				for(let l=0;l<this.resultados/2;l++)
 				{
@@ -235,13 +274,14 @@ export class HomePage
 					{
 						var td = document.createElement("td");
 						let img = document.createElement("img");
-						if(converter[l*2+p]['imagem\\\\'] == undefined)
-							alert(JSON.stringify(converter[l*2+p]));
+						// if(converter[l*2+p]['imagem\\\\'] == undefined)
+						// 	alert(JSON.stringify(converter[l*2+p]));
 						let s = converter[l*2+p]['imagem\\\\'].replace(/\"/gi, "");
 						s= s.replace(/\\/gi, "");
 						s = s.replace(/\//gi, "/");
 						img.setAttribute('src', 'https://inclusio.engynios.com/imagens/'+s);
-						img.setAttribute('alt', 'imagemmm');
+						img.setAttribute('alt', 'imagem');
+						img.setAttribute('style', 'max-width: 100px; max-heigth: 100px;');
 						img.setAttribute('id', 'imagem'+l*2+p);
 						td.setAttribute('id', converter[l*2+p]['id_categoria\\\\']);
 						td.setAttribute('name', converter[l*2+p]['nome_palavra\\\\']);
@@ -255,16 +295,16 @@ export class HomePage
 						nome= nome.replace(/\\/gi, "");
 						nome = nome.replace(/\//gi, "/");
 
-						td.innerHTML = ''+nome.toUpperCase()+'';
+						td.innerText = ''+nome.toUpperCase()+'';
 						td.appendChild(img); //coloca a img no td
 						td.addEventListener('click', function()
 						{
 							let pala = JSON.parse(document.getElementById('palavras').innerText)[this.id.replace(/\\\\"/gi, "")];
-							alert(JSON.stringify(pala));
+							// alert(JSON.stringify(pala));
 							document.getElementById('tabela').remove();
 							
 							document.getElementById('btn_voltar').hidden=false;
-							h1.innerHTML= "Nossas Palavras";
+							h1.innerText= "Nossas Palavras";
 							
 							//criação da tabela de palavras
 							
@@ -284,30 +324,32 @@ export class HomePage
 								{
 									
 									var td = document.createElement("td");
-									let img = document.createElement("img");
-									if(pala[l*2+p]['imagem\\\\'] == undefined)
-										alert(JSON.stringify(pala[l*2+p]));
+									// if(pala[l*2+p]['imagem\\\\'] == undefined)
+									// 	alert(JSON.stringify(pala[l*2+p]));
 									let s = pala[l*2+p]['imagem\\\\'].replace(/\"/gi, "");
 									s= s.replace(/\\/gi, "");
 									s = s.replace(/\//gi, "/");
-									img.setAttribute('src', 'https://inclusio.engynios.com/imagens/'+s);
-									img.setAttribute('alt', 'imagemmm');
-									img.setAttribute('id', 'imagem'+l*2+p);
 									td.setAttribute('id', pala[l*2+p]['id_categoria\\\\']);
 									//alert(JSON.stringify( pala[l*2+p]['nome_palavra\\\\']));
 									let nome = pala[l*2+p]['nome_palavra\\\\'].replace(/\"/gi, "");
 									nome= nome.replace(/\\/gi, "");
 									nome = nome.replace(/\//gi, "/");
 
-									td.innerHTML = ''+nome.toUpperCase()+'';
-									td.appendChild(img); //coloca a img no td
+									td.innerText = ''+nome.toUpperCase()+'';
+
+									
+									if(JSON.parse(document.getElementById('config').innerText).imagem == 's'){
+										let img = document.createElement("img");
+										img.setAttribute('src', 'https://inclusio.engynios.com/imagens/'+s);
+										img.setAttribute('alt', 'imagem');
+										img.setAttribute('style', 'max-width: 100px; max-heigth: 100px;');
+										img.setAttribute('id', 'imagem'+l*2+p);
+										td.appendChild(img); //coloca a img no td
+									}
 									
 									td.addEventListener('click', function()
 									{
-										
-										document.getElementById('texto').innerHTML+=' '+nome.toUpperCase()+'';
-			
-										
+										document.getElementById('texto').innerText+=' '+nome.toUpperCase()+'';
 									});
 									tr.appendChild(td);
 								}
@@ -321,14 +363,12 @@ export class HomePage
 				}
 
 				document.getElementById('botoes').appendChild(table);
-				}).catch(e => {
-					alert(JSON.stringify(e) + 'line 97');
-				});
-			}
+		}, 2000);
 		})
 		.catch(error => 
 		{
-			alert(JSON.stringify(error) + " linha 141");
+			console.log(error.status);
+			alert('Erro ao carregar as categorias. Favor verificar a conexão com a internet ou contactar os desenvolvedores: ' + JSON.stringify(error));
 		});
 		
 
@@ -336,23 +376,25 @@ export class HomePage
 	
 	sintetizador()
 	{
-		alert("Sintetizador");
-		let frase = document.getElementById('texto');
-		
+		let frase = <HTMLTextAreaElement> document.getElementById('texto');
 		this.tts.speak(
 		{
 			text: frase.innerText, 
-			rate: 0.75,
+			rate: 1,
 			locale: 'pt-BR'
 			
-		}).then(() => console.log('Success'))
-		.catch((reason: any) => alert(reason));
+		}).then(() => {
+			alert('Sucesso');
+		})
+		.catch(error => {
+			alert('Erro no sintetizador de voz: ' + JSON.stringify(error));
+		});
 		
 	}
 	
 	limpar_texto()
 	{
-		document.getElementById('texto').innerHTML=null;
+		document.getElementById('texto').innerText=null;
 	}
 }
 	 

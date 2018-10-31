@@ -28,7 +28,7 @@ import {AlterarpalavrasPage} from '../pages/alterarpalavras/alterarpalavras';
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
 
-  rootPage: any = LoginPage;
+    rootPage: any = LoginPage;
 
   pages: Array<{title: string, component: any}>;
 
@@ -37,7 +37,7 @@ export class MyApp {
 
     // used for an example of ngFor and navigation
     this.pages = [
-      { title: 'Teclado', component: HomePage },
+      { title: 'Home', component: HomePage },
       { title: 'Perfil', component: PerfilPage },
       { title: 'Criar Categoria', component: CriarcatPage },
       { title: 'Criar Palavra', component: CriarpalPage },
