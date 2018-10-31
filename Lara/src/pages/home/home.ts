@@ -279,10 +279,6 @@ export class HomePage implements OnInit
 						let s = converter[l*2+p]['imagem\\\\'].replace(/\"/gi, "");
 						s= s.replace(/\\/gi, "");
 						s = s.replace(/\//gi, "/");
-						img.setAttribute('src', 'https://inclusio.engynios.com/imagens/'+s);
-						img.setAttribute('alt', 'imagem');
-						img.setAttribute('style', 'max-width: 100px; max-heigth: 100px;');
-						img.setAttribute('id', 'imagem'+l*2+p);
 						td.setAttribute('id', converter[l*2+p]['id_categoria\\\\']);
 						td.setAttribute('name', converter[l*2+p]['nome_palavra\\\\']);
 						this.categorias[l*2+p] = {};
@@ -296,7 +292,14 @@ export class HomePage implements OnInit
 						nome = nome.replace(/\//gi, "/");
 
 						td.innerText = ''+nome.toUpperCase()+'';
-						td.appendChild(img); //coloca a img no td
+						if(this.config.imagem == 's'){
+							let img = document.createElement("img");
+							img.setAttribute('src', 'https://inclusio.engynios.com/imagens/'+s);
+							img.setAttribute('alt', 'imagem');
+							img.setAttribute('style', 'max-width: 100px; max-heigth: 100px;');
+							img.setAttribute('id', 'imagem'+l*2+p);
+							td.appendChild(img); //coloca a img no td
+						}
 						td.addEventListener('click', function()
 						{
 							let pala = JSON.parse(document.getElementById('palavras').innerText)[this.id.replace(/\\\\"/gi, "")];
