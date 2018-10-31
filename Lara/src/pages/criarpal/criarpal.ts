@@ -17,6 +17,7 @@ import { SessionconfiguracoesProvider } from '../../providers/sessionconfiguraco
 import { Configuracoes } from '../../app/models/configuracoes';
 //camera
 import { Camera, CameraOptions } from '@ionic-native/camera';
+import { convertToView } from 'ionic-angular/navigation/nav-util';
 @IonicPage()
 @Component({
   selector: 'page-criarpal',
@@ -94,7 +95,7 @@ export class CriarpalPage {
         let valor;
         if(str.indexOf(',') == -1){
           valor = str.substring(str.indexOf(':')+1, str.indexOf('}')-1);
-          str = ' ';
+					str = ' ';
         }else{
           valor = str.substring(0, str.indexOf(',')-1);
           str = str.substring(str.indexOf(',')+1);
@@ -208,12 +209,6 @@ export class CriarpalPage {
 			}, 5000);
 		}
 	}
-	ngOnInit() {
-		this.getSession();
-		setTimeout(() => {
-			this.carregapalavras();
-		}, 3000);
-	}
 	getSession(){
 		this.session_login.get().then(
 			res =>
@@ -222,6 +217,24 @@ export class CriarpalPage {
 			}
 		);//session			
 	}
+	ngOnInit() {
+		this.getSession();
+		setTimeout(() => {
+			this.carregapalavras();
+			let objeto = {
+				id_usuario: this.usuario.id_usuario
+			};
+			let path2 = 'https://inclusio.engynios.com/api/read/id_usuario/palavra.php';
+			this.http.get(path2, objeto, {}).then(data =>{
+				let dados = this.converte(data.data);
+				this.palavrasG=dados;
+			}
+		).catch(error => {
+			alert(JSON.stringify(error));
+		});
+		}, 3000);
+	}
+	
 	limpar(){
 	this.nomePalavra= null;
 	this.base64Image=null;
@@ -237,10 +250,10 @@ export class CriarpalPage {
 		let objeto = {
 			id_usuario: this.usuario.id_usuario
 		};
-		let path = 'http://inclusio.engynios.com/api/read/id_usuario/palavras-null.php';
+		let path = 'https://inclusio.engynios.com/api/read/id_usuario/categoria.php';
 		this.http.get(path, objeto, {}).then(data =>{
 			let dados = this.converte(data.data);
-			this.palavrasG = dados;
+			//this.palavrasG = dados;
 			let div = document.getElementById('div_categorias');	
 
 			for(let a = 0; a < dados.length; a++){
@@ -249,8 +262,10 @@ export class CriarpalPage {
 				ckb.type = "checkbox";
 				ckb.id = "ckb"+dados[a]['id_categoria'];
 				ckb.className = 'checkbox';
-				let cat = document.createElement('p');
+				let cat = <HTMLParagraphElement> document.createElement('p');
+				alert(JSON.stringify(dados[a]));
 				cat.innerText = dados[a]['nome_categoria'].replace(/\"/gi, "");
+			//	alert('entrou7');
 				cat.appendChild(document.createElement('br'));
 				ion.appendChild(ckb);
 				ion.appendChild(cat);
