@@ -93,8 +93,8 @@ export class HomePage implements OnInit
 				for(let p=0;p<2 && l*2+p < objeto.length(objeto);p++)
 				{
 					var td = document.createElement("td");
-					if(objeto[l*2+p]['imagem\\\\'] == undefined)
-						alert(JSON.stringify(objeto[l*2+p]));
+					// if(objeto[l*2+p]['imagem\\\\'] == undefined)
+					// 	alert(JSON.stringify(objeto[l*2+p]));
 					let s = objeto[l*2+p]['imagem\\\\'].replace(/\"/gi, "");
 					s= s.replace(/\\/gi, "");
 					s = s.replace(/\//gi, "/");
@@ -164,13 +164,12 @@ export class HomePage implements OnInit
 									img.setAttribute('id', 'imagem'+l*2+p);
 									td.appendChild(img); //coloca a img no td
 								}
+								else
+									td.setAttribute('style', 'font-size: 2vw');
 								
 								td.addEventListener('click', function()
 								{
-									
-									document.getElementById('texto').innerText+=' '+nome.toUpperCase()+'';
-		
-									
+									document.getElementById('texto').innerHTML += this.innerText.toUpperCase()+' ';
 								});
 								tr.appendChild(td);
 							}
@@ -352,7 +351,7 @@ export class HomePage implements OnInit
 									
 									td.addEventListener('click', function()
 									{
-										document.getElementById('texto').innerText+=' '+nome.toUpperCase()+'';
+										document.getElementById('texto').innerHTML += this.innerText.toUpperCase()+' ';
 									});
 									tr.appendChild(td);
 								}
@@ -385,7 +384,6 @@ export class HomePage implements OnInit
 			text: frase.innerText, 
 			rate: 1,
 			locale: 'pt-BR'
-			
 		}).then(() => {
 			alert('Sucesso');
 		})
