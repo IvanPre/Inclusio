@@ -4872,10 +4872,6 @@ textarea::-webkit-input-placeholder {
   padding-left: 2px;
 }
 
-textarea:-ms-input-placeholder {
-  padding-left: 2px;
-}
-
 textarea::-ms-input-placeholder {
   padding-left: 2px;
 }
@@ -25684,6 +25680,24 @@ ion-navbar.toolbar {
   font-weight: bold;
 }
 
+page-ajuda .p_inicio {
+  text-align: justify;
+  font-size: 130%;
+}
+
+page-ajuda .h1_inicio {
+  font-size: 180%;
+}
+
+page-ajuda #texto_inicio {
+  padding: 5%;
+  padding-top: 2%;
+}
+
+page-ajuda b {
+  float: center;
+}
+
 #titulo {
   float: left;
 }
@@ -26135,21 +26149,34 @@ input[type=text]:focus {
   font-family: Arial;
 }
 
-.seta-baixo {
-  height: 6px;
+.seta {
+  height: 20px;
+  float: left;
 }
 
-.seta-direita {
-  height: 10px;
+.palavra {
+  height: 15px;
+  width: 100px;
 }
 
-ion-item.palavra {
-  height: 10px;
-  width: 100%;
+.linhas {
+  text-align: left;
+}
+
+.categoria {
+  text-align: left;
+}
+
+label.palavras {
+  color: #602901;
+  font-size: 110%;
+  text-align: justify;
+  position: relative;
+  left: 10px;
 }
 
 .div_categorias {
-  width: 100%;
+  width: 150%;
   margin: 0 auto;
 }
 
@@ -26285,6 +26312,18 @@ input[type=text]:focus {
   height: 10px;
 }
 
+.linhas {
+  text-align: left;
+}
+
+label.categorias {
+  color: #602901;
+  font-size: 110%;
+  text-align: justify;
+  position: relative;
+  left: 10px;
+}
+
 page-esquecisenha #centraliza_texto {
   text-align: center;
 }
@@ -26389,6 +26428,151 @@ input[type=text]:focus {
 }
 
 .login {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-align-content: center;
+  -ms-flex-line-pack: center;
+  align-content: center;
+  -webkit-align-self: center;
+  -ms-flex-item-align: center;
+  align-self: center;
+  color: #5fbad3;
+  font-family: Arial;
+}
+
+#btn_voltar {
+  float: left;
+  width: 15%;
+}
+
+#limpar {
+  float: right;
+  width: 12%;
+}
+
+#volume {
+  width: 12%;
+}
+
+#texto {
+  margin-top: 13px;
+  margin-bottom: 20px;
+}
+
+/* .imagem
+         {
+             margin-bottom: 40px;
+         }
+         .caixa
+         {
+            margin-bottom: 60px;
+         }*/
+page-inserecod #centraliza_texto {
+  text-align: center;
+}
+
+page-listarcategoria #titulo {
+  float: left;
+}
+
+page-listarcategoria .error {
+  text-align: left;
+}
+
+page-listarcategoria #texto {
+  font-family: arial;
+  color: #FF6501;
+  font-size: 130%;
+  font-weight: bold;
+}
+
+page-listarcategoria .toolbar-background {
+  background-color: #F2E8E1;
+}
+
+page-listarcategoria [text-color="fonte-laranja"] {
+  color: #FF6501;
+  font-size: 130%;
+  font-weight: bold;
+}
+
+page-listarcategoria .body {
+  background: white;
+  background-image: url("../assets/imgs/fundo.jpg");
+  background-size: 100%;
+}
+
+page-listarcategoria .logo {
+  height: 100PX;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+page-listarcategoria #caixa_cadastro {
+  background-color: #fff;
+  font-family: arial;
+  border-radius: 30px !important;
+  border: 1px solid #ffffff;
+  margin-top: 3%;
+  padding: 10%;
+  padding-top: 5%;
+  -webkit-box-shadow: 2px 2px 2px whitesmoke;
+  box-shadow: 2px 2px 2px whitesmoke;
+  text-align: center;
+}
+
+page-listarcategoria h1 {
+  color: #602901;
+  font-size: 150%;
+  padding: 1%;
+}
+
+page-listarcategoria input[type=text] {
+  width: 100%;
+  padding: 5%;
+  border: 3px solid #E0E0E0;
+  border-radius: 10px !important;
+  color: #602901;
+  font-size: 130%;
+  margin: 0%;
+}
+
+page-listarcategoria input[type=text]:focus {
+  width: 100%;
+  padding: 5%;
+  border-radius: 10 px !important;
+  border: 3px solid #C0C0C0;
+}
+
+page-listarcategoria #botoes {
+  margin: 0px auto;
+  text-align: center;
+}
+
+page-listarcategoria .botaoCad {
+  width: 100%;
+  padding: 5%;
+  background-color: #FF6501;
+  color: #fff;
+  font-family: Arial;
+  font-weight: bold;
+  cursor: pointer;
+  height: 3.6rem;
+  font-size: 1.4rem;
+  -webkit-appearance: button;
+  border: 1px solid #FF6501;
+  border-radius: 64px !important;
+  padding: 3%;
+  -webkit-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+  text-align: center;
+}
+
+page-listarcategoria .login {
   padding-top: 10px;
   padding-bottom: 10px;
   -webkit-box-align: center;

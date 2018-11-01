@@ -1,14 +1,14 @@
 webpackJsonp([6],{
 
-/***/ 305:
+/***/ 315:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ConfiguracoesPageModule", function() { return ConfiguracoesPageModule; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ListarcategoriaPageModule", function() { return ListarcategoriaPageModule; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__configuracoes__ = __webpack_require__(116);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__listarcategoria__ = __webpack_require__(122);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -18,23 +18,23 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 
 
 
-var ConfiguracoesPageModule = /** @class */ (function () {
-    function ConfiguracoesPageModule() {
+var ListarcategoriaPageModule = /** @class */ (function () {
+    function ListarcategoriaPageModule() {
     }
-    ConfiguracoesPageModule = __decorate([
+    ListarcategoriaPageModule = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["I" /* NgModule */])({
             declarations: [
-                __WEBPACK_IMPORTED_MODULE_2__configuracoes__["a" /* ConfiguracoesPage */],
+                __WEBPACK_IMPORTED_MODULE_2__listarcategoria__["a" /* ListarcategoriaPage */],
             ],
             imports: [
-                __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* IonicPageModule */].forChild(__WEBPACK_IMPORTED_MODULE_2__configuracoes__["a" /* ConfiguracoesPage */]),
+                __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* IonicPageModule */].forChild(__WEBPACK_IMPORTED_MODULE_2__listarcategoria__["a" /* ListarcategoriaPage */]),
             ],
         })
-    ], ConfiguracoesPageModule);
-    return ConfiguracoesPageModule;
+    ], ListarcategoriaPageModule);
+    return ListarcategoriaPageModule;
 }());
 
-//# sourceMappingURL=configuracoes.module.js.map
+//# sourceMappingURL=listarcategoria.module.js.map
 
 /***/ })
 

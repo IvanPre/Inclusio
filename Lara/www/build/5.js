@@ -1,14 +1,12 @@
 webpackJsonp([5],{
 
-/***/ 306:
+/***/ 316:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CriarcatPageModule", function() { return CriarcatPageModule; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ListarpalavrasPageModule", function() { return ListarpalavrasPageModule; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__criarcat__ = __webpack_require__(117);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -16,25 +14,20 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 
-
-
-var CriarcatPageModule = /** @class */ (function () {
-    function CriarcatPageModule() {
+// import { ListarpalavrasPage } from './listarpalavras';
+var ListarpalavrasPageModule = /** @class */ (function () {
+    function ListarpalavrasPageModule() {
     }
-    CriarcatPageModule = __decorate([
+    ListarpalavrasPageModule = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["I" /* NgModule */])({
-            declarations: [
-                __WEBPACK_IMPORTED_MODULE_2__criarcat__["a" /* CriarcatPage */],
-            ],
-            imports: [
-                __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* IonicPageModule */].forChild(__WEBPACK_IMPORTED_MODULE_2__criarcat__["a" /* CriarcatPage */]),
-            ],
+            declarations: [],
+            imports: [],
         })
-    ], CriarcatPageModule);
-    return CriarcatPageModule;
+    ], ListarpalavrasPageModule);
+    return ListarpalavrasPageModule;
 }());
 
-//# sourceMappingURL=criarcat.module.js.map
+//# sourceMappingURL=listarpalavras.module.js.map
 
 /***/ })
 

@@ -1,12 +1,167 @@
-webpackJsonp([8],{
+webpackJsonp([15],{
 
-/***/ 115:
+/***/ 113:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return InseresenhaPage; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_forms__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_native_http__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__ionic_storage__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__providers_sessionlogin_sessionlogin__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__login_login__ = __webpack_require__(50);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+
+
+
+var InseresenhaPage = /** @class */ (function () {
+    function InseresenhaPage(navCtrl, formBuilder, navParams, http, session_login, storage) {
+        this.navCtrl = navCtrl;
+        this.navParams = navParams;
+        this.http = http;
+        this.session_login = session_login;
+        this.storage = storage;
+        this.messageSenha = "";
+        this.errorSenha = false;
+        this.messageSenha_1 = "";
+        this.errorSenha_1 = false;
+        this.endereco = "http://inclusio.engynios.com/api/update/altera_senha_1.php";
+        this.alteraSenhaForm = formBuilder.group({
+            senha: ['', __WEBPACK_IMPORTED_MODULE_2__angular_forms__["f" /* Validators */].compose([__WEBPACK_IMPORTED_MODULE_2__angular_forms__["f" /* Validators */].minLength(6), __WEBPACK_IMPORTED_MODULE_2__angular_forms__["f" /* Validators */].maxLength(20), __WEBPACK_IMPORTED_MODULE_2__angular_forms__["f" /* Validators */].required])],
+            senha_conf: ['', __WEBPACK_IMPORTED_MODULE_2__angular_forms__["f" /* Validators */].compose([__WEBPACK_IMPORTED_MODULE_2__angular_forms__["f" /* Validators */].minLength(6), __WEBPACK_IMPORTED_MODULE_2__angular_forms__["f" /* Validators */].maxLength(20), __WEBPACK_IMPORTED_MODULE_2__angular_forms__["f" /* Validators */].required])],
+        });
+    }
+    InseresenhaPage.prototype.converte = function (date) {
+        var data = JSON.stringify(date);
+        var re = /\\\"/gi;
+        data = data.replace(re, "\"");
+        var retorno = [];
+        while (data.indexOf('{') != -1) {
+            var str = data.substring(data.indexOf('{') + 1, data.indexOf('}') + 1);
+            data = data.substring(data.indexOf('}') + 1);
+            var objeto = {};
+            while (str.lastIndexOf('}') != -1) {
+                var campo = str.substring(str.indexOf('"') + 1, str.indexOf(':') - 1);
+                str = str.substring(str.indexOf(':') + 1);
+                // document.getElementById('resposta2').innerText += str;
+                var valor = void 0;
+                if (str.indexOf(',') == -1) {
+                    valor = str.substring(str.indexOf(':') + 1, str.indexOf('}') - 1);
+                    str = ' ';
+                }
+                else {
+                    valor = str.substring(0, str.indexOf(',') - 1);
+                    str = str.substring(str.indexOf(',') + 1);
+                }
+                if (valor == 'nul')
+                    valor = null;
+                else
+                    valor = valor + '"';
+                objeto[campo] = valor;
+                // document.getElementById('resposta2').innerText = str + str.lastIndexOf('}');
+            }
+            retorno.push(objeto);
+        }
+        return retorno;
+    };
+    InseresenhaPage.prototype.criar = function () {
+        var _this = this;
+        var _a = this.alteraSenhaForm.controls, senha = _a.senha, senha_conf = _a.senha_conf;
+        if (!senha.valid) {
+            if (senha.value == null || senha.value == "") {
+                this.errorSenha = true;
+                this.messageSenha = "Campo obrigatório";
+            }
+            else {
+                this.errorSenha = true;
+                this.messageSenha = "A senha precisa ter de 6 a 20 caracteres";
+            }
+        }
+        else {
+            this.messageSenha = "";
+        }
+        if (!senha_conf.valid) {
+            if (senha_conf.value == null || senha_conf.value == "") {
+                this.errorSenha_1 = true;
+                this.messageSenha_1 = "Campo obrigatório";
+            }
+        }
+        else if (senha.valid) {
+            if (senha.value != senha_conf.value) {
+                this.errorSenha_1 = true;
+                this.messageSenha_1 = "As senhas digitadas devem ser as mesmas!";
+            }
+            else {
+                this.messageSenha_1 = "";
+            }
+        }
+        else {
+            this.messageSenha_1 = "";
+        }
+        if (this.alteraSenhaForm.valid) {
+            var objeto = {
+                id_usuario: this.usuario.id_usuario,
+                senha: senha.value
+            };
+            this.http.post(this.endereco, objeto, {
+                headers: { 'Content-Type': 'application/json' }
+            })
+                .then(function (data) {
+                alert("Senha Alterada!");
+                _this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_6__login_login__["a" /* LoginPage */]);
+            }).catch(function (error) {
+                alert(JSON.stringify(error));
+            });
+        }
+    };
+    InseresenhaPage.prototype.ngOnInit = function () {
+        this.getSession();
+    };
+    InseresenhaPage.prototype.getSession = function () {
+        var _this = this;
+        this.session_login.get().then(function (res) {
+            _this.usuario = res;
+        }); //session			
+    };
+    InseresenhaPage.prototype.limpar = function () {
+        var _a = this.alteraSenhaForm.controls, senha = _a.senha, senha_conf = _a.senha_conf;
+        this.senha = "";
+        this.senha_conf = "";
+    };
+    InseresenhaPage = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
+            selector: 'page-inseresenha',template:/*ion-inline-start:"C:\Users\ivanp\Desktop\Estudos\CTI\Tecnico\TCC\Lara-ApresentacaoFinal.bkp\src\pages\inseresenha\inseresenha.html"*/'<ion-header>\n\n	<ion-navbar>\n\n	  \n\n		 <div  id="topo">\n\n			 <div id="btn_menu">\n\n			  <ion-buttons left> \n\n				  <button ion-button icon-only menuToggle> \n\n					  <p class="menu"><ion-icon name="menu"> </ion-icon></p>\n\n				  </button>\n\n  \n\n			  </ion-buttons>\n\n				  </div>\n\n			  <div id="titulo">\n\n			  <ion-title>\n\n			   <span text-color="fonte-laranja"> Insere Senha </span>\n\n			  </ion-title>\n\n			  </div>\n\n		  </div>\n\n	  \n\n	</ion-navbar>\n\n  </ion-header>\n\n  \n\n\n\n\n\n<ion-content class="body" padding>\n\n   \n\n		 <div id="caixa_cadastro">\n\n				&nbsp; &nbsp;  <!--p class="icon"><ion-icon ios="ios-person" md="md-person"></ion-icon></p> <!-- <h1>Criar Categoria</h1>-->\n\n				<form  [formGroup]="alteraSenhaForm" novalidate>\n\n						<ion-row>\n\n							<ion-col>\n\n								<ion-list inset>\n\n					<div id="input_form">\n\n							<div id="texto"> Senha:</div>\n\n							<ion-item>\n\n							<ion-input [(ngModel)]="senha" formControlName="senha" type="password" placeholder="Nova Senha" id="senha" clearInput clearOnEdit="false"></ion-input>\n\n							</ion-item>\n\n						<h6 *ngIf="errorSenha" class="error"> {{messageSenha}}</h6>\n\n						<br>\n\n						<div id="texto"> Confirma Senha:</div>\n\n						<ion-item>\n\n							<ion-input [(ngModel)]="senha_conf" formControlName="senha_conf" type="password" placeholder="Confirma Senha" id="senha_conf" clearInput clearOnEdit="false"></ion-input>\n\n						</ion-item>\n\n						<h6 *ngIf="errorSenha_1" class="error"> {{messageSenha_1}}</h6>\n\n						<br>\n\n					</div>\n\n				</ion-list>  \n\n					</ion-col>\n\n				</ion-row>	\n\n				<ion-row>\n\n						<div id="botoes">\n\n							<button ion-button round class="botaoCad" (click)="criar()">Alterar</button>\n\n							<button ion-button round class="botaoCad" (click)="limpar()">Limpar</button>\n\n						</div>\n\n					</ion-row>\n\n			</form>\n\n			</div>\n\n</ion-content>\n\n'/*ion-inline-end:"C:\Users\ivanp\Desktop\Estudos\CTI\Tecnico\TCC\Lara-ApresentacaoFinal.bkp\src\pages\inseresenha\inseresenha.html"*/,
+        }),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */], __WEBPACK_IMPORTED_MODULE_2__angular_forms__["a" /* FormBuilder */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */], __WEBPACK_IMPORTED_MODULE_3__ionic_native_http__["a" /* HTTP */], __WEBPACK_IMPORTED_MODULE_5__providers_sessionlogin_sessionlogin__["a" /* SessionloginProvider */], __WEBPACK_IMPORTED_MODULE_4__ionic_storage__["b" /* Storage */]])
+    ], InseresenhaPage);
+    return InseresenhaPage;
+}());
+
+//# sourceMappingURL=inseresenha.js.map
+
+/***/ }),
+
+/***/ 114:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AjudaPage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(7);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -28,15 +183,50 @@ var AjudaPage = /** @class */ (function () {
     function AjudaPage(navCtrl, navParams) {
         this.navCtrl = navCtrl;
         this.navParams = navParams;
+        this.mostra_botoes = true; //começa mostrando o botão para ir para o proximo 
+        this.mostra_slides = false; //enquanto isso, os slides não aparecem
     }
+    AjudaPage.prototype.goToSlide = function (n) {
+        if (n == 0)
+            this.slides.slideTo(0, 500);
+        else if (n == 1)
+            this.slides.slideTo(1, 500);
+        else if (n == 2)
+            this.slides.slideTo(2, 500);
+    };
     AjudaPage.prototype.ionViewDidLoad = function () {
         console.log('ionViewDidLoad AjudaPage');
     };
+    AjudaPage.prototype.ajuda_slides = function (n) {
+        //depois esconde-se a div dos botoes 
+        this.mostra_botoes = !this.mostra_botoes;
+        //ele pega o valor true (ou seja mostrando) e troca para false (não aparece)
+        //e chama a div onde estão os slides
+        this.mostra_slides = !this.mostra_slides;
+        this.goToSlide(n);
+        /*
+         if()
+         {
+   
+         }
+         */
+    };
+    AjudaPage.prototype.volta_links = function () {
+        //depois esconde-se a div dos botoes 
+        this.mostra_botoes = !this.mostra_botoes;
+        //ele pega o valor true (ou seja mostrando) e troca para false (não aparece)
+        //e chama a div onde estão os slides
+        this.mostra_slides = !this.mostra_slides;
+    };
+    __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_8" /* ViewChild */])(__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["l" /* Slides */]),
+        __metadata("design:type", __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["l" /* Slides */])
+    ], AjudaPage.prototype, "slides", void 0);
     AjudaPage = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
-            selector: 'page-ajuda',template:/*ion-inline-start:"C:\Users\ra1657100\Desktop\Inclusio\Lara\src\pages\ajuda\ajuda.html"*/'<!--\n\n  Generated template for the AjudaPage page.\n\n\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n\n  Ionic pages and navigation.\n\n-->\n\n<ion-header>\n\n  <ion-navbar>\n\n    <button ion-button menuToggle>\n\n      <ion-icon name="menu"></ion-icon>\n\n    </button>\n\n    <span text-color = "fonte-laranja">Ajuda</span>\n\n  </ion-navbar>\n\n</ion-header>\n\n\n\n\n\n<ion-content padding>\n\n  Página do help do sistema\n\n</ion-content>\n\n'/*ion-inline-end:"C:\Users\ra1657100\Desktop\Inclusio\Lara\src\pages\ajuda\ajuda.html"*/,
+            selector: 'page-ajuda',template:/*ion-inline-start:"C:\Users\ivanp\Desktop\Estudos\CTI\Tecnico\TCC\Lara-ApresentacaoFinal.bkp\src\pages\ajuda\ajuda.html"*/'<ion-header>\n\n  <ion-navbar>\n\n  \n\n	<!--caso a pag não tenha cabeçalho voc apaga tudo (a header e as coisas dentro-->\n\n	   <div  id="topo">\n\n		   <div id="btn_menu">\n\n			<ion-buttons left> \n\n				<button ion-button icon-only menuToggle> \n\n					<p class="menu"><ion-icon name="menu"> </ion-icon></p>\n\n				</button>\n\n\n\n			</ion-buttons>\n\n				</div>\n\n			<div id="titulo">\n\n			<ion-title>\n\n			 <span text-color="fonte-laranja"> Ajuda </span>\n\n			</ion-title>\n\n			</div>\n\n		</div>\n\n	\n\n  </ion-navbar>\n\n</ion-header>\n\n\n\n<ion-content class="body" padding>\n\n \n\n	<div id="principal">\n\n	\n\n\n\n  <!--Aqui é o modelo para os formularios-->\n\n  \n\n		\n\n      <div id="formulario" *ngIf="mostra_botoes">\n\n		\n\n        <button ion-button round class="botao" *ngIf="mostra_botoes"  (click)="ajuda_slides(0)" >Como usar o teclado</button>\n\n        <br>\n\n        <br>\n\n        \n\n        <button ion-button round class="botao" *ngIf="mostra_botoes"   (click)="ajuda_slides(1)">Como criar palavras </button>\n\n        <br>\n\n        <br>\n\n        <button ion-button round class="botao" *ngIf="mostra_botoes"  [navPush]="AjudaslidesPage" (click)="ajuda_slides(2)">Como criar categorias </button>\n\n      \n\n      \n\n      \n\n      </div> <!-- formulario -->\n\n\n\n      \n\n\n\n        <ion-slides  pager="true">\n\n          \n\n            <ion-slide>\n\n            <div id="caixa" *ngIf="mostra_slides">\n\n              <h1 class="h1_inicio">Como usar o teclado</h1>\n\n              <div id="texto_inicio">\n\n              <p class="p_inicio">\n\n                \n\n                <!-- VER SE NO CASO DAS CATEGORIAS AS IMAGENS TAMBÉM SÃO RETIRADAS-->\n\n                  Vá até o menu principal, localizado na parte superior esquerda de qualquer tela principal e clique em Teclado.\n\n                  <br>\n\n                  <!--\n\n                    DEMONSTRAÇAO DE ONDE ESTÁ A TECLADO\n\n                    NÃO SERIA MELHOR O LINK NO MENU SE CHAMAR TECLADO?\n\n\n\n                  -->\n\n                  \n\n                  Inicialmente, o teclado tem quadrados com imagens e nomes de categorias. \n\n                  <br>\n\n                  \n\n                  <!--\n\n                    1 Imagem teclado\n\n                    PRIMEIRA TELA DE CATEGORIAS\n\n                  -->\n\n                  \n\n                  Ao clicar em um quadrado, você será direcionado para outro teclado mais especifíco com palavras relacionadas à essa categoria.\n\n                  <br>\n\n                  \n\n                  <!--\n\n                    2 Imagens do "mouse"\n\n                    "MOUSE" EM CIMA DA CATEGORIA NA TELA DE CATEGORIAS\n\n                    SEGUNDA TELA DE PALAVRAS DA CATEGORIA ESCOLHIDA\n\n\n\n                  -->\n\n                  \n\n                  Este teclado é semelhante ao anterior, tendo quadrados com imagens e palavras\n\n                  <br>\n\n                \n\n                  <!--\n\n                      2 Imagens da teclado\n\n                    SEGUNDA TELA DE PALAVRAS\n\n\n\n                  -->\n\n                  \n\n                  Ao clicar em uma palavra, ela será adicionada à barra com o escrito "FRASE FORMADA", localizada ao topo da tela principal.\n\n                  <br>\n\n                  \n\n                   <!--\n\n                     2 Imagens\n\n                    "MOUSE" EM CIMA DA PALAVRA NA TELA DE PALAVRAS, MAS SEM NADA NO INPUT\n\n                    "MOUSE" CONTINUA EM CIMA, MAS NO INPUT TEM A PALAVRA ESCOLHIDA\n\n\n\n                  -->\n\n                  \n\n                  Caso você precise de palavras de outras categorias para formar a sua frase, volte para a tela inicial do teclado e escolha o complemento.\n\n                  <br>\n\n                  <!--\n\n                    "MOUSE" EM CIMA Do que FAZ VOLTAR PARA A PRIMEIRA TELA\n\n                    ETC\n\n\n\n                  -->\n\n                  \n\n                  Faça isso até formar a frase desejada.\n\n                  <!--\n\n                    por exemplo, eu amo você, eu quero brincar\n\n                  -->\n\n                  <br>\n\n                  <b style="text-align:center;">Deslize e saiba mais</b> \n\n                  \n\n                  <button ion-button round class="botao_volta" style="background-color: transparent;color:#FF6501;"  (click)="volta_links()" >Voltar</button>\n\n                  \n\n                </p>\n\n              </div>\n\n            </div>\n\n            </ion-slide>\n\n            \n\n            <ion-slide>\n\n              <div id="caixa" *ngIf="mostra_slides">\n\n              <h1 class="h1_inicio">Como criar palavras?</h1>\n\n              <div id="texto_inicio">\n\n              <p class="p_inicio">\n\n                  \n\n                  Vá até o menu principal, localizado na parte superior esquerda de qualquer tela principal.\n\n                  <br>\n\n                  <!--\n\n                    "MOUSE" EM CIMA Do que FAZ VOLTAR PARA A PRIMEIRA TELA\n\n                    ETC\n\n\n\n                  -->\n\n                  \n\n                  Clique na a opção "Criar Palavra".\n\n                  <br>\n\n                  <!--\n\n                    "MOUSE" EM CIMA do Criar Palavras\n\n                    ETC\n\n\n\n                  -->\n\n                  \n\n                  A Tela de criação de palavras contém os campos "nome", "imagem" e "categoria", todos devem ser preenchidos.\n\n                  <br>\n\n                  <!--\n\n                    não deveria ter o menu no Criar Palavras?\n\n                    \n\n\n\n                  -->\n\n                  \n\n                  O campo "imagem" exige o link de uma imagem que represente sua palavra.                \n\n                  <br>\n\n                  O campo "categoria" permite a criação de uma nova categoria. Para mais detalhes, veja _Como criar uma categoria?_ (isso é um link)\n\n                  <br>\n\n                  Para finalizar, clique no botão "Criar"\n\n                  <br>\n\n                <b>Deslize e saiba mais</b> \n\n                \n\n                <button ion-button round class="botao_volta" style="background-color: transparent;color:#FF6501;"  (click)="volta_links()" >Voltar</button>\n\n                \n\n              </p>\n\n              </div>\n\n            \n\n            </div>\n\n            </ion-slide>\n\n\n\n            <ion-slide>\n\n                <div id="caixa" *ngIf="mostra_slides">\n\n                <h1 class="h1_inicio">Como criar categorias?</h1>\n\n                <div id="texto_inicio">\n\n                <p class="p_inicio">\n\n                \n\n            \n\n                Para Criar um Categoria, acesse a página "Criar Categoria" pelo menu lateral, encontrado no canto superior esquerdo. \n\n                <br>\n\n                Ao entrar na tela de criação de palavras, dê um nome para a sua categoria e escolha uma imagem para representá-la. \n\n                <br>\n\n                Você pode escolher sua imagem pela galeria clicando no botão "Acessar a galeria" ou tirar uma foto no momento selecionando "Tirar foto". \n\n                <br>\n\n                Em "Palavras disponíveis", marque as palavras que você deseja que façam parte da categoria criada. \n\n                <br>\n\n                Pressione "Enviar" para criar a categoria ou "Limpar" para desfazer o processo.\n\n                \n\n                (Video/imagens/gif)\n\n                <br>\n\n                <b>Deslize e saiba mais</b> \n\n                \n\n                <button ion-button round class="botao_volta" style="background-color: transparent;color:#FF6501;"  (click)="volta_links()" >Voltar</button>\n\n                \n\n              </p>\n\n                </div>\n\n              \n\n              </div>\n\n              </ion-slide>\n\n         \n\n          </ion-slides>\n\n\n\n        \n\n</div> <!--principal-->\n\n\n\n</ion-content>\n\n\n\n\n\n\n\n'/*ion-inline-end:"C:\Users\ivanp\Desktop\Estudos\CTI\Tecnico\TCC\Lara-ApresentacaoFinal.bkp\src\pages\ajuda\ajuda.html"*/,
         }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["h" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavParams */]])
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */]])
     ], AjudaPage);
     return AjudaPage;
 }());
@@ -45,18 +235,465 @@ var AjudaPage = /** @class */ (function () {
 
 /***/ }),
 
+/***/ 115:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AlteradadosPage; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_forms__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_native_http__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__ionic_storage__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__providers_sessionlogin_sessionlogin__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__home_home__ = __webpack_require__(35);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+
+
+
+var AlteradadosPage = /** @class */ (function () {
+    function AlteradadosPage(navCtrl, formBuilder, navParams, http, session_login, storage) {
+        this.navCtrl = navCtrl;
+        this.navParams = navParams;
+        this.http = http;
+        this.session_login = session_login;
+        this.storage = storage;
+        this.messageEmail = "";
+        this.errorEmail = false;
+        this.endereco = "http://inclusio.engynios.com/api/update/altera_dados.php";
+        this.alteraDadosForm = formBuilder.group({
+            email: ['', __WEBPACK_IMPORTED_MODULE_2__angular_forms__["f" /* Validators */].compose([__WEBPACK_IMPORTED_MODULE_2__angular_forms__["f" /* Validators */].required, __WEBPACK_IMPORTED_MODULE_2__angular_forms__["f" /* Validators */].pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+[.][a-zA-Z0-9-.]+$')])]
+        });
+    }
+    AlteradadosPage.prototype.ngOnInit = function () {
+        this.getSession();
+    };
+    AlteradadosPage.prototype.getSession = function () {
+        var _this = this;
+        this.session_login.get().then(function (res) {
+            _this.usuario = res;
+        }); //session			
+    };
+    AlteradadosPage.prototype.converte = function (date) {
+        var data = JSON.stringify(date);
+        var re = /\\\"/gi;
+        data = data.replace(re, "\"");
+        var retorno = [];
+        while (data.indexOf('{') != -1) {
+            var str = data.substring(data.indexOf('{') + 1, data.indexOf('}') + 1);
+            data = data.substring(data.indexOf('}') + 1);
+            var objeto = {};
+            while (str.lastIndexOf('}') != -1) {
+                var campo = str.substring(str.indexOf('"') + 1, str.indexOf(':') - 1);
+                str = str.substring(str.indexOf(':') + 1);
+                // document.getElementById('resposta2').innerText += str;
+                var valor = void 0;
+                if (str.indexOf(',') == -1) {
+                    valor = str.substring(str.indexOf(':') + 1, str.indexOf('}') - 1);
+                    str = ' ';
+                }
+                else {
+                    valor = str.substring(0, str.indexOf(',') - 1);
+                    str = str.substring(str.indexOf(',') + 1);
+                }
+                if (valor == 'nul')
+                    valor = null;
+                else
+                    valor = valor + '"';
+                objeto[campo] = valor;
+                // document.getElementById('resposta2').innerText = str + str.lastIndexOf('}');
+            }
+            retorno.push(objeto);
+        }
+        return retorno;
+    };
+    AlteradadosPage.prototype.altera_dados = function () {
+        var _this = this;
+        var email = this.alteraDadosForm.controls.email;
+        if (!this.alteraDadosForm.valid) {
+            if (!email.valid) {
+                if (email.value == null || email.value == "") {
+                    this.errorEmail = true;
+                    this.messageEmail = "Campo obrigatório";
+                }
+                else {
+                    this.errorEmail = true;
+                    this.messageEmail = "Email inválido!";
+                }
+            }
+        }
+        if (this.alteraDadosForm.valid) {
+            this.messageEmail = "";
+            var objeto = {
+                id_usuario: this.usuario.id_usuario,
+                email: email.value
+            };
+            this.http.post(this.endereco, objeto, {
+                headers: { 'Content-Type': 'application/json' }
+            })
+                .then(function (data) {
+                alert("Email Alterado!");
+                _this.navCtrl.setRoot(__WEBPACK_IMPORTED_MODULE_6__home_home__["a" /* HomePage */]);
+            }).catch(function (error) {
+                alert(JSON.stringify(error));
+            });
+        }
+    };
+    AlteradadosPage.prototype.limpar = function () {
+        var email = this.alteraDadosForm.controls.email;
+        this.email = "";
+    };
+    AlteradadosPage = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
+            selector: 'page-alteradados',template:/*ion-inline-start:"C:\Users\ivanp\Desktop\Estudos\CTI\Tecnico\TCC\Lara-ApresentacaoFinal.bkp\src\pages\alteradados\alteradados.html"*/'<ion-header>\n\n  <ion-navbar>\n\n  \n\n	<!--caso a pag não tenha cabeçalho voc apaga tudo (a header e as coisas dentro-->\n\n	   <div  id="topo">\n\n		   <div id="btn_menu">\n\n			<ion-buttons left> \n\n				<button ion-button icon-only menuToggle> \n\n					<p class="menu"><ion-icon name="menu"> </ion-icon></p>\n\n				</button>\n\n\n\n			</ion-buttons>\n\n				</div>\n\n			<div id="titulo">\n\n			<ion-title>\n\n			 <span text-color="fonte-laranja"> Alterar Email </span>\n\n			</ion-title>\n\n			</div>\n\n		</div>\n\n	\n\n  </ion-navbar>\n\n</ion-header>\n\n\n\n<ion-content class="body" padding>\n\n \n\n	<div id="caixa_cadastro">\n\n		<form  [formGroup]="alteraDadosForm" novalidate>\n\n				<ion-row>\n\n					<ion-col>\n\n						<ion-list inset>\n\n						 <div id = "input_form">\n\n						 \n\n							<div id="texto"> Email:</div>\n\n							<ion-item>\n\n								<ion-input [(ngModel)]="email" formControlName="email" type="textarea" placeholder="exemplo@hotmail.com" clearInput clearOnEdit="false"></ion-input>\n\n							</ion-item>\n\n							\n\n							<h6 *ngIf="errorEmail" class="error"> {{messageEmail}}</h6>\n\n				<br><br>\n\n				</div>\n\n			</ion-list>  \n\n		</ion-col>\n\n	</ion-row>\n\n\n\n	<ion-row>\n\n	<div id="botoes"> 	\n\n		<button ion-button round class="botao" (click)="altera_dados()" >Alterar</button>\n\n    <!--<button ion-button round class="botao" [navPush]="alteradadosPage" ></button> (click)="altera_dados()" >Alterar Dados</button>-->\n\n    <button ion-button round class="botao" (click)="limpar()">Limpar</button>\n\n </div>\n\n </ion-row>\n\n\n\n</form>\n\n</div>\n\n</ion-content>'/*ion-inline-end:"C:\Users\ivanp\Desktop\Estudos\CTI\Tecnico\TCC\Lara-ApresentacaoFinal.bkp\src\pages\alteradados\alteradados.html"*/,
+        }),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */], __WEBPACK_IMPORTED_MODULE_2__angular_forms__["a" /* FormBuilder */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */], __WEBPACK_IMPORTED_MODULE_3__ionic_native_http__["a" /* HTTP */], __WEBPACK_IMPORTED_MODULE_5__providers_sessionlogin_sessionlogin__["a" /* SessionloginProvider */], __WEBPACK_IMPORTED_MODULE_4__ionic_storage__["b" /* Storage */]])
+    ], AlteradadosPage);
+    return AlteradadosPage;
+}());
+
+//# sourceMappingURL=alteradados.js.map
+
+/***/ }),
+
 /***/ 116:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AlterarpalavrasPage; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_forms__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_storage__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_map__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_map__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_rxjs_add_operator_timeout__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_rxjs_add_operator_timeout___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_rxjs_add_operator_timeout__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__providers_sessionlogin_sessionlogin__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__home_home__ = __webpack_require__(35);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__ionic_native_camera__ = __webpack_require__(48);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+
+
+
+
+
+var AlterarpalavrasPage = /** @class */ (function () {
+    function AlterarpalavrasPage(navCtrl, camera, formBuilder, navParams, session_login, storage) {
+        this.navCtrl = navCtrl;
+        this.camera = camera;
+        this.navParams = navParams;
+        this.session_login = session_login;
+        this.storage = storage;
+        this.mostra_listagem = false;
+        this.mostra_alterar = true;
+        this.messagePalavra = "";
+        this.errorPalavra = false;
+        this.palavras = null;
+        this.endereco = "http://inclusio.engynios.com/api/update/palavra.php";
+        this.currentImage = null;
+        this.alteraPalavraForm = formBuilder.group({
+            palavra: ['', __WEBPACK_IMPORTED_MODULE_2__angular_forms__["f" /* Validators */].compose([__WEBPACK_IMPORTED_MODULE_2__angular_forms__["f" /* Validators */].required])]
+        });
+    }
+    AlterarpalavrasPage.prototype.captureImage = function () {
+        var _this = this;
+        var options = {
+            sourceType: this.camera.PictureSourceType.PHOTOLIBRARY,
+            destinationType: this.camera.DestinationType.DATA_URL,
+            quality: 100,
+            targetWidth: 1000,
+            targetHeight: 1000,
+            correctOrientation: true
+        };
+        this.camera.getPicture(options).then(function (imageData) {
+            _this.base64Image = "data:image/jpeg;base64," + imageData;
+        }, function (err) {
+            console.log(err);
+            // Handle error
+            console.log('Image error: ', err);
+        });
+    };
+    AlterarpalavrasPage.prototype.takePicture = function () {
+        var _this = this;
+        this.camera.getPicture({
+            destinationType: this.camera.DestinationType.DATA_URL,
+            targetWidth: 1000,
+            targetHeight: 1000
+        }).then(function (imageData) {
+            // imageData is a base64 encoded string
+            _this.base64Image = "data:image/jpeg;base64," + imageData;
+        }, function (err) {
+            console.log(err);
+        });
+    };
+    AlterarpalavrasPage.prototype.ngOnInit = function () {
+        var _this = this;
+        this.getSession();
+        setTimeout(function () {
+            _this.carregaCategorias();
+        }, 3000);
+    };
+    AlterarpalavrasPage.prototype.getSession = function () {
+        var _this = this;
+        this.session_login.get().then(function (res) {
+            _this.usuario = res;
+        }); //session			
+    };
+    AlterarpalavrasPage.prototype.converte = function (date) {
+        var data = JSON.stringify(date);
+        var re = /\\\"/gi;
+        data = data.replace(re, "\"");
+        data = data.replace(/\\\\/gi, '');
+        var retorno = [];
+        while (data.indexOf('{') != -1) {
+            var str = data.substring(data.indexOf('{') + 1, data.indexOf('}') + 1);
+            data = data.substring(data.indexOf('}') + 1);
+            var objeto = {};
+            while (str.lastIndexOf('}') != -1) {
+                var campo = str.substring(str.indexOf('"') + 1, str.indexOf(':') - 1);
+                str = str.substring(str.indexOf(':') + 1);
+                // document.getElementById('resposta2').innerText += str;
+                var valor = void 0;
+                if (str.indexOf(',') == -1) {
+                    valor = str.substring(str.indexOf(':') + 1, str.indexOf('}') - 1);
+                    str = ' ';
+                }
+                else {
+                    valor = str.substring(0, str.indexOf(',') - 1);
+                    str = str.substring(str.indexOf(',') + 1);
+                }
+                if (valor == 'nul')
+                    valor = null;
+                else
+                    valor = valor + '"';
+                objeto[campo] = valor;
+                // document.getElementById('resposta2').innerText = str + str.lastIndexOf('}');
+            }
+            retorno.push(objeto);
+        }
+        return retorno;
+    };
+    AlterarpalavrasPage.prototype.alterar = function () {
+        var _this = this;
+        document.getElementById("caixa_cadastro").hidden = false;
+        document.getElementById("texto").hidden = true;
+        document.getElementById("div_categorias").hidden = true;
+        var nomes = [];
+        for (var n = 0; n < this.categoriasG.length; n++)
+            nomes.push(this.categoriasG[n]['nome_categoria'].toLowerCase());
+        var palavra = this.alteraPalavraForm.controls.palavra;
+        if (!this.alteraPalavraForm.valid) {
+            this.errorPalavra = true;
+            this.messagePalavra = "Campo obrigatorio";
+        }
+        else {
+            if (nomes.indexOf(palavra.value.toLowerCase()) != -1) {
+                this.errorPalavra = true;
+                this.messagePalavra = "Já existe uma palavra com esse nome";
+                return;
+            }
+            var f = false;
+            var ckbs = document.getElementsByClassName('checkbox');
+            for (var c = 0; c < ckbs.length; c++) {
+                var ckb = ckbs[c];
+                if (ckb.checked) {
+                    f = true;
+                    this.ckb_id = ckb.id;
+                    break;
+                }
+            }
+            if (!f) {
+                alert("Selecione no minimo um radiobutton!");
+                return;
+            }
+            alert(this.ckb_id);
+            var objeto = {
+                id_palavra: this.ckb_id,
+                nome_palavra: palavra.value,
+                id_usuario: this.usuario.id_usuario,
+                versao: "1.0"
+            };
+            this.http.post(this.endereco, objeto, { headers: { 'Content-Type': 'application/json' }
+            })
+                .then(function (data) {
+                alert("Palavra alterada!");
+                _this.navCtrl.setRoot(__WEBPACK_IMPORTED_MODULE_7__home_home__["a" /* HomePage */]);
+                //alert(JSON.stringify(data.data));
+            }).catch(function (error) {
+                alert(JSON.stringify(error) + "erro na alteração de palavras. Favor contactar os desenvolvedores");
+            });
+        }
+    };
+    AlterarpalavrasPage.prototype.limpar = function () {
+        this.palavra = "";
+        this.base64Image = "";
+        var f = false;
+        var ckbs = document.getElementsByClassName('checkbox');
+        for (var c = 0; c < ckbs.length; c++) {
+            var ckb = ckbs[c];
+            ckb.checked = false;
+        }
+    };
+    AlterarpalavrasPage.prototype.excluir = function () {
+        var _this = this;
+        var f = false;
+        var ckbs = document.getElementsByClassName('checkbox');
+        for (var c = 0; c < ckbs.length; c++) {
+            var ckb = ckbs[c];
+            if (ckb.checked) {
+                f = true;
+                this.ckb_id = ckb.id;
+                break;
+            }
+        }
+        document.getElementById("caixa_cadastro").hidden = true;
+        document.getElementById("texto").hidden = true;
+        document.getElementById("div_categorias").hidden = true;
+        var path_1 = "http://inclusio.engynios.com/api/delete/id/palavra.php";
+        var objeto = {
+            id_palavra: this.ckb_id
+        };
+        alert(this.ckb_id);
+        this.http.get(path_1, objeto, { headers: { 'Content-Type': 'application/json' }
+        })
+            .then(function (data) {
+            alert("Palavra excluida!");
+            //alert(JSON.stringify(data.data));
+        }).catch(function (error) {
+            alert(JSON.stringify(error) + "erro na exclusao de palavras. Favor contactar os desenvolvedores");
+        });
+        setTimeout(function () {
+            _this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_7__home_home__["a" /* HomePage */]);
+        }, 3000);
+    };
+    ////////////listagem////////////////////////
+    AlterarpalavrasPage.prototype.carregaCategorias = function () {
+        var _this = this;
+        var objeto = {
+            id_usuario: this.usuario.id_usuario
+        };
+        var path = 'http://inclusio.engynios.com/api/read/id_usuario/categoria_1.php';
+        this.http.get(path, objeto, {}).then(function (data) {
+            var dados = _this.converte(data.data);
+            _this.categoriasG = dados;
+            var div = document.getElementById('div_categorias');
+            var _loop_1 = function (a) {
+                // if(dados[a].nome_palavra.indexOf('capa_') != -1 || dados[a].nome_palavra.indexOf('capa ') != -1)
+                // 	continue;
+                // dados[a].nome_palavra = dados[a].nome_palavra.replace(/_/gi, " ");
+                var ion = document.createElement('ion-item');
+                ion.className = 'palavra';
+                var seta = document.createElement('img');
+                seta.src = 'assets/imgs/seta_dir.png';
+                seta.className = 'seta-direita';
+                seta.setAttribute('id', dados[a]['id_categoria']);
+                var id2 = dados[a]['id_categoria'].replace(/\"/gi, "");
+                id2.replace(/\\\\/gi, "");
+                id2.replace(/\//gi, "/");
+                seta.addEventListener('click', function () {
+                    if (document.getElementById('p' + this.id).hidden) {
+                        this.src = 'assets/imgs/seta_esq.png';
+                        document.getElementById('p' + this.id).hidden = false;
+                    }
+                    else {
+                        this.src = 'assets/imgs/seta_dir.png';
+                        document.getElementById('p' + this.id).hidden = true;
+                    }
+                });
+                _this.http.get('http://inclusio.engynios.com/api/read/id/categoria-palavra-teste.php', { id_usuario: _this.usuario.id_usuario, id_categoria: dados[a].id_categoria }, {}).then(function (date) {
+                    var pala = _this.converte(date.data);
+                    var p = document.createElement('div');
+                    p.hidden = true;
+                    p.id = 'p' + dados[a].id_categoria;
+                    for (var count = 0; count < pala.length; count++) {
+                        if (pala[count].nome_palavra.indexOf('capa ') != -1 || pala[count].nome_palavra.indexOf('capa_') != -1)
+                            continue;
+                        var mdiv = document.createElement('div');
+                        var ckb = document.createElement('input');
+                        ckb.type = 'radio';
+                        ckb.name = 'palavras';
+                        ckb.className = 'checkbox';
+                        ckb.id = pala[count].id_palavra;
+                        _this.ckb_id = ckb.id.replace(/\"/gi, "");
+                        mdiv.appendChild(ckb);
+                        var palavra = document.createElement('p');
+                        palavra.innerText = pala[count].nome_palavra;
+                        mdiv.appendChild(palavra);
+                        p.appendChild(mdiv);
+                    }
+                    var ion = document.createElement('ion-item');
+                    var cat = document.createElement('p');
+                    cat.innerText = dados[a]['nome_categoria'];
+                    ion.appendChild(seta);
+                    ion.appendChild(cat);
+                    ion.appendChild(p);
+                    div.appendChild(ion);
+                }).catch(function (e) {
+                    alert(JSON.stringify(e) + 'erro de select palavras');
+                });
+            };
+            for (var a = 0; a < dados.length; a++) {
+                _loop_1(a);
+            }
+        }).catch(function (error) {
+            alert(JSON.stringify(error));
+        });
+    };
+    AlterarpalavrasPage = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
+            selector: 'page-alterarpalavras',template:/*ion-inline-start:"C:\Users\ivanp\Desktop\Estudos\CTI\Tecnico\TCC\Lara-ApresentacaoFinal.bkp\src\pages\alterarpalavras\alterarpalavras.html"*/'<ion-header>\n\n  <ion-navbar>\n\n  \n\n	<!--caso a pag não tenha cabeçalho voc apaga tudo (a header e as coisas dentro-->\n\n	   <div  id="topo">\n\n		   <div id="btn_menu">\n\n			<ion-buttons left> \n\n				<button ion-button icon-only menuToggle> \n\n					<p class="menu"><ion-icon name="menu"> </ion-icon></p>\n\n				</button>\n\n\n\n			</ion-buttons>\n\n				</div>\n\n			<div id="titulo">\n\n			<ion-title>\n\n			 <span text-color="fonte-laranja"> Alterar Palavras </span>\n\n			</ion-title>\n\n			</div>\n\n		</div>\n\n	\n\n  </ion-navbar>\n\n</ion-header>\n\n\n\n<ion-content>\n\n <div id="main">\n\n	<div id="palavras_1"> <!--listar todas as categorias-->\n\n		\n\n	</div>\n\n	<div id="caixa_cadastro" hidden>\n\n		&nbsp;&nbsp;<!-- ALTERAR-->\n\n		<form  [formGroup]="alteraPalavraForm" novalidate>\n\n				<ion-row>\n\n					<ion-col>\n\n						<ion-list inset>\n\n						 <div id = "input_form">\n\n						 \n\n							<div id="texto">Palavra:</div>\n\n							<ion-item>\n\n								<ion-input [(ngModel)]="palavra" formControlName="palavra" type="textarea" clearInput clearOnEdit="false"></ion-input>\n\n							</ion-item>\n\n							<h6 *ngIf="errorPalavra" class="error"> {{messagePalavra}}</h6>\n\n\n\n							<div id="texto"> Imagem:</div>\n\n							<button ion-button full (click)="captureImage()">Acessar a galeria</button>\n\n							<button ion-button full (click)="takePicture()">Tirar Foto</button>\n\n							<ion-card>\n\n							<ion-card-header>Imagem</ion-card-header>\n\n							<ion-card-content>\n\n								<img src = "{{base64Image}}"/> \n\n							</ion-card-content>\n\n					  </ion-card>\n\n							\n\n					<div id="texto" *ngIf="mostra_alterar"> Palavras disponíveis:</div>\n\n					<div id="div_categorias" class="div_categorias" *ngIf="mostra_alterar"></div>\n\n				</div>\n\n	\n\n			</ion-list>  \n\n		</ion-col>\n\n	</ion-row>\n\n\n\n	<ion-row>\n\n	<div id="botoes"> 	\n\n		<button ion-button round class="botao" (click)="alterar()" >Alterar</button>\n\n    	<button ion-button round class="botao" (click)="excluir()">Excluir</button>  \n\n    	<button ion-button round class="botao" (click)="limpar()">Limpar</button>\n\n 	</div>\n\n 	</ion-row>\n\n\n\n</form>\n\n</div>\n\n</div>\n\n</ion-content>'/*ion-inline-end:"C:\Users\ivanp\Desktop\Estudos\CTI\Tecnico\TCC\Lara-ApresentacaoFinal.bkp\src\pages\alterarpalavras\alterarpalavras.html"*/,
+        }),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */],
+            __WEBPACK_IMPORTED_MODULE_8__ionic_native_camera__["a" /* Camera */],
+            __WEBPACK_IMPORTED_MODULE_2__angular_forms__["a" /* FormBuilder */],
+            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */],
+            __WEBPACK_IMPORTED_MODULE_6__providers_sessionlogin_sessionlogin__["a" /* SessionloginProvider */],
+            __WEBPACK_IMPORTED_MODULE_3__ionic_storage__["b" /* Storage */]])
+    ], AlterarpalavrasPage);
+    return AlterarpalavrasPage;
+}());
+
+//# sourceMappingURL=alterarpalavras.js.map
+
+/***/ }),
+
+/***/ 117:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ConfiguracoesPage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ionic_storage__ = __webpack_require__(27);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__providers_sessionlogin_sessionlogin__ = __webpack_require__(32);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__app_models_usuario__ = __webpack_require__(46);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__providers_sessionconfiguracoes_sessionconfiguracoes__ = __webpack_require__(53);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__app_models_configuracoes__ = __webpack_require__(268);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ionic_storage__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__providers_sessionlogin_sessionlogin__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__app_models_usuario__ = __webpack_require__(49);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__providers_sessionconfiguracoes_sessionconfiguracoes__ = __webpack_require__(36);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__app_models_configuracoes__ = __webpack_require__(286);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -177,10 +814,10 @@ var ConfiguracoesPage = /** @class */ (function () {
     };
     ConfiguracoesPage = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
-            selector: 'page-configuracoes',template:/*ion-inline-start:"C:\Users\ra1657100\Desktop\Inclusio\Lara\src\pages\configuracoes\configuracoes.html"*/'﻿<ion-header>\n\n  <ion-navbar>\n\n	\n\n	   <div  id="topo">\n\n		   <div id="btn_menu">\n\n			<ion-buttons left> \n\n				<button ion-button icon-only menuToggle> \n\n					<p class="menu"><ion-icon name="menu"> </ion-icon></p>\n\n				</button>\n\n\n\n			</ion-buttons>\n\n				</div>\n\n			<div id="titulo">\n\n			<ion-title>\n\n			 <span text-color="fonte-laranja"> Configurações </span>\n\n			</ion-title>\n\n			</div>\n\n		</div>\n\n	\n\n  </ion-navbar>\n\n</ion-header>\n\n<ion-content class="body" padding>\n\n	<div id="principal">\n\n		 <div id="formulario">\n\n			<div id="linha_form">\n\n				<br>\n\n				<h1><ion-icon name="apps"></ion-icon>&nbsp;Palavras por tela </h1>\n\n          <div id="input_form">\n\n    				<p><input type="radio" [(ngModel)]="ck_palavrastela" id="rb1"  name="qtde_tela" value="oito">   8 palavras </p> <br>\n\n    				<p><input type="radio" [(ngModel)]="ck_palavrastela" id="rb2" name="qtde_tela" value="seis">  6 palavras </p><br>\n\n    				<p><input type="radio" [(ngModel)]="ck_palavrastela" id="rb3" name="qtde_tela" value="quatro">  4 palavras </p><br>\n\n    				<p><input type="radio" [(ngModel)]="ck_palavrastela" id="rb4" name="qtde_tela" value="dois">  2 palavras  </p><br>\n\n    				<p><input type="radio" [(ngModel)]="ck_palavrastela" id="rb5" name="qtde_tela"  value="um">  1 palavra  </p><br>       \n\n          </div>\n\n			</div>\n\n      \n\n      		<br>\n\n      \n\n			<div id="linha_form">\n\n				<h1> <ion-icon ios="ios-photos" md="md-photos"></ion-icon>&nbsp;Imagem e texto</h1>\n\n         <div id="input_form">\n\n				<p><input type="radio" name="img_txt" id="rb6" value="s">  Texto e imagem  </p><br>\n\n				<p><input type="radio" name="img_txt" id="rb7" value="n">  Apenas texto  </p><br>\n\n				<br>\n\n        </div>\n\n			</div>\n\n        <button (click)="aplicar()" class="botao">Aplicar</button>\n\n		</div>  \n\n	</div>\n\n</ion-content>'/*ion-inline-end:"C:\Users\ra1657100\Desktop\Inclusio\Lara\src\pages\configuracoes\configuracoes.html"*/,
+            selector: 'page-configuracoes',template:/*ion-inline-start:"C:\Users\ivanp\Desktop\Estudos\CTI\Tecnico\TCC\Lara-ApresentacaoFinal.bkp\src\pages\configuracoes\configuracoes.html"*/'﻿<ion-header>\n\n  <ion-navbar>\n\n	\n\n	   <div  id="topo">\n\n		   <div id="btn_menu">\n\n			<ion-buttons left> \n\n				<button ion-button icon-only menuToggle> \n\n					<p class="menu"><ion-icon name="menu"> </ion-icon></p>\n\n				</button>\n\n\n\n			</ion-buttons>\n\n				</div>\n\n			<div id="titulo">\n\n			<ion-title>\n\n			 <span text-color="fonte-laranja"> Configurações </span>\n\n			</ion-title>\n\n			</div>\n\n		</div>\n\n	\n\n  </ion-navbar>\n\n</ion-header>\n\n<ion-content class="body" padding>\n\n	<div id="principal">\n\n		 <div id="formulario">\n\n			<div id="linha_form">\n\n				<br>\n\n				<h1><ion-icon name="apps"></ion-icon>&nbsp;Palavras por tela </h1>\n\n          <div id="input_form">\n\n    				<p><input type="radio" [(ngModel)]="ck_palavrastela" id="rb1"  name="qtde_tela" value="oito">  <label for="rb1"> 8 palavras </label> </p> <br>\n\n    				<p><input type="radio" [(ngModel)]="ck_palavrastela" id="rb2" name="qtde_tela" value="seis"> <label for="rb2"> 6 palavras </label> </p><br>\n\n    				<p><input type="radio" [(ngModel)]="ck_palavrastela" id="rb3" name="qtde_tela" value="quatro"> <label for="rb3"> 4 palavras </label> </p><br>\n\n    				<p><input type="radio" [(ngModel)]="ck_palavrastela" id="rb4" name="qtde_tela" value="dois"> <label for="rb4"> 2 palavras </label>  </p><br>\n\n    				<p><input type="radio" [(ngModel)]="ck_palavrastela" id="rb5" name="qtde_tela"  value="um"> <label for="rb5"> 1 palavra  </label> </p><br>       \n\n          </div>\n\n			</div>\n\n      \n\n      		<br>\n\n      \n\n			<div id="linha_form">\n\n				<h1> <ion-icon ios="ios-photos" md="md-photos"></ion-icon>&nbsp;Imagem e texto</h1>\n\n         <div id="input_form">\n\n				<p><input type="radio" name="img_txt" id="rb6" value="s"> <label for="rb6">  Texto e imagem </label> </p><br>\n\n				<p><input type="radio" name="img_txt" id="rb7" value="n"> <label for="rb7"> Apenas texto </label> </p><br>\n\n				<br>\n\n        </div>\n\n			</div>\n\n        <button (click)="aplicar()" class="botao">Aplicar</button>\n\n		</div>  \n\n	</div>\n\n</ion-content>'/*ion-inline-end:"C:\Users\ivanp\Desktop\Estudos\CTI\Tecnico\TCC\Lara-ApresentacaoFinal.bkp\src\pages\configuracoes\configuracoes.html"*/,
         }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["h" /* NavController */],
-            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavParams */],
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */],
+            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */],
             __WEBPACK_IMPORTED_MODULE_3__providers_sessionlogin_sessionlogin__["a" /* SessionloginProvider */],
             __WEBPACK_IMPORTED_MODULE_5__providers_sessionconfiguracoes_sessionconfiguracoes__["a" /* SessionconfiguracoesProvider */],
             __WEBPACK_IMPORTED_MODULE_2__ionic_storage__["b" /* Storage */]])
@@ -192,25 +829,23 @@ var ConfiguracoesPage = /** @class */ (function () {
 
 /***/ }),
 
-/***/ 117:
+/***/ 118:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return CriarcatPage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_forms__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_native_http__ = __webpack_require__(21);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_map__ = __webpack_require__(34);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_forms__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_native_http__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_map__ = __webpack_require__(24);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_map__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_rxjs_add_operator_timeout__ = __webpack_require__(35);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_rxjs_add_operator_timeout__ = __webpack_require__(25);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_rxjs_add_operator_timeout___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_rxjs_add_operator_timeout__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__ionic_storage__ = __webpack_require__(27);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__providers_sessionlogin_sessionlogin__ = __webpack_require__(32);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__providers_sessionconfiguracoes_sessionconfiguracoes__ = __webpack_require__(53);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__ionic_native_camera__ = __webpack_require__(91);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__ionic_native_file_transfer__ = __webpack_require__(92);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__ionic_native_file__ = __webpack_require__(175);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__ionic_storage__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__providers_sessionlogin_sessionlogin__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__providers_sessionconfiguracoes_sessionconfiguracoes__ = __webpack_require__(36);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__ionic_native_camera__ = __webpack_require__(48);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -235,15 +870,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 //camera
 
-
-
 var CriarcatPage = /** @class */ (function () {
     function CriarcatPage(navCtrl, navParams, http, //banco 
         formBuilder, //form
         session_login, //session
         session_config, //session
         storage, //session
-        camera, transfer, file) {
+        camera, loadingCtrl, toastCtrl) {
         this.navCtrl = navCtrl;
         this.navParams = navParams;
         this.http = http;
@@ -251,14 +884,16 @@ var CriarcatPage = /** @class */ (function () {
         this.session_config = session_config;
         this.storage = storage;
         this.camera = camera;
-        this.transfer = transfer;
-        this.file = file;
+        this.loadingCtrl = loadingCtrl;
+        this.toastCtrl = toastCtrl;
         this.messagenomeCategoria = "";
         this.messageImagem = "";
         this.errornomeCategoria = false;
         this.errorImagem = false;
         // variável que será o src da imagem mostrada (mickey putaço)
         this.imagem = "https://img.olx.com.br/images/86/864708037631038.jpg";
+        this.imgHidden = true;
+        this.imgAPI = "https://api.imgur.com/3/image";
         this.endereco = "http://inclusio.engynios.com/api/insert/categoria.php";
         this.currentImage = null;
         this.criarCategoriaForm = formBuilder.group({
@@ -313,7 +948,8 @@ var CriarcatPage = /** @class */ (function () {
             correctOrientation: true
         };
         this.camera.getPicture(options).then(function (imageData) {
-            _this.base64Image = "data:image/jpeg;base64," + imageData;
+            _this.imageURI = "data:image/jpeg;base64," + imageData;
+            _this.imgHidden = false;
         }, function (err) {
             console.log(err);
             // Handle error
@@ -329,7 +965,8 @@ var CriarcatPage = /** @class */ (function () {
             targetHeight: 512,
         }).then(function (imageData) {
             // imageData is a base64 encoded string
-            _this.base64Image = "data:image/jpeg;base64," + imageData;
+            _this.imageURI = "data:image/jpeg;base64," + imageData;
+            _this.imgHidden = false;
         }, function (err) {
             console.log(err);
         });
@@ -375,7 +1012,7 @@ var CriarcatPage = /** @class */ (function () {
                 alert("Selecione no minimo um checkbox!");
                 return;
             }
-            if (this.base64Image == null) {
+            if (this.imageURI == null) {
                 alert("Campo imagem obrigatorio");
                 return;
             }
@@ -388,14 +1025,26 @@ var CriarcatPage = /** @class */ (function () {
             var objeto = {
                 nome_categoria: nomeCategoria.value,
                 id_usuario: this.usuario.id_usuario,
-                imagem_categoria: this.base64Image
             };
+            /*this.http.post('https://api.imgur.com/oauth2/token', {
+                response_type: 'token',
+                client_id: '1da58bd02bd879f',
+                client_secret: 'f436db7e06038e7d455c0c5f6cf8e993d6a61c6a',
+                grant_type: 'refresh_token',
+                refresh_token: 'c043f11b2af7be4cec8a067bd394674860d921e0'
+            }, {headers: { 'Content-Type': 'application/json' }})
+            .then(access_token => {
+                let token = access_token.data.substring(16, access_token.data.indexOf(','));
+                let header = {
+                    'Content-Type': 'application/json',
+                    'Authorization': ('Bearer ' + token).replace(/\"/gi, '')
+                }
+                alert(JSON.stringify(header));
+                this.http.post(this.imgAPI, {image: this.imageURI}, {headers: header})
+                .then(imgRet => {
+                    alert(JSON.stringify(imgRet.data));*/
             this.http.post(this.endereco, objeto, { headers: { 'Content-Type': 'application/json' } })
-                .then(function () { }).catch(function (error) {
-                alert(JSON.stringify(error) + " erro na inclusão de categorias. Favor contactar os desenvolvedores");
-                return;
-            });
-            setTimeout(function () {
+                .then(function () {
                 _this.http.get('http://inclusio.engynios.com/api/read/nome/categoria.php', { nome_categoria: '"' + nomeCategoria.value + '"' }, { headers: { 'Content-Type': 'application/json' } })
                     .then(function (data) {
                     var dados = _this.converte(data.data);
@@ -407,15 +1056,29 @@ var CriarcatPage = /** @class */ (function () {
                         };
                         _this.http.post('http://inclusio.engynios.com/api/insert/uniao.php', ad, { headers: { 'Content-Type': 'application/json' } })
                             .then().catch(function (error) {
-                            alert(JSON.stringify(error) + " erro na inclusão de palavra. Favor contactar os desenvolvedores");
+                            alert("Erro na inclusão de palavras na categoria. Favor contactar os desenvolvedores:\n" + JSON.stringify(error));
                             return;
                         });
                     }
                 }).catch(function (error) {
-                    alert(JSON.stringify(error) + " erro no acesso ao banco. Favor contactar os desenvolvedores");
+                    alert("Erro no acesso ao banco. Favor contactar os desenvolvedores:\n" + JSON.stringify(error));
                     return;
                 });
-            }, 5000);
+            }).catch(function (error) {
+                alert(JSON.stringify(error) + " erro na inclusão de categorias. Favor contactar os desenvolvedores");
+                return;
+            }); /*
+        })
+        .catch(error => {
+            alert("Erro no envio da imagem:\n" + JSON.stringify(error));
+            return;
+        });
+    })
+    .catch(error => {
+        alert("Erro ao requisitar token:\n" + JSON.stringify(error))
+    });*/
+            /*setTimeout(() => {
+            }, 5000);*/
         }
     };
     CriarcatPage.prototype.ngOnInit = function () {
@@ -438,7 +1101,7 @@ var CriarcatPage = /** @class */ (function () {
         // nomeCategoria.nodeValue = null;
         // limpa o campo do link da imagem
         // let {txtimg}= this.criarCategoriaForm.controls;
-        this.base64Image = null;
+        this.imageURI = null;
         var f = false;
         var ckbs = document.getElementsByClassName('checkbox');
         for (var c = 0; c < ckbs.length; c++) {
@@ -464,7 +1127,7 @@ var CriarcatPage = /** @class */ (function () {
                 ion.className = 'palavra';
                 var seta = document.createElement('img');
                 seta.src = 'assets/imgs/seta_dir.png';
-                seta.className = 'seta-direita';
+                seta.className = 'seta';
                 seta.setAttribute('id', dados[a].id_categoria);
                 seta.addEventListener('click', function () {
                     if (document.getElementById('p' + this.id).hidden) {
@@ -480,7 +1143,9 @@ var CriarcatPage = /** @class */ (function () {
                     var pala = _this.converte(date.data);
                     var p = document.createElement('div');
                     p.hidden = true;
+                    // p.className = 'categoria';
                     p.id = 'p' + dados[a].id_categoria;
+                    p.className = 'linhas';
                     for (var count = 0; count < pala.length; count++) {
                         if (pala[count].nome_palavra.indexOf('capa ') != -1 || pala[count].nome_palavra.indexOf('capa_') != -1)
                             continue;
@@ -490,18 +1155,22 @@ var CriarcatPage = /** @class */ (function () {
                         ckb.className = 'checkbox';
                         ckb.id = 'ckb' + pala[count].id_palavra;
                         mdiv.appendChild(ckb);
-                        var palavra = document.createElement('p');
+                        var palavra = document.createElement('label');
+                        palavra.className = 'palavras';
+                        palavra.setAttribute('for', 'ckb' + pala[count].id_palavra);
                         palavra.innerText = pala[count].nome_palavra;
                         mdiv.appendChild(palavra);
                         p.appendChild(mdiv);
                     }
                     var ion = document.createElement('ion-item');
                     var cat = document.createElement('p');
+                    cat.className = 'categoria';
                     cat.innerText = dados[a]['nome_categoria'];
                     ion.appendChild(seta);
                     ion.appendChild(cat);
                     ion.appendChild(p);
                     div.appendChild(ion);
+                    // div.appendChild(document.createElement('br'));
                 }).catch(function (e) {
                     alert(JSON.stringify(e) + 'erro de select palavras');
                 });
@@ -515,18 +1184,18 @@ var CriarcatPage = /** @class */ (function () {
     };
     CriarcatPage = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
-            selector: 'page-criarcat',template:/*ion-inline-start:"C:\Users\ra1657100\Desktop\Inclusio\Lara\src\pages\criarcat\criarcat.html"*/'﻿<ion-header>\n\n  <ion-navbar>\n\n\n\n	<!--caso a pag não tenha cabeçalho voc apaga tudo (a header e as coisas dentro-->\n\n	   <div  id="topo">\n\n		   <div id="btn_menu">\n\n			<ion-buttons left> \n\n				<button ion-button icon-only menuToggle> \n\n					<p class="menu"><ion-icon name="menu"> </ion-icon></p>\n\n				</button>\n\n\n\n			</ion-buttons>\n\n				</div>\n\n			<div id="titulo">\n\n			<ion-title>\n\n			 <span text-color="fonte-laranja"> Criar Categoria </span>\n\n			</ion-title>\n\n			</div>\n\n		</div>\n\n  	\n\n  </ion-navbar>\n\n</ion-header>\n\n\n\n<ion-content class="body" padding>\n\n \n\n<div id="caixa_cadastro">\n\n	&nbsp; &nbsp;  <!--p class="icon"><ion-icon ios="ios-person" md="md-person"></ion-icon></p> <!-- <h1>Criar Categoria</h1>-->\n\n	<form  [formGroup]="criarCategoriaForm" novalidate>\n\n      <ion-row>\n\n        <ion-col>\n\n          <ion-list inset>\n\n            <div id="input_form">\n\n		    <div id="texto"> Categoria:</div>\n\n			<ion-item>\n\n				<ion-input [(ngModel)]="nomeCategoria" formControlName="nomeCategoria" type="textarea" placeholder="Categoria" id="nomeCategoria" clearInput clearOnEdit="false"></ion-input>\n\n            </ion-item>\n\n			<h6 *ngIf="errornomeCategoria" class="error"> {{messagenomeCategoria}}</h6>\n\n			<br>\n\n			\n\n			<div id="texto"> Imagem:</div>\n\n			<button ion-button full (click)="captureImage()">Acessar a galeria</button>\n\n				<button ion-button full (click)="takePicture()">Tirar Foto</button>\n\n				<ion-card>\n\n					<ion-card-header>Imagem</ion-card-header>\n\n					<ion-card-content>\n\n							<img [src]="base64Image"> \n\n					</ion-card-content>\n\n				</ion-card>\n\n		\n\n			\n\n			<div id="texto"> Palavras disponíveis:</div>\n\n			<div id="div_categorias" class="div_categorias"></div>\n\n			</div>\n\n			</ion-list>  \n\n        </ion-col>\n\n      </ion-row>		\n\n		\n\n      <ion-row>\n\n        <div id="botoes">\n\n          <button ion-button round class="botaoCad" (click)="criar()">Enviar</button>\n\n          <button ion-button round class="botaoCad" (click)="limpar()">Limpar</button>\n\n        </div>\n\n      </ion-row>\n\n	</form>\n\n</div>\n\n</ion-content>'/*ion-inline-end:"C:\Users\ra1657100\Desktop\Inclusio\Lara\src\pages\criarcat\criarcat.html"*/,
+            selector: 'page-criarcat',template:/*ion-inline-start:"C:\Users\ivanp\Desktop\Estudos\CTI\Tecnico\TCC\Lara-ApresentacaoFinal.bkp\src\pages\criarcat\criarcat.html"*/'﻿<ion-header>\n\n  <ion-navbar>\n\n\n\n	<!--caso a pag não tenha cabeçalho voc apaga tudo (a header e as coisas dentro-->\n\n	   <div  id="topo">\n\n		   <div id="btn_menu">\n\n			<ion-buttons left> \n\n				<button ion-button icon-only menuToggle> \n\n					<p class="menu"><ion-icon name="menu"> </ion-icon></p>\n\n				</button>\n\n\n\n			</ion-buttons>\n\n				</div>\n\n			<div id="titulo">\n\n			<ion-title>\n\n			 <span text-color="fonte-laranja"> Criar Categoria </span>\n\n			</ion-title>\n\n			</div>\n\n		</div>\n\n  	\n\n  </ion-navbar>\n\n</ion-header>\n\n\n\n<ion-content class="body" padding>\n\n \n\n<div id="caixa_cadastro">\n\n	&nbsp; &nbsp;  <!--p class="icon"><ion-icon ios="ios-person" md="md-person"></ion-icon></p> <!-- <h1>Criar Categoria</h1>-->\n\n	<form  [formGroup]="criarCategoriaForm" novalidate>\n\n      <ion-row>\n\n        <ion-col>\n\n          <ion-list inset>\n\n            <div id="input_form">\n\n		    <div id="texto"> Categoria:</div>\n\n			<ion-item>\n\n				<ion-input [(ngModel)]="nomeCategoria" formControlName="nomeCategoria" type="textarea" placeholder="Categoria" id="nomeCategoria" clearInput clearOnEdit="false"></ion-input>\n\n            </ion-item>\n\n			<h6 *ngIf="errornomeCategoria" class="error"> {{messagenomeCategoria}}</h6>\n\n			<br>\n\n			\n\n			<div id="texto"> Imagem:</div>\n\n			<button ion-button full (click)="captureImage()">Acessar a galeria</button>\n\n				<button ion-button full (click)="takePicture()">Tirar Foto</button>\n\n				<ion-card>\n\n					<ion-card-header [hidden]="imgHidden">Imagem</ion-card-header>\n\n					<ion-card-content [hidden]="imgHidden">\n\n							<img [src]="imageURI"> \n\n					</ion-card-content>\n\n				</ion-card>\n\n		\n\n			\n\n			<div id="texto"> Palavras disponíveis:</div>\n\n			<div id="div_categorias" class="div_categorias"></div>\n\n			</div>\n\n			</ion-list>  \n\n        </ion-col>\n\n      </ion-row>		\n\n		\n\n      <ion-row>\n\n        <div id="botoes">\n\n          <button ion-button round class="botaoCad" (click)="criar()">Enviar</button>\n\n          <button ion-button round class="botaoCad" (click)="limpar()">Limpar</button>\n\n        </div>\n\n      </ion-row>\n\n	</form>\n\n</div>\n\n</ion-content>'/*ion-inline-end:"C:\Users\ivanp\Desktop\Estudos\CTI\Tecnico\TCC\Lara-ApresentacaoFinal.bkp\src\pages\criarcat\criarcat.html"*/,
         }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["h" /* NavController */],
-            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavParams */],
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */],
+            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */],
             __WEBPACK_IMPORTED_MODULE_3__ionic_native_http__["a" /* HTTP */],
             __WEBPACK_IMPORTED_MODULE_2__angular_forms__["a" /* FormBuilder */],
             __WEBPACK_IMPORTED_MODULE_7__providers_sessionlogin_sessionlogin__["a" /* SessionloginProvider */],
             __WEBPACK_IMPORTED_MODULE_8__providers_sessionconfiguracoes_sessionconfiguracoes__["a" /* SessionconfiguracoesProvider */],
             __WEBPACK_IMPORTED_MODULE_6__ionic_storage__["b" /* Storage */],
             __WEBPACK_IMPORTED_MODULE_9__ionic_native_camera__["a" /* Camera */],
-            __WEBPACK_IMPORTED_MODULE_10__ionic_native_file_transfer__["a" /* FileTransfer */],
-            __WEBPACK_IMPORTED_MODULE_11__ionic_native_file__["a" /* File */]])
+            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* LoadingController */],
+            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["m" /* ToastController */]])
     ], CriarcatPage);
     return CriarcatPage;
 }());
@@ -535,16 +1204,315 @@ var CriarcatPage = /** @class */ (function () {
 
 /***/ }),
 
-/***/ 118:
+/***/ 119:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return CriarpalPage; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_forms__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_native_http__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_map__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_map__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_rxjs_add_operator_timeout__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_rxjs_add_operator_timeout___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_rxjs_add_operator_timeout__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__ionic_storage__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__providers_sessionlogin_sessionlogin__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__providers_sessionconfiguracoes_sessionconfiguracoes__ = __webpack_require__(36);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__ionic_native_camera__ = __webpack_require__(48);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+//banco
+
+
+
+//imports da session:
+
+//usuario
+
+//confifuracoes
+
+//camera
+
+var CriarpalPage = /** @class */ (function () {
+    function CriarpalPage(navCtrl, formBuilder, navParams, http, camera, session_login, //session
+        session_config, //session
+        storage) {
+        this.navCtrl = navCtrl;
+        this.navParams = navParams;
+        this.http = http;
+        this.camera = camera;
+        this.session_login = session_login;
+        this.session_config = session_config;
+        this.storage = storage;
+        this.messagenomePalavra = "";
+        this.errornomePalavra = false;
+        this.errorPalavras = false;
+        this.endereco = "http://inclusio.engynios.com/api/insert/palavra.php";
+        this.currentImage = null;
+        this.criarPalavraForm = formBuilder.group({
+            nomePalavra: ['', __WEBPACK_IMPORTED_MODULE_2__angular_forms__["f" /* Validators */].compose([__WEBPACK_IMPORTED_MODULE_2__angular_forms__["f" /* Validators */].required, __WEBPACK_IMPORTED_MODULE_2__angular_forms__["f" /* Validators */].pattern('^[a-zA-Z]+$')])]
+        });
+    }
+    CriarpalPage.prototype.captureImage = function () {
+        var _this = this;
+        var options = {
+            sourceType: this.camera.PictureSourceType.PHOTOLIBRARY,
+            destinationType: this.camera.DestinationType.DATA_URL,
+            quality: 100,
+            targetWidth: 1000,
+            targetHeight: 1000,
+            correctOrientation: true
+        };
+        this.camera.getPicture(options).then(function (imageData) {
+            _this.base64Image = "data:image/jpeg;base64," + imageData;
+        }, function (err) {
+            console.log(err);
+            // Handle error
+            console.log('Image error: ', err);
+        });
+    };
+    CriarpalPage.prototype.takePicture = function () {
+        var _this = this;
+        this.camera.getPicture({
+            destinationType: this.camera.DestinationType.DATA_URL,
+            targetWidth: 1000,
+            targetHeight: 1000
+        }).then(function (imageData) {
+            // imageData is a base64 encoded string
+            _this.base64Image = "data:image/jpeg;base64," + imageData;
+        }, function (err) {
+            console.log(err);
+        });
+    };
+    CriarpalPage.prototype.ionViewDidLoad = function () {
+        console.log('ionViewDidLoad InserecodPage');
+    };
+    CriarpalPage.prototype.converte = function (date) {
+        var data = JSON.stringify(date);
+        var re = /\\\\\\\"/gi;
+        data = data.replace(re, "\"");
+        var retorno = [];
+        while (data.indexOf('{') != -1) {
+            var str = data.substring(data.indexOf('{') + 1, data.indexOf('}') + 1);
+            data = data.substring(data.indexOf('}') + 1);
+            var objeto = {};
+            while (str.lastIndexOf('}') != -1) {
+                var campo = str.substring(str.indexOf('"') + 1, str.indexOf(':') - 1);
+                str = str.substring(str.indexOf(':') + 1);
+                // document.getElementById('resposta2').innerText += str;
+                var valor = void 0;
+                if (str.indexOf(',') == -1) {
+                    valor = str.substring(str.indexOf(':') + 1, str.indexOf('}') - 1);
+                    str = ' ';
+                }
+                else {
+                    valor = str.substring(0, str.indexOf(',') - 1);
+                    str = str.substring(str.indexOf(',') + 1);
+                }
+                if (valor == 'nul')
+                    valor = null;
+                else
+                    valor = valor + '"';
+                objeto[campo] = valor;
+                // alert(valor);
+                // document.getElementById('resposta2').innerText = str + str.lastIndexOf('}');
+            }
+            retorno.push(objeto);
+        }
+        return retorno;
+    };
+    CriarpalPage.prototype.criar = function () {
+        var _this = this;
+        var nomes = [];
+        for (var n = 0; n < this.palavrasG.length; n++)
+            nomes.push(this.palavrasG[n]['nome_palavra'].toLowerCase());
+        var nomePalavra = this.criarPalavraForm.controls.nomePalavra;
+        if (!this.criarPalavraForm.valid) {
+            if (!nomePalavra.valid) {
+                if (nomePalavra.value == null || nomePalavra.value == "") {
+                    this.errornomePalavra = true;
+                    this.messagenomePalavra = "Campo obrigatorio";
+                }
+                else {
+                    this.errornomePalavra = true;
+                    this.messagenomePalavra = "Deve conter apenas letras";
+                }
+            }
+        }
+        else {
+            if (JSON.stringify(nomes).indexOf(nomePalavra.value.toLowerCase()) != -1) {
+                this.errornomePalavra = true;
+                this.messagenomePalavra = "Já existe uma palavra com esse nome";
+                return;
+            }
+            var f = false;
+            var ckbs = document.getElementsByClassName('checkbox');
+            for (var a = 0; a < ckbs.length; a++) {
+                var ckb = ckbs[a];
+                if (ckb.checked) {
+                    f = true;
+                    break;
+                }
+            }
+            if (!f) {
+                alert("Selecione no minimo um checkbox!");
+                return;
+            }
+            /*	if (this.base64Image==null)
+                    {
+                        alert("Campo imagem obrigatorio");
+                        return;
+                    }*/
+            var id_categoria_1 = [];
+            for (var a = 0; a < ckbs.length; a++) {
+                var ckb = ckbs[a];
+                if (ckb.checked)
+                    id_categoria_1.push(ckb.id.substring(3));
+            }
+            var objeto = {
+                nome_palavra: nomePalavra.value,
+                id_usuario: this.usuario.id_usuario,
+                versao: "1.0"
+            };
+            this.http.post(this.endereco, objeto, { headers: { 'Content-Type': 'application/json' }
+            })
+                .then(function (data) {
+                _this.http.get('http://inclusio.engynios.com/api/read/nome/palavra.php', { nome_palavra: '"' + nomePalavra.value + '"' }, { headers: { 'Content-Type': 'application/json' } })
+                    .then(function (data) {
+                    var dados = _this.converte(data.data);
+                    for (var a = 0; a < id_categoria_1.length; a++) {
+                        var ad = {
+                            id_categoria: id_categoria_1[a],
+                            id_palavra: dados[dados.length - 1]['id_palavra'],
+                            id_usuario: _this.usuario.id_usuario
+                        };
+                        _this.http.post('http://inclusio.engynios.com/api/insert/uniao.php', ad, { headers: { 'Content-Type': 'application/json' } })
+                            .then().catch(function (error) {
+                            alert("Erro na associação da palavra com a categoria. Favor contactar os desenvolvedores: " + JSON.stringify(error));
+                            return;
+                        });
+                    }
+                }).catch(function (error) {
+                    alert("Erro no acesso ao banco. Favor verificar a conexão com a internet ou contactar os desenvolvedores: " + JSON.stringify(error));
+                    return;
+                });
+                //alert(JSON.stringify(data.data));
+            }).catch(function (error) {
+                alert("Erro na inclusão de palavras. Favor verificar a conexão com a internet ou contactar os desenvolvedores: " + JSON.stringify(error));
+                return;
+            });
+            setTimeout(function () {
+                alert("Palavra criada!");
+            }, 3000);
+        }
+    };
+    CriarpalPage.prototype.getSession = function () {
+        var _this = this;
+        this.session_login.get().then(function (res) {
+            _this.usuario = res;
+        }); //session			
+    };
+    CriarpalPage.prototype.ngOnInit = function () {
+        var _this = this;
+        this.session_login.get().then(function (res) {
+            _this.usuario = res;
+            setTimeout(function () {
+                var objeto = {
+                    id_usuario: _this.usuario.id_usuario
+                };
+                var path2 = 'https://inclusio.engynios.com/api/read/id_usuario/palavra-null.php';
+                _this.http.get(path2, objeto, {}).then(function (data) {
+                    var dados = _this.converte(data.data);
+                    _this.palavrasG = JSON.parse(JSON.stringify(dados).toLowerCase());
+                }).catch(function (error) {
+                    alert(JSON.stringify(error));
+                });
+                _this.carregapalavras();
+            }, 3000);
+        }).catch(function (error) {
+            alert('Erro ao identificar o usuário: ' + JSON.stringify(error));
+        });
+    };
+    CriarpalPage.prototype.limpar = function () {
+        this.nomePalavra = null;
+        this.base64Image = null;
+        var f = false;
+        var ckbs = document.getElementsByClassName('checkbox');
+        for (var c = 0; c < ckbs.length; c++) {
+            var ckb = ckbs[c];
+            ckb.checked = false;
+        }
+    };
+    CriarpalPage.prototype.carregapalavras = function () {
+        var _this = this;
+        var objeto = {
+            id_usuario: this.usuario.id_usuario
+        };
+        var path = 'https://inclusio.engynios.com/api/read/id_usuario/categoria.php';
+        this.http.get(path, objeto, {}).then(function (data) {
+            var dados = _this.converte(data.data);
+            //this.palavrasG = dados;
+            var div = document.getElementById('div_categorias');
+            for (var a = 0; a < dados.length; a++) {
+                var ion = document.createElement('div');
+                ion.className = 'linhas';
+                var ckb = document.createElement('input');
+                ckb.type = "checkbox";
+                ckb.id = "ckb" + dados[a]['id_categoria'];
+                ckb.className = 'checkbox';
+                var cat = document.createElement('label');
+                // alert(JSON.stringify(dados[a]));
+                cat.innerText = dados[a]['nome_categoria'].replace(/\"/gi, "");
+                //	alert('entrou7');
+                cat.setAttribute('for', 'ckb' + dados[a]['id_categoria']);
+                cat.className = 'categorias';
+                cat.appendChild(document.createElement('br'));
+                ion.appendChild(ckb);
+                ion.appendChild(cat);
+                div.appendChild(ion);
+            }
+        }).catch(function (error) {
+            alert(JSON.stringify(error));
+        });
+    };
+    CriarpalPage = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
+            selector: 'page-criarpal',template:/*ion-inline-start:"C:\Users\ivanp\Desktop\Estudos\CTI\Tecnico\TCC\Lara-ApresentacaoFinal.bkp\src\pages\criarpal\criarpal.html"*/'<ion-header>\n\n  <ion-navbar>\n\n	\n\n	   <div  id="topo">\n\n		   <div id="btn_menu">\n\n			<ion-buttons left> \n\n				<button ion-button icon-only menuToggle> \n\n					<p class="menu"><ion-icon name="menu"> </ion-icon></p>\n\n				</button>\n\n\n\n			</ion-buttons>\n\n				</div>\n\n			<div id="titulo">\n\n			<ion-title>\n\n			 <span text-color="fonte-laranja"> Criar Palavras </span>\n\n			</ion-title>\n\n			</div>\n\n		</div>\n\n	\n\n  </ion-navbar>\n\n</ion-header>\n\n\n\n<ion-content class="body" padding>\n\n \n\n<div id="caixa_cadastro">\n\n	&nbsp; &nbsp;  <p class="icon"><ion-icon ios="ios-person" md="md-person"></ion-icon></p> <!-- <h1>Criar Categoria</h1>-->\n\n	<form  [formGroup]="criarPalavraForm" novalidate>\n\n      <ion-row>\n\n        <ion-col>\n\n          <ion-list inset>\n\n            <div id="input_form">\n\n		    <div id="texto"> Palavra:</div>\n\n			<ion-item>\n\n				<ion-input [(ngModel)]="nomePalavra" formControlName="nomePalavra" type="textarea" placeholder="Palavra" id="nomePalavra" clearInput clearOnEdit="false"></ion-input>\n\n            </ion-item>\n\n			<h6 *ngIf="errornomePalavra" class="error"> {{messagenomePalavra}}</h6>\n\n			<br>\n\n			\n\n			<div id="texto"> Imagem:</div>\n\n				<button ion-button full (click)="captureImage()">Acessar a galeria</button>\n\n          <button ion-button full (click)="takePicture()">Tirar Foto</button>\n\n					<ion-card>\n\n            <ion-card-header>Imagem</ion-card-header>\n\n            <ion-card-content>\n\n								<img src = "{{base64Image}}"/> \n\n            </ion-card-content>\n\n          </ion-card>\n\n			<!--<ion-item>\n\n					<ion-input [(ngModel)]="txtimg" formControlName="txtimg" (input)="mudaImg()" id="txtimg" type="textarea" placeholder="Imagem" clearInput clearOnEdit="false"></ion-input><br><br>\n\n				<img [src]="imagem" height="100px"><br><br>\n\n            </ion-item> \n\n        \n\n            <h6 *ngIf="errorImagem" class="error"> {{messageImagem}}</h6>-->\n\n			<br>\n\n		\n\n			\n\n			<div id="texto"> Categorias:</div>\n\n			<div id="div_categorias">\n\n			</div>\n\n			</div>\n\n			</ion-list>  \n\n        </ion-col>\n\n      </ion-row>		\n\n		\n\n      <ion-row>\n\n        <div id="botoes">\n\n          <button ion-button round class="botaoCad" (click)="criar()">Enviar</button>\n\n          <button ion-button round class="botaoCad" (click)="limpar()">Limpar</button>\n\n        </div>\n\n      </ion-row>\n\n	</form>\n\n</div>\n\n</ion-content>'/*ion-inline-end:"C:\Users\ivanp\Desktop\Estudos\CTI\Tecnico\TCC\Lara-ApresentacaoFinal.bkp\src\pages\criarpal\criarpal.html"*/,
+        }),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */], __WEBPACK_IMPORTED_MODULE_2__angular_forms__["a" /* FormBuilder */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */],
+            __WEBPACK_IMPORTED_MODULE_3__ionic_native_http__["a" /* HTTP */], __WEBPACK_IMPORTED_MODULE_9__ionic_native_camera__["a" /* Camera */], __WEBPACK_IMPORTED_MODULE_7__providers_sessionlogin_sessionlogin__["a" /* SessionloginProvider */],
+            __WEBPACK_IMPORTED_MODULE_8__providers_sessionconfiguracoes_sessionconfiguracoes__["a" /* SessionconfiguracoesProvider */],
+            __WEBPACK_IMPORTED_MODULE_6__ionic_storage__["b" /* Storage */]])
+    ], CriarpalPage);
+    return CriarpalPage;
+}());
+
+//# sourceMappingURL=criarpal.js.map
+
+/***/ }),
+
+/***/ 120:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return EsquecisenhaPage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_forms__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ionic_native_http__ = __webpack_require__(21);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_ionic_angular__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__login_login__ = __webpack_require__(54);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_forms__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ionic_native_http__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_ionic_angular__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__login_login__ = __webpack_require__(50);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -636,9 +1604,9 @@ var EsquecisenhaPage = /** @class */ (function () {
     };
     EsquecisenhaPage = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
-            selector: 'page-esquecisenha',template:/*ion-inline-start:"C:\Users\ra1657100\Desktop\Inclusio\Lara\src\pages\esquecisenha\esquecisenha.html"*/'﻿<meta charset="utf-8">\n\n\n\n<ion-content class="body" padding>\n\n \n\n	<div id="principal">\n\n  \n\n    <div id="formulario">\n\n    \n\n    <div id="linha_form">\n\n     \n\n     <h1><ion-icon name="md-mail"></ion-icon>&nbsp;Confirme seu e-mail</h1> \n\n   \n\n      <div id="input_form">\n\n      	<form [formGroup]="esqueciForm" (submit)="ir_inserecod()" novalidate>  <!--manda p uma função de consistência de email-->\n\n          <ion-item>\n\n              <ion-input [(ngModel)]="email" formControlName="email"  type="email" placeholder="exemplo@hotmail.com" clearInput clearOnEdit="false"></ion-input>\n\n            </ion-item>\n\n            <h6 *ngIf="errorEmail" class="error"> {{messageEmail}}</h6>\n\n            <br><br>  \n\n          <br>\n\n          <button ion-button round class="botao">Ok</button>\n\n        <!--  <button ion-button round class="botao" (click)="ir_inserecod()"  </button>>Ok</button>       -->   \n\n  			</form>\n\n      </div> <!-- input_form -->\n\n    	\n\n    </div> <!-- linha_form -->\n\n    \n\n    <div id="centraliza_texto">\n\n    	<p>Um link para redefinir a senha será enviado em seu e-mail, não se esqueça de checar também a caixa de spam!</p>\n\n    </div>\n\n    \n\n   </div> <!-- formulario -->\n\n  \n\n  </div> <!--principal-->\n\n\n\n</ion-content>\n\n'/*ion-inline-end:"C:\Users\ra1657100\Desktop\Inclusio\Lara\src\pages\esquecisenha\esquecisenha.html"*/,
+            selector: 'page-esquecisenha',template:/*ion-inline-start:"C:\Users\ivanp\Desktop\Estudos\CTI\Tecnico\TCC\Lara-ApresentacaoFinal.bkp\src\pages\esquecisenha\esquecisenha.html"*/'﻿<ion-header>\n\n  <ion-navbar>\n\n	\n\n	   <div  id="topo">\n\n		   <div id="btn_menu">\n\n			<ion-buttons left> \n\n				<button ion-button icon-only menuToggle> \n\n					<p class="menu"><ion-icon name="menu"> </ion-icon></p>\n\n				</button>\n\n\n\n			</ion-buttons>\n\n				</div>\n\n			<div id="titulo">\n\n			<ion-title>\n\n			 <span text-color="fonte-laranja"> Esqueci Senha </span>\n\n			</ion-title>\n\n			</div>\n\n		</div>\n\n	\n\n  </ion-navbar>\n\n</ion-header>\n\n\n\n<ion-content class="body" padding>\n\n \n\n	<div id="principal">\n\n  \n\n    <div id="formulario">\n\n    \n\n    <div id="linha_form">\n\n     \n\n     <h1><ion-icon name="md-mail"></ion-icon>&nbsp;Confirme seu e-mail</h1> \n\n   \n\n      <div id="input_form">\n\n      	<form [formGroup]="esqueciForm" (submit)="ir_inserecod()" novalidate>  <!--manda p uma função de consistência de email-->\n\n          <ion-item>\n\n              <ion-input [(ngModel)]="email" formControlName="email"  type="email" placeholder="exemplo@hotmail.com" clearInput clearOnEdit="false"></ion-input>\n\n            </ion-item>\n\n            <h6 *ngIf="errorEmail" class="error"> {{messageEmail}}</h6>\n\n            <br><br>  \n\n          <br>\n\n          <button ion-button round class="botao">Ok</button>\n\n        <!--  <button ion-button round class="botao" (click)="ir_inserecod()"  </button>>Ok</button>       -->   \n\n  			</form>\n\n      </div> <!-- input_form -->\n\n    	\n\n    </div> <!-- linha_form -->\n\n    \n\n    <div id="centraliza_texto">\n\n    	<p>Um link para redefinir a senha será enviado em seu e-mail, não se esqueça de checar também a caixa de spam!</p>\n\n    </div>\n\n    \n\n   </div> <!-- formulario -->\n\n  \n\n  </div> <!--principal-->\n\n\n\n</ion-content>\n\n'/*ion-inline-end:"C:\Users\ivanp\Desktop\Estudos\CTI\Tecnico\TCC\Lara-ApresentacaoFinal.bkp\src\pages\esquecisenha\esquecisenha.html"*/,
         }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_3_ionic_angular__["h" /* NavController */], __WEBPACK_IMPORTED_MODULE_1__angular_forms__["a" /* FormBuilder */], __WEBPACK_IMPORTED_MODULE_3_ionic_angular__["i" /* NavParams */], __WEBPACK_IMPORTED_MODULE_2__ionic_native_http__["a" /* HTTP */]])
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_3_ionic_angular__["i" /* NavController */], __WEBPACK_IMPORTED_MODULE_1__angular_forms__["a" /* FormBuilder */], __WEBPACK_IMPORTED_MODULE_3_ionic_angular__["j" /* NavParams */], __WEBPACK_IMPORTED_MODULE_2__ionic_native_http__["a" /* HTTP */]])
     ], EsquecisenhaPage);
     return EsquecisenhaPage;
 }());
@@ -647,1643 +1615,24 @@ var EsquecisenhaPage = /** @class */ (function () {
 
 /***/ }),
 
-/***/ 119:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return SairPage; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ionic_storage__ = __webpack_require__(27);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__providers_sessionlogin_sessionlogin__ = __webpack_require__(32);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__app_models_usuario__ = __webpack_require__(46);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__splash_splash__ = __webpack_require__(61);
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-
-//imports da session
-
-
-
-//paginas
-
-var SairPage = /** @class */ (function () {
-    function SairPage(navCtrl, navParams, session_login, storage, alertCtrl) {
-        this.navCtrl = navCtrl;
-        this.navParams = navParams;
-        this.session_login = session_login;
-        this.storage = storage;
-        this.alertCtrl = alertCtrl;
-    }
-    //assim que o component existir capture a sessão do usuário
-    SairPage.prototype.ngOnInit = function () {
-        /* IMPORTANTE!!!
-            todas as páginas onde o usuario esta logado
-            tem que pegar a session
-        */
-        var _this = this;
-        this.session_login.get().then(function (res) { _this.usuario = new __WEBPACK_IMPORTED_MODULE_4__app_models_usuario__["a" /* Usuario */](res); });
-        var confirma_sair = this.alertCtrl.create({
-            title: 'Sair',
-            message: 'Deseja sair do app?',
-            buttons: [
-                {
-                    text: 'Não',
-                    role: 'cancel',
-                    handler: function () { console.log('Cancel clicked'); }
-                },
-                {
-                    text: 'Sim',
-                    handler: function () {
-                        _this.session_login.remove(); //remove os valores
-                        _this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_5__splash_splash__["a" /* SplashPage */]); //volta para o comeco
-                    }
-                }
-            ]
-        });
-        confirma_sair.present();
-    };
-    SairPage.prototype.ionViewDidLoad = function () {
-    };
-    SairPage = __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
-            selector: 'page-sair',template:/*ion-inline-start:"C:\Users\ra1657100\Desktop\Inclusio\Lara\src\pages\sair\sair.html"*/'<!--\n\n  Generated template for the SairPage page.\n\n\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n\n  Ionic pages and navigation.\n\n-->\n\n<ion-header>\n\n\n\n  <ion-navbar>\n\n    <ion-title>sair</ion-title>\n\n  </ion-navbar>\n\n\n\n</ion-header>\n\n\n\n\n\n<ion-content padding>\n\n\n\n</ion-content>\n\n'/*ion-inline-end:"C:\Users\ra1657100\Desktop\Inclusio\Lara\src\pages\sair\sair.html"*/,
-        }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["h" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavParams */], __WEBPACK_IMPORTED_MODULE_3__providers_sessionlogin_sessionlogin__["a" /* SessionloginProvider */], __WEBPACK_IMPORTED_MODULE_2__ionic_storage__["b" /* Storage */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */]])
-    ], SairPage);
-    return SairPage;
-}());
-
-//# sourceMappingURL=sair.js.map
-
-/***/ }),
-
-/***/ 120:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return SobrePage; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(9);
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-
-/**
- * Generated class for the SobrePage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
-var SobrePage = /** @class */ (function () {
-    function SobrePage(navCtrl, navParams) {
-        this.navCtrl = navCtrl;
-        this.navParams = navParams;
-    }
-    SobrePage.prototype.ionViewDidLoad = function () {
-        console.log('ionViewDidLoad SobrePage');
-    };
-    SobrePage = __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
-            selector: 'page-sobre',template:/*ion-inline-start:"C:\Users\ra1657100\Desktop\Inclusio\Lara\src\pages\sobre\sobre.html"*/'<ion-header>\n\n  <ion-navbar>\n\n\n\n	<!--caso a pag não tenha cabeçalho voc apaga tudo (a header e as coisas dentro-->\n\n  <ion-header>\n\n    <ion-navbar>\n\n      <button ion-button menuToggle>\n\n        <ion-icon name="menu"></ion-icon>\n\n      </button>\n\n      <span text-color = "fonte-laranja">Sobre</span>\n\n    </ion-navbar>\n\n  </ion-header>\n\n  	\n\n  </ion-navbar>\n\n</ion-header>\n\n\n\n<meta charset="utf-8">\n\n\n\n\n\n<ion-content class="body" padding>\n\n \n\n	<div id="principal">\n\n  \n\n  <h1>O Aplicativo</h1>\n\n  \n\n   <img class="sobre" src="../assets/imgs/logo_lara.png">\n\n  \n\n  <p> Lara CAA foi idealizada pela Inclusio, equipe desenvolvedora, que tinha como\n\n  propósito a aumentar a acessibilidade e eficiência dos já existentes aplicativos de mesma função, \n\n  priorisando sempre o usuário e as palavras que compõe seu universo. </p>\n\n  \n\n  <br>\n\n  <br>\n\n  \n\n  <h1>A Equipe</h1>\n\n  \n\n  <img class="sobre" src="../assets/imgs/logo_equipe.png">\n\n  \n\n  <p>Fundada em 2018, a Inclusio buscou para que cada detalhe de seu projeto refletissem os valores de inclusão e\n\n  empatia.</p>\n\n  \n\n  <br>\n\n  \n\n  <img class="sobre" src="../assets/imgs/equipe.jpg">\n\n  \n\n  <p>\n\n     A equipe é composta por: Ana Laura Maffei, Beatriz Dinat, Gabriela Miyajima, Gabriela Guimarães, \n\n      Ivan Prearo, Joana Cuesta, Leonardo Caldas e Maria Eduarda Corrêa.</p>\n\n      \n\n  <br>\n\n  <br>\n\n  \n\n  <h1>Apoio</h1>\n\n  \n\n   <img class="sobre" src="../assets/imgs/logo_cti.png">\n\n    <p> Um agradecimento ao Colégio Técnico Industrial Prof. Isaac Portal Roldán e aos professores coordenadores do projeto: \n\n    André Bicudo, Celso Kawashima, Jovita Baenas, Rodrigo Ferreira e Vitor Simeão.</p>\n\n    \n\n   <img class="sobre" src="../assets/imgs/logo_sorri.png">\n\n    <p> Um agradecimento especial também a instituição Sorri Bauru que abraçou o projeto, em especial o Luís Fernando M. Bento Gestor de TI </p>\n\n  \n\n  </div> <!--principal-->\n\n\n\n</ion-content>\n\n'/*ion-inline-end:"C:\Users\ra1657100\Desktop\Inclusio\Lara\src\pages\sobre\sobre.html"*/,
-        }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["h" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavParams */]])
-    ], SobrePage);
-    return SobrePage;
-}());
-
-//# sourceMappingURL=sobre.js.map
-
-/***/ }),
-
-/***/ 129:
-/***/ (function(module, exports) {
-
-function webpackEmptyAsyncContext(req) {
-	// Here Promise.resolve().then() is used instead of new Promise() to prevent
-	// uncatched exception popping up in devtools
-	return Promise.resolve().then(function() {
-		throw new Error("Cannot find module '" + req + "'.");
-	});
-}
-webpackEmptyAsyncContext.keys = function() { return []; };
-webpackEmptyAsyncContext.resolve = webpackEmptyAsyncContext;
-module.exports = webpackEmptyAsyncContext;
-webpackEmptyAsyncContext.id = 129;
-
-/***/ }),
-
-/***/ 171:
-/***/ (function(module, exports, __webpack_require__) {
-
-var map = {
-	"../pages/ajuda/ajuda.module": [
-		304,
-		7
-	],
-	"../pages/configuracoes/configuracoes.module": [
-		305,
-		6
-	],
-	"../pages/criarcat/criarcat.module": [
-		306,
-		5
-	],
-	"../pages/esquecisenha/esquecisenha.module": [
-		307,
-		4
-	],
-	"../pages/sair/sair.module": [
-		308,
-		3
-	],
-	"../pages/sobre/sobre.module": [
-		309,
-		2
-	],
-	"../pages/splash/splash.module": [
-		310,
-		1
-	],
-	"../pages/tutorial/tutorial.module": [
-		311,
-		0
-	]
-};
-function webpackAsyncContext(req) {
-	var ids = map[req];
-	if(!ids)
-		return Promise.reject(new Error("Cannot find module '" + req + "'."));
-	return __webpack_require__.e(ids[1]).then(function() {
-		return __webpack_require__(ids[0]);
-	});
-};
-webpackAsyncContext.keys = function webpackAsyncContextKeys() {
-	return Object.keys(map);
-};
-webpackAsyncContext.id = 171;
-module.exports = webpackAsyncContext;
-
-/***/ }),
-
-/***/ 217:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return PerfilPage; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ionic_native_http__ = __webpack_require__(21);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__ = __webpack_require__(34);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_timeout__ = __webpack_require__(35);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_timeout___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_timeout__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__providers_sessionlogin_sessionlogin__ = __webpack_require__(32);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__ionic_storage__ = __webpack_require__(27);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__app_models_usuario__ = __webpack_require__(46);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__splash_splash__ = __webpack_require__(61);
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-
-
-
-
-
-
-
-
-// @IonicPage()
-var PerfilPage = /** @class */ (function () {
-    function PerfilPage(navCtrl, navParams, http, session_login, storage) {
-        this.navCtrl = navCtrl;
-        this.navParams = navParams;
-        this.http = http;
-        this.session_login = session_login;
-        this.storage = storage;
-        this.nomeUsuario = "";
-        this.email = "";
-        this.banco();
-    }
-    //função para converter dados do banco
-    PerfilPage.prototype.converte = function (date) {
-        var data = JSON.stringify(date);
-        var re = /\\\"/gi;
-        data = data.replace(re, "\"");
-        var retorno = [];
-        while (data.indexOf('{') != -1) {
-            var str = data.substring(data.indexOf('{') + 1, data.indexOf('}') + 1);
-            data = data.substring(data.indexOf('}') + 1);
-            var objeto = {};
-            while (str.lastIndexOf('}') != -1) {
-                var campo = str.substring(str.indexOf('"') + 1, str.indexOf(':') - 1);
-                str = str.substring(str.indexOf(':') + 1);
-                // document.getElementById('resposta2').innerText += str;
-                var valor = void 0;
-                if (str.indexOf(',') == -1) {
-                    valor = str.substring(str.indexOf(':') + 1, str.indexOf('}') - 1);
-                    str = ' ';
-                }
-                else {
-                    valor = str.substring(0, str.indexOf(',') - 1);
-                    str = str.substring(str.indexOf(',') + 1);
-                }
-                if (valor == 'nul')
-                    valor = null;
-                else
-                    valor = valor + '"';
-                objeto[campo] = valor;
-                // document.getElementById('resposta2').innerText = str + str.lastIndexOf('}');
-            }
-            retorno.push(objeto);
-        }
-        return retorno;
-    };
-    PerfilPage.prototype.ngOnInit = function () {
-        var _this = this;
-        //1 passo: checar se esta logado:
-        this.session_login.get().then(function (res) {
-            _this.usuarioLogado = new __WEBPACK_IMPORTED_MODULE_7__app_models_usuario__["a" /* Usuario */](res);
-            if (_this.usuarioLogado.id_usuario == null) {
-                //vai para o comeco
-                _this.navCtrl.setRoot(__WEBPACK_IMPORTED_MODULE_8__splash_splash__["a" /* SplashPage */]);
-            }
-        });
-    };
-    PerfilPage.prototype.banco = function () {
-        var _this = this;
-        this.endereco = 'https://inclusio.engynios.com/api/read/login/usuario.php';
-        this.session_login.get().then(function (res) {
-            _this.usuarioLogado = new __WEBPACK_IMPORTED_MODULE_7__app_models_usuario__["a" /* Usuario */](res);
-            _this.http.get(_this.endereco, { id_usuario: _this.usuarioLogado.id_usuario }, {})
-                .then(function (data) {
-                //caso tenha dado tudo certo
-                var converter_usu = _this.converte(data.data);
-                alert("" + converter_usu[0]['login_usuario'] + "" + converter_usu[0]['email']);
-                //this.nomeUsuario = converter_usu[0]['login_usuario'];
-                var usuario = document.getElementById('usuario');
-                usuario.innerHTML = '' + converter_usu[0]['login_usuario'];
-                var email = document.getElementById('email');
-                email.innerHTML = '' + converter_usu[0]['email'];
-            })
-                .catch(function (error) {
-                alert("" + JSON.stringify(error));
-                console.log(error + "\n");
-                console.log(error.status);
-                console.log(error.error); // error message as string
-                console.log(error.headers);
-            }); //catch
-        });
-        /*
-        //id session (categorias personalizadas)
-                      this.session_login.get().then(
-                      res =>
-                    {
-                    
-                        this.usuarioLogado = new Usuario(res);
-                        
-                         this.http.get(this.caminho, {id_usuario: this.usuarioLogado.id_usuario}, {})
-                          .then(
-                          data =>
-                          {
-                              //caso tenha dado tudo certo
-                              let converter_usu = this.converte(data.data);
-                              this.cat_usu = converter_usu.length;
-                              alert ("linha usu" + this.cat_usu);
-                              
-                              this.tamanho = this.cat_usu + this.cat_null;
-                          
-                          alert ("tamanho: " + this.tamanho);
-                          
-                          this.paginacao(this.tamanho);
-                          
-                          })
-                          .catch(
-                          error =>
-                          {
-                              alert(""+JSON.stringify(error));
-                              console.log(error+"\n");
-                              console.log(error.status);
-                              console.log(error.error); // error message as string
-                              console.log(error.headers);
-  
-                          }); //catch
-                      
-                    }); //session   */
-    };
-    PerfilPage = __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
-            selector: 'page-perfil',template:/*ion-inline-start:"C:\Users\ra1657100\Desktop\Inclusio\Lara\src\pages\perfil\perfil.html"*/'﻿<ion-header>\n\n  <ion-navbar>\n\n  \n\n	<!--caso a pag não tenha cabeçalho voc apaga tudo (a header e as coisas dentro-->\n\n	   <div  id="topo">\n\n		   <div id="btn_menu">\n\n			<ion-buttons left> \n\n				<button ion-button icon-only menuToggle> \n\n					<p class="menu"><ion-icon name="menu"> </ion-icon></p>\n\n				</button>\n\n\n\n			</ion-buttons>\n\n				</div>\n\n			<div id="titulo">\n\n			<ion-title>\n\n			 <span text-color="fonte-laranja"> Perfil </span>\n\n			</ion-title>\n\n			</div>\n\n		</div>\n\n	\n\n  </ion-navbar>\n\n</ion-header>\n\n\n\n<ion-content class="body" padding>\n\n \n\n	<div id="principal">\n\n\n\n  <!--Aqui é o modelo para os formularios-->\n\n  \n\n    <div id="formulario">\n\n		\n\n		<div id="linha_form">\n\n     <h1>Usuário:</h1> \n\n    \n\n    <div id="input_form">\n\n  		<p id="usuario"></p>\n\n    </div> <!-- input_form -->\n\n    \n\n    </div> <!-- linha_form -->\n\n    <div id="linha_form">\n\n     \n\n      <h1>Email:</h1> \n\n     <div id="input_form">\n\n        		<p id="email"></p>\n\n     </div> <!-- input_form -->\n\n     \n\n     </div> <!-- linha_form -->\n\n     <br> <br>\n\n    \n\n		<a CLASS="links_perfil" href="">ALTERAR DADOS</a>\n\n		<br>\n\n		<br>\n\n		<a CLASS="links_perfil" href="">ALTERAR SENHA</a>\n\n		<br>\n\n    <br>\n\n    \n\n		<a  CLASS="links_perfil" href="">MINHAS PALAVRAS</a>\n\n		<br>\n\n		<br>\n\n \n\n   </div> <!-- formulario -->\n\n  \n\n  </div> <!--principal-->\n\n\n\n</ion-content>\n\n'/*ion-inline-end:"C:\Users\ra1657100\Desktop\Inclusio\Lara\src\pages\perfil\perfil.html"*/,
-        }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["h" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavParams */], __WEBPACK_IMPORTED_MODULE_2__ionic_native_http__["a" /* HTTP */],
-            __WEBPACK_IMPORTED_MODULE_5__providers_sessionlogin_sessionlogin__["a" /* SessionloginProvider */], __WEBPACK_IMPORTED_MODULE_6__ionic_storage__["b" /* Storage */]])
-    ], PerfilPage);
-    return PerfilPage;
-}());
-
-//# sourceMappingURL=perfil.js.map
-
-/***/ }),
-
-/***/ 218:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return CriarpalPage; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_forms__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_native_http__ = __webpack_require__(21);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_map__ = __webpack_require__(34);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_map__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_rxjs_add_operator_timeout__ = __webpack_require__(35);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_rxjs_add_operator_timeout___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_rxjs_add_operator_timeout__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__ionic_native_camera__ = __webpack_require__(91);
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-
-
-//banco
-
-
-
-//camera
-
-var CriarpalPage = /** @class */ (function () {
-    function CriarpalPage(navCtrl, formBuilder, navParams, http, camera) {
-        this.navCtrl = navCtrl;
-        this.navParams = navParams;
-        this.http = http;
-        this.camera = camera;
-        this.messagenomePalavra = "";
-        this.messageImagem = "";
-        this.messagePalavras = "";
-        this.errornomePalavra = false;
-        this.errorImagem = false;
-        this.errorPalavras = false;
-        // variável que será o src da imagem mostrada (mickey putaço)
-        this.imagem = "https://img.olx.com.br/images/86/864708037631038.jpg";
-        this.endereco = "http://inclusio.engynios.com/api/insert/palavra.php";
-        this.currentImage = null;
-        this.criarPalavraForm = formBuilder.group({
-            nomePalavra: ['', __WEBPACK_IMPORTED_MODULE_2__angular_forms__["f" /* Validators */].compose([__WEBPACK_IMPORTED_MODULE_2__angular_forms__["f" /* Validators */].required, __WEBPACK_IMPORTED_MODULE_2__angular_forms__["f" /* Validators */].pattern('^[a-zA-Z]+$')])],
-        });
-    }
-    CriarpalPage.prototype.ngOnInit = function () {
-        this.carregaCategorias();
-    };
-    CriarpalPage.prototype.captureImage = function () {
-        var _this = this;
-        var options = {
-            sourceType: this.camera.PictureSourceType.PHOTOLIBRARY,
-            destinationType: this.camera.DestinationType.DATA_URL,
-            quality: 100,
-            targetWidth: 1000,
-            targetHeight: 1000,
-            correctOrientation: true
-        };
-        this.camera.getPicture(options).then(function (imageData) {
-            _this.base64Image = "data:image/jpeg;base64," + imageData;
-        }, function (err) {
-            console.log(err);
-            // Handle error
-            console.log('Image error: ', err);
-        });
-    };
-    CriarpalPage.prototype.takePicture = function () {
-        var _this = this;
-        this.camera.getPicture({
-            destinationType: this.camera.DestinationType.DATA_URL,
-            targetWidth: 1000,
-            targetHeight: 1000
-        }).then(function (imageData) {
-            // imageData is a base64 encoded string
-            _this.base64Image = "data:image/jpeg;base64," + imageData;
-        }, function (err) {
-            console.log(err);
-        });
-    };
-    CriarpalPage.prototype.ionViewDidLoad = function () {
-        console.log('ionViewDidLoad InserecodPage');
-    };
-    CriarpalPage.prototype.converte = function (date) {
-        var data = JSON.stringify(date);
-        var re = /\\\\\\\"/gi;
-        data = data.replace(re, "\"");
-        var retorno = [];
-        while (data.indexOf('{') != -1) {
-            var str = data.substring(data.indexOf('{') + 1, data.indexOf('}') + 1);
-            data = data.substring(data.indexOf('}') + 1);
-            var objeto = {};
-            while (str.lastIndexOf('}') != -1) {
-                var campo = str.substring(str.indexOf('"') + 1, str.indexOf(':') - 1);
-                str = str.substring(str.indexOf(':') + 1);
-                // document.getElementById('resposta2').innerText += str;
-                var valor = void 0;
-                if (str.indexOf(',') == -1) {
-                    valor = str.substring(str.indexOf(':') + 1, str.indexOf('}') - 1);
-                    str = ' ';
-                }
-                else {
-                    valor = str.substring(0, str.indexOf(',') - 1);
-                    str = str.substring(str.indexOf(',') + 1);
-                }
-                if (valor == 'nul')
-                    valor = null;
-                else
-                    valor = valor + '"';
-                objeto[campo] = valor;
-                // alert(valor);
-                // document.getElementById('resposta2').innerText = str + str.lastIndexOf('}');
-            }
-            retorno.push(objeto);
-        }
-        return retorno;
-    };
-    CriarpalPage.prototype.criar = function () {
-        var nomes = [];
-        for (var n = 0; n < this.categoriasG.length; n++)
-            nomes.push(this.categoriasG[n]['nome_categoria'].toLowerCase());
-        var nomePalavra = this.criarPalavraForm.controls.nomePalavra /*txtimg,palavras*/;
-        if (!this.criarPalavraForm.valid) {
-            if (!nomePalavra.valid) {
-                if (nomePalavra.value == null || nomePalavra.value == "") {
-                    this.errornomePalavra = true;
-                    this.messagenomePalavra = "Campo obrigatorio";
-                }
-                else {
-                    this.errornomePalavra = true;
-                    this.messagenomePalavra = "Deve conter apenas letras";
-                }
-            }
-        }
-        else {
-            this.messagenomeCategoria = "";
-            //this.messageImagem= "";
-            if (nomes.indexOf(nomePalavra.value.toLowerCase()) != -1) {
-                this.errornomePalavra = true;
-                this.messagenomePalavra = "Já existe uma palavra com esse nome";
-                return;
-            }
-            var f = false;
-            var ckbs = document.getElementsByClassName('checkbox');
-            //let id_categoria = [];
-            for (var a = 0; a < ckbs.length; a++) {
-                var ckb = ckbs[a];
-                if (ckb.checked) {
-                    //id_categoria.push(parseInt(ckb.id.substring(3)));
-                    f = true;
-                    break;
-                }
-            }
-            if (!f) {
-                alert("Selecione no minimo um checkbox!");
-                return;
-            }
-            var id_categoria = [];
-            for (var a = 0; a < ckbs.length; a++) {
-                var ckb = ckbs[a];
-                if (ckb.checked)
-                    id_categoria.push(ckb.id.substring(3));
-            }
-            var objeto = {
-                nome_palavra: nomePalavra.value,
-                id_usuario: this.usuario.id_usuario,
-                versao: null,
-                id_categoria: id_categoria
-            };
-            this.http.post(this.endereco, objeto, { headers: { 'Content-Type': 'application/json' }
-            })
-                .then(function (data) {
-                alert("Palavra criada!");
-                //alert(JSON.stringify(data.data));
-            }).catch(function (error) {
-                alert(JSON.stringify(error) + "erro na inclusão de categorias. Favor contactar os desenvolvedores");
-            });
-        }
-    };
-    // muda a imagem com base no input do usuário
-    CriarpalPage.prototype.mudaImg = function () {
-        // define a variável "imagem" como o texto colocado no input
-        this.imagem = document.getElementById("txtimg").nodeValue;
-    };
-    // limpa todos os campos
-    CriarpalPage.prototype.limpar = function () {
-        // limpa o campo de nome da categoria
-        var nomeCategoria = document.getElementById('nomeCategoria');
-        nomeCategoria.value = null;
-        // limpa o campo do link da imagem
-        var txtimg = document.getElementById('txtimg');
-        txtimg.value = null;
-        var ckbs = document.getElementsByClassName('checkbox');
-        for (var a = 0; a < ckbs.length; a++) {
-            var ckb = ckbs[a];
-            ckb.checked = false;
-        }
-        // reseta a imagem para o mickey putaço
-        this.imagem = "https://img.olx.com.br/images/86/864708037631038.jpg";
-        // cria variável para categoria1
-        var categoria1 = document.getElementById('categoria1');
-        // tira o checado do elemento
-        categoria1.checked = false;
-        // cria variável para as palavras de dentro da categoria
-        var palavras = document.getElementById('palavras');
-        // se existirem elementos dentro da table palavras, fica no while
-        while (palavras.childElementCount > 0) {
-            // remove o último elemento de palavras
-            palavras.removeChild(palavras.lastChild);
-        }
-    };
-    /*ngOnInit()
-    {
-        this.carregaCategorias();
-    }*/
-    CriarpalPage.prototype.carregaCategorias = function () {
-        var _this = this;
-        var objeto = {
-            id_usuario: null
-        };
-        var path = 'http://inclusio.engynios.com/api/read/id_usuario/categoria.php';
-        this.http.get(path, objeto, {}).then(function (data) {
-            var dados = _this.converte(data.data);
-            // alert(JSON.stringify(data.data));
-            // alert(JSON.stringify(dados));
-            var div = document.getElementById('div_categorias');
-            // alert(dados[0].id_categoria);	
-            for (var a = 0; a < dados.length; a++) {
-                var ion = document.createElement('ion-item');
-                var ckb = document.createElement('input');
-                ckb.type = "checkbox";
-                ckb.id = "ckb" + dados[a]['id_categoria'];
-                ckb.className = 'checkbox';
-                var cat = document.createElement('p');
-                cat.innerText = dados[a]['nome_categoria'];
-                cat.appendChild(document.createElement('br'));
-                ion.appendChild(ckb);
-                ion.appendChild(cat);
-                div.appendChild(ion);
-            }
-        }).catch(function (error) {
-            alert(JSON.stringify(error));
-        });
-        /*objeto.id_usuario = 3;
-        this.http.get(path, objeto, {}).then(data =>{
-            data = data.data;
-            let div = document.getElementById('div_categorias');
-            
-            div.name
-            
-            for(let a = 0; a < data.length; a++){
-                let ion = document.createElement('ion-item');
-                let icon = document.createElement('ion-icon');
-                icon.name = "seta()";
-                icon.click = mostraPalavras;
-                icon.id = "seta"+a;
-                let ckb = document.createElement('input');
-                ckb.type = "checkbox";
-                ckb.id = "ckb"+a;
-                ckb.name = dados.id_categoria;
-                let cat = document.createElement(p);
-                cat.innerText = dados.nome_categoria;
-                cat.appendChild(document.createElement('br'));
-                ion.appendChild(icon);
-                ion.appendChild(ckb);
-                ion.appendChild(cat);
-                div.appendChild(ion);
-            }
-            }
-        ).catch(error => {
-              alert(JSON.stringify(error));
-        });*/
-    };
-    // "envia" os dados do form (por enquanto ta indo no console, F12 para ver)
-    CriarpalPage.prototype.enviar = function () {
-        // cria um objeto dados para guardar tudo
-        var dados = {};
-        // pega o campo com o nome da nova categoria
-        var novaCategoria = document.getElementById('nomeCategoria');
-        // cria um campo nome_categoria no objeto a ser enviado
-        dados["nome_categoria"] = novaCategoria.value;
-        // pega o campo com o link da imagem
-        var imgLink = document.getElementById('txtimg');
-        // cria um campo imagem no objeto a ser enviado
-        dados["imagem"] = imgLink.value;
-        // pega o checkbox da categoria para verificar se o usuário selecionou ela inteira
-        var categoria = document.getElementById('categoria1');
-        // se tiver selecionado a categoria inteira
-        if (categoria.checked == true) {
-            // cria um campo categoria para armazenar o valor da categoria
-            dados["categoria"] = categoria.value;
-        }
-        else {
-            // cria um array vazio no campo palavras para adicionar valores depois
-            dados["palavras"] = [];
-            // cria uma variável para palavras
-            var palavras = document.getElementById('palavras');
-            // fará o for para todos os elementos da table
-            for (var a = 0; a < palavras.childElementCount; a++) {
-                // pega o elemento atual (checkbox dentro do primeiro td que está dentro da tr da table das palavras)
-                var elemento = palavras.children[a].children[0].children[0];
-                // se for um checkbox e estiver checado...
-                if (elemento.checked == true) {
-                    // adiciona o valor ao array de palavras
-                    dados["palavras"].push(elemento.value);
-                }
-            }
-        }
-        // mostra no console (F12) os dados
-        console.log(dados);
-    };
-    CriarpalPage = __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
-            selector: 'page-criarpal',template:/*ion-inline-start:"C:\Users\ra1657100\Desktop\Inclusio\Lara\src\pages\criarpal\criarpal.html"*/'<ion-header>\n\n  <ion-navbar color = "inclusio_2">\n\n    <div id="titulo">\n\n	  <ion-title>\n\n	   <span text-color="fonte-laranja"> Criação de Palavras</span>\n\n	  </ion-title>\n\n    </div>\n\n	\n\n  </ion-navbar>\n\n</ion-header>\n\n\n\n<ion-content class="body" padding>\n\n \n\n<div id="caixa_cadastro">\n\n	&nbsp; &nbsp;  <p class="icon"><ion-icon ios="ios-person" md="md-person"></ion-icon></p> <!-- <h1>Criar Categoria</h1>-->\n\n	<form  [formGroup]="criarPalavraForm" novalidate>\n\n      <ion-row>\n\n        <ion-col>\n\n          <ion-list inset>\n\n            <div id="input_form">\n\n		    <div id="texto"> Palavra:</div>\n\n			<ion-item>\n\n				<ion-input [(ngModel)]="nomePalavra" formControlName="nomePalavra" type="textarea" placeholder="Palavra" id="nomePalavra" clearInput clearOnEdit="false"></ion-input>\n\n            </ion-item>\n\n			<h6 *ngIf="errornomePalavra" class="error"> {{messagenomePalavra}}</h6>\n\n			<br>\n\n			\n\n			<div id="texto"> Imagem:</div>\n\n				<button ion-button full (click)="captureImage()">Acessar a galeria</button>\n\n          <button ion-button full (click)="takePicture()">Tirar Foto</button>\n\n					<ion-card>\n\n            <ion-card-header>Imagem</ion-card-header>\n\n            <ion-card-content>\n\n								<img src = "{{base64Image}}"/> \n\n            </ion-card-content>\n\n          </ion-card>\n\n			<!--<ion-item>\n\n					<ion-input [(ngModel)]="txtimg" formControlName="txtimg" (input)="mudaImg()" id="txtimg" type="textarea" placeholder="Imagem" clearInput clearOnEdit="false"></ion-input><br><br>\n\n				<img [src]="imagem" height="100px"><br><br>\n\n            </ion-item> \n\n        \n\n            <h6 *ngIf="errorImagem" class="error"> {{messageImagem}}</h6>-->\n\n			<br>\n\n		\n\n			\n\n			<div id="texto"> Categorias:</div>\n\n			<div id="div_categorias">\n\n			</div>\n\n			</div>\n\n			</ion-list>  \n\n        </ion-col>\n\n      </ion-row>		\n\n		\n\n      <ion-row>\n\n        <div id="botoes">\n\n          <button ion-button round class="botaoCad" (click)="criar()">Enviar</button>\n\n          <button ion-button round class="botaoCad" (click)="limpar()">Limpar</button>\n\n        </div>\n\n      </ion-row>\n\n	</form>\n\n</div>\n\n</ion-content>'/*ion-inline-end:"C:\Users\ra1657100\Desktop\Inclusio\Lara\src\pages\criarpal\criarpal.html"*/
-        }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["h" /* NavController */], __WEBPACK_IMPORTED_MODULE_2__angular_forms__["a" /* FormBuilder */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavParams */], __WEBPACK_IMPORTED_MODULE_3__ionic_native_http__["a" /* HTTP */], __WEBPACK_IMPORTED_MODULE_6__ionic_native_camera__["a" /* Camera */]])
-    ], CriarpalPage);
-    return CriarpalPage;
-}());
-
-//# sourceMappingURL=criarpal.js.map
-
-/***/ }),
-
-/***/ 219:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__ = __webpack_require__(220);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__app_module__ = __webpack_require__(242);
-
-
-Object(__WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__["a" /* platformBrowserDynamic */])().bootstrapModule(__WEBPACK_IMPORTED_MODULE_1__app_module__["a" /* AppModule */]);
-//# sourceMappingURL=main.js.map
-
-/***/ }),
-
-/***/ 242:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppModule; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__ = __webpack_require__(37);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ionic_angular__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_native_status_bar__ = __webpack_require__(215);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__ionic_native_splash_screen__ = __webpack_require__(216);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__ionic_native_http__ = __webpack_require__(21);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__ionic_native_text_to_speech__ = __webpack_require__(301);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__ionic_native_camera__ = __webpack_require__(91);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__ionic_storage__ = __webpack_require__(27);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__providers_sessionlogin_sessionlogin__ = __webpack_require__(32);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__providers_sessionconfiguracoes_sessionconfiguracoes__ = __webpack_require__(53);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__app_component__ = __webpack_require__(302);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__pages_home_home__ = __webpack_require__(55);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__pages_list_list__ = __webpack_require__(303);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__pages_splash_splash__ = __webpack_require__(61);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__pages_login_login__ = __webpack_require__(54);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__pages_esquecisenha_esquecisenha__ = __webpack_require__(118);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17__pages_cadastro_cadastro__ = __webpack_require__(93);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_18__pages_tutorial_tutorial__ = __webpack_require__(60);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_19__pages_perfil_perfil__ = __webpack_require__(217);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_20__pages_criarcat_criarcat__ = __webpack_require__(117);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_21__pages_criarpal_criarpal__ = __webpack_require__(218);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_22__pages_configuracoes_configuracoes__ = __webpack_require__(116);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_23__pages_ajuda_ajuda__ = __webpack_require__(115);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_24__pages_sobre_sobre__ = __webpack_require__(120);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_25__pages_sair_sair__ = __webpack_require__(119);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_26__ionic_native_file_transfer__ = __webpack_require__(92);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_27__ionic_native_file__ = __webpack_require__(175);
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-
-
-
-
-
-//banco:
-
-//sintetizador:
-
-//Camera
-
-//session:
-
-
-
-//paginas do app:
-
-
-
-//paginas de fora
- //splash
-//login
-
- //esquecisenha
-//cadastro
-
-//paginas de dentro:
-//tutorial
-
- //criar categoria
- //criar categoria
- //criar categoria
- //configuracoes
- //configuracoes
- //configuracoes
- //sair
-
-
-
-var AppModule = /** @class */ (function () {
-    function AppModule() {
-    }
-    AppModule = __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["I" /* NgModule */])({
-            declarations: [
-                __WEBPACK_IMPORTED_MODULE_11__app_component__["a" /* MyApp */],
-                __WEBPACK_IMPORTED_MODULE_12__pages_home_home__["a" /* HomePage */],
-                __WEBPACK_IMPORTED_MODULE_13__pages_list_list__["a" /* ListPage */],
-                __WEBPACK_IMPORTED_MODULE_14__pages_splash_splash__["a" /* SplashPage */],
-                __WEBPACK_IMPORTED_MODULE_15__pages_login_login__["a" /* LoginPage */],
-                __WEBPACK_IMPORTED_MODULE_16__pages_esquecisenha_esquecisenha__["a" /* EsquecisenhaPage */],
-                __WEBPACK_IMPORTED_MODULE_17__pages_cadastro_cadastro__["a" /* CadastroPage */],
-                __WEBPACK_IMPORTED_MODULE_20__pages_criarcat_criarcat__["a" /* CriarcatPage */],
-                __WEBPACK_IMPORTED_MODULE_21__pages_criarpal_criarpal__["a" /* CriarpalPage */],
-                __WEBPACK_IMPORTED_MODULE_22__pages_configuracoes_configuracoes__["a" /* ConfiguracoesPage */],
-                __WEBPACK_IMPORTED_MODULE_23__pages_ajuda_ajuda__["a" /* AjudaPage */],
-                __WEBPACK_IMPORTED_MODULE_24__pages_sobre_sobre__["a" /* SobrePage */],
-                __WEBPACK_IMPORTED_MODULE_19__pages_perfil_perfil__["a" /* PerfilPage */],
-                __WEBPACK_IMPORTED_MODULE_25__pages_sair_sair__["a" /* SairPage */],
-                __WEBPACK_IMPORTED_MODULE_18__pages_tutorial_tutorial__["a" /* TutorialPage */]
-            ],
-            imports: [
-                __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__["a" /* BrowserModule */],
-                __WEBPACK_IMPORTED_MODULE_2_ionic_angular__["d" /* IonicModule */].forRoot(__WEBPACK_IMPORTED_MODULE_11__app_component__["a" /* MyApp */], {}, {
-                    links: [
-                        { loadChildren: '../pages/ajuda/ajuda.module#AjudaPageModule', name: 'AjudaPage', segment: 'ajuda', priority: 'low', defaultHistory: [] },
-                        { loadChildren: '../pages/configuracoes/configuracoes.module#ConfiguracoesPageModule', name: 'ConfiguracoesPage', segment: 'configuracoes', priority: 'low', defaultHistory: [] },
-                        { loadChildren: '../pages/criarcat/criarcat.module#CriarcatPageModule', name: 'CriarcatPage', segment: 'criarcat', priority: 'low', defaultHistory: [] },
-                        { loadChildren: '../pages/esquecisenha/esquecisenha.module#EsquecisenhaPageModule', name: 'EsquecisenhaPage', segment: 'esquecisenha', priority: 'low', defaultHistory: [] },
-                        { loadChildren: '../pages/sair/sair.module#SairPageModule', name: 'SairPage', segment: 'sair', priority: 'low', defaultHistory: [] },
-                        { loadChildren: '../pages/sobre/sobre.module#SobrePageModule', name: 'SobrePage', segment: 'sobre', priority: 'low', defaultHistory: [] },
-                        { loadChildren: '../pages/splash/splash.module#SplashPageModule', name: 'SplashPage', segment: 'splash', priority: 'low', defaultHistory: [] },
-                        { loadChildren: '../pages/tutorial/tutorial.module#TutorialPageModule', name: 'TutorialPage', segment: 'tutorial', priority: 'low', defaultHistory: [] }
-                    ]
-                }),
-                __WEBPACK_IMPORTED_MODULE_8__ionic_storage__["a" /* IonicStorageModule */].forRoot() // import do pacote IonicStorageModule -> session
-            ],
-            bootstrap: [__WEBPACK_IMPORTED_MODULE_2_ionic_angular__["b" /* IonicApp */]],
-            entryComponents: [
-                __WEBPACK_IMPORTED_MODULE_11__app_component__["a" /* MyApp */],
-                __WEBPACK_IMPORTED_MODULE_12__pages_home_home__["a" /* HomePage */],
-                __WEBPACK_IMPORTED_MODULE_13__pages_list_list__["a" /* ListPage */],
-                __WEBPACK_IMPORTED_MODULE_14__pages_splash_splash__["a" /* SplashPage */],
-                __WEBPACK_IMPORTED_MODULE_15__pages_login_login__["a" /* LoginPage */],
-                __WEBPACK_IMPORTED_MODULE_16__pages_esquecisenha_esquecisenha__["a" /* EsquecisenhaPage */],
-                __WEBPACK_IMPORTED_MODULE_17__pages_cadastro_cadastro__["a" /* CadastroPage */],
-                __WEBPACK_IMPORTED_MODULE_20__pages_criarcat_criarcat__["a" /* CriarcatPage */],
-                __WEBPACK_IMPORTED_MODULE_21__pages_criarpal_criarpal__["a" /* CriarpalPage */],
-                __WEBPACK_IMPORTED_MODULE_22__pages_configuracoes_configuracoes__["a" /* ConfiguracoesPage */],
-                __WEBPACK_IMPORTED_MODULE_23__pages_ajuda_ajuda__["a" /* AjudaPage */],
-                __WEBPACK_IMPORTED_MODULE_24__pages_sobre_sobre__["a" /* SobrePage */],
-                __WEBPACK_IMPORTED_MODULE_19__pages_perfil_perfil__["a" /* PerfilPage */],
-                __WEBPACK_IMPORTED_MODULE_25__pages_sair_sair__["a" /* SairPage */],
-                __WEBPACK_IMPORTED_MODULE_18__pages_tutorial_tutorial__["a" /* TutorialPage */]
-            ],
-            providers: [
-                __WEBPACK_IMPORTED_MODULE_27__ionic_native_file__["a" /* File */],
-                __WEBPACK_IMPORTED_MODULE_26__ionic_native_file_transfer__["b" /* FileTransferObject */],
-                __WEBPACK_IMPORTED_MODULE_26__ionic_native_file_transfer__["a" /* FileTransfer */],
-                __WEBPACK_IMPORTED_MODULE_5__ionic_native_http__["a" /* HTTP */],
-                __WEBPACK_IMPORTED_MODULE_3__ionic_native_status_bar__["a" /* StatusBar */],
-                __WEBPACK_IMPORTED_MODULE_4__ionic_native_splash_screen__["a" /* SplashScreen */],
-                __WEBPACK_IMPORTED_MODULE_9__providers_sessionlogin_sessionlogin__["a" /* SessionloginProvider */],
-                __WEBPACK_IMPORTED_MODULE_6__ionic_native_text_to_speech__["a" /* TextToSpeech */],
-                __WEBPACK_IMPORTED_MODULE_10__providers_sessionconfiguracoes_sessionconfiguracoes__["a" /* SessionconfiguracoesProvider */],
-                __WEBPACK_IMPORTED_MODULE_7__ionic_native_camera__["a" /* Camera */],
-                { provide: __WEBPACK_IMPORTED_MODULE_1__angular_core__["u" /* ErrorHandler */], useClass: __WEBPACK_IMPORTED_MODULE_2_ionic_angular__["c" /* IonicErrorHandler */] }
-            ]
-        })
-    ], AppModule);
-    return AppModule;
-}());
-
-//# sourceMappingURL=app.module.js.map
-
-/***/ }),
-
-/***/ 268:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* unused harmony export Model */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Configuracoes; });
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var Model = /** @class */ (function () {
-    function Model(objeto) {
-        Object.assign(this, objeto);
-    }
-    return Model;
-}());
-
-//classe configuracoes extendendo a classe Model
-var Configuracoes = /** @class */ (function (_super) {
-    __extends(Configuracoes, _super);
-    function Configuracoes() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    return Configuracoes;
-}(Model));
-
-//# sourceMappingURL=configuracoes.js.map
-
-/***/ }),
-
-/***/ 302:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return MyApp; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ionic_native_status_bar__ = __webpack_require__(215);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__ = __webpack_require__(216);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pages_home_home__ = __webpack_require__(55);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__pages_perfil_perfil__ = __webpack_require__(217);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__pages_configuracoes_configuracoes__ = __webpack_require__(116);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__pages_criarcat_criarcat__ = __webpack_require__(117);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__pages_criarpal_criarpal__ = __webpack_require__(218);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__pages_sobre_sobre__ = __webpack_require__(120);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__pages_sair_sair__ = __webpack_require__(119);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__pages_ajuda_ajuda__ = __webpack_require__(115);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__pages_tutorial_tutorial__ = __webpack_require__(60);
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-
-
-
-
-// import { TutorialPage } from '../pages/tutorial/tutorial';
- //criar categoria
- //configuracoes
- //criarcat
- //criarcat
- //configuracoes
- //sair
- //configuracoes
- //configuracoes
-var MyApp = /** @class */ (function () {
-    function MyApp(platform, statusBar, splashScreen) {
-        this.platform = platform;
-        this.statusBar = statusBar;
-        this.splashScreen = splashScreen;
-        this.rootPage = __WEBPACK_IMPORTED_MODULE_4__pages_home_home__["a" /* HomePage */];
-        this.initializeApp();
-        // used for an example of ngFor and navigation
-        this.pages = [
-            { title: 'Home', component: __WEBPACK_IMPORTED_MODULE_4__pages_home_home__["a" /* HomePage */] },
-            { title: 'Perfil', component: __WEBPACK_IMPORTED_MODULE_5__pages_perfil_perfil__["a" /* PerfilPage */] },
-            { title: 'Criar Categoria', component: __WEBPACK_IMPORTED_MODULE_7__pages_criarcat_criarcat__["a" /* CriarcatPage */] },
-            { title: 'Criar Palavra', component: __WEBPACK_IMPORTED_MODULE_8__pages_criarpal_criarpal__["a" /* CriarpalPage */] },
-            { title: 'Configurações', component: __WEBPACK_IMPORTED_MODULE_6__pages_configuracoes_configuracoes__["a" /* ConfiguracoesPage */] },
-            { title: 'Ajuda', component: __WEBPACK_IMPORTED_MODULE_11__pages_ajuda_ajuda__["a" /* AjudaPage */] },
-            { title: 'Sobre', component: __WEBPACK_IMPORTED_MODULE_9__pages_sobre_sobre__["a" /* SobrePage */] },
-            { title: 'TUTORIAL', component: __WEBPACK_IMPORTED_MODULE_12__pages_tutorial_tutorial__["a" /* TutorialPage */] },
-            { title: 'Sair', component: __WEBPACK_IMPORTED_MODULE_10__pages_sair_sair__["a" /* SairPage */] }
-        ];
-    }
-    MyApp.prototype.initializeApp = function () {
-        var _this = this;
-        this.platform.ready().then(function () {
-            // Okay, so the platform is ready and our plugins are available.
-            // Here you can do any higher level native things you might need.
-            _this.statusBar.styleDefault();
-            _this.splashScreen.hide();
-        });
-    };
-    MyApp.prototype.openPage = function (page) {
-        // Reset the content nav to have just this page
-        // we wouldn't want the back button to show in this scenario
-        this.nav.setRoot(page.component);
-    };
-    __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_8" /* ViewChild */])(__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* Nav */]),
-        __metadata("design:type", __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* Nav */])
-    ], MyApp.prototype, "nav", void 0);
-    MyApp = __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({template:/*ion-inline-start:"C:\Users\ra1657100\Desktop\Inclusio\Lara\src\app\app.html"*/'<ion-menu [content]="content">\n\n  <ion-header>\n\n    <ion-toolbar>\n\n      <ion-title>Menu</ion-title>\n\n    </ion-toolbar>\n\n  </ion-header>\n\n\n\n  <ion-content>\n\n    <ion-list>\n\n      <button menuClose ion-item *ngFor="let p of pages" (click)="openPage(p)">\n\n        {{p.title}}\n\n      </button>\n\n    </ion-list>\n\n  </ion-content>\n\n\n\n</ion-menu>\n\n\n\n<!-- Disable swipe-to-go-back because it\'s poor UX to combine STGB with side menus -->\n\n<ion-nav [root]="rootPage" #content swipeBackEnabled="false"></ion-nav>'/*ion-inline-end:"C:\Users\ra1657100\Desktop\Inclusio\Lara\src\app\app.html"*/
-        }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* Platform */], __WEBPACK_IMPORTED_MODULE_2__ionic_native_status_bar__["a" /* StatusBar */], __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__["a" /* SplashScreen */]])
-    ], MyApp);
-    return MyApp;
-}());
-
-//# sourceMappingURL=app.component.js.map
-
-/***/ }),
-
-/***/ 303:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ListPage; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(9);
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-
-var ListPage = /** @class */ (function () {
-    function ListPage(navCtrl, navParams) {
-        this.navCtrl = navCtrl;
-        this.navParams = navParams;
-        // If we navigated to this page, we will have an item available as a nav param
-        this.selectedItem = navParams.get('item');
-        // Let's populate this page with some filler content for funzies
-        this.icons = ['flask', 'wifi', 'beer', 'football', 'basketball', 'paper-plane',
-            'american-football', 'boat', 'bluetooth', 'build'];
-        this.items = [];
-        for (var i = 1; i < 11; i++) {
-            this.items.push({
-                title: 'Item ' + i,
-                note: 'This is item #' + i,
-                icon: this.icons[Math.floor(Math.random() * this.icons.length)]
-            });
-        }
-    }
-    ListPage_1 = ListPage;
-    ListPage.prototype.itemTapped = function (event, item) {
-        // That's right, we're pushing to ourselves!
-        this.navCtrl.push(ListPage_1, {
-            item: item
-        });
-    };
-    ListPage = ListPage_1 = __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
-            selector: 'page-list',template:/*ion-inline-start:"C:\Users\ra1657100\Desktop\Inclusio\Lara\src\pages\list\list.html"*/'<ion-header>\n\n  <ion-navbar>\n\n    <button ion-button menuToggle>\n\n      <ion-icon name="menu"></ion-icon>\n\n    </button>\n\n    <ion-title>List</ion-title>\n\n  </ion-navbar>\n\n</ion-header>\n\n\n\n<ion-content>\n\n  <ion-list>\n\n    <button ion-item *ngFor="let item of items" (click)="itemTapped($event, item)">\n\n      <ion-icon [name]="item.icon" item-start></ion-icon>\n\n      {{item.title}}\n\n      <div class="item-note" item-end>\n\n        {{item.note}}\n\n      </div>\n\n    </button>\n\n  </ion-list>\n\n  <div *ngIf="selectedItem" padding>\n\n    You navigated here from <b>{{selectedItem.title}}</b>\n\n  </div>\n\n</ion-content>\n\n'/*ion-inline-end:"C:\Users\ra1657100\Desktop\Inclusio\Lara\src\pages\list\list.html"*/
-        }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["h" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavParams */]])
-    ], ListPage);
-    return ListPage;
-    var ListPage_1;
-}());
-
-//# sourceMappingURL=list.js.map
-
-/***/ }),
-
-/***/ 32:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return SessionloginProvider; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ionic_storage__ = __webpack_require__(27);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(0);
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-//pacote para transformar nossa classe em injetável
-
-var SessionloginProvider = /** @class */ (function () {
-    function SessionloginProvider(storage) {
-        this.storage = storage;
-    }
-    // setando uma seção e passando o tipo de usuário
-    SessionloginProvider.prototype.create = function (usuario) {
-        this.storage.set('usuario', usuario);
-    };
-    SessionloginProvider.prototype.get = function () {
-        return this.storage.get('usuario');
-    };
-    // Quando deslogar deve remova do storage
-    SessionloginProvider.prototype.remove = function () {
-        this.storage.remove('usuario');
-    };
-    SessionloginProvider.prototype.exist = function () {
-        this.get().then(function (res) {
-            console.log('resultado >>> ', res);
-            if (res) {
-                console.log('resultado IF');
-                return true;
-            }
-            else {
-                console.log('resultado else');
-                return false;
-            }
-        });
-    };
-    SessionloginProvider = __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["A" /* Injectable */])(),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_0__ionic_storage__["b" /* Storage */]])
-    ], SessionloginProvider);
-    return SessionloginProvider;
-}());
-
-//# sourceMappingURL=sessionlogin.js.map
-
-/***/ }),
-
-/***/ 46:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* unused harmony export Model */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Usuario; });
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var Model = /** @class */ (function () {
-    function Model(objeto) {
-        Object.assign(this, objeto);
-    }
-    return Model;
-}());
-
-//classe usuario extendendo a classe Model
-var Usuario = /** @class */ (function (_super) {
-    __extends(Usuario, _super);
-    function Usuario() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    return Usuario;
-}(Model));
-
-//# sourceMappingURL=usuario.js.map
-
-/***/ }),
-
-/***/ 53:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return SessionconfiguracoesProvider; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ionic_storage__ = __webpack_require__(27);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(0);
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-//pacote para transformar nossa classe em injet�vel
-
-var SessionconfiguracoesProvider = /** @class */ (function () {
-    function SessionconfiguracoesProvider(storage) {
-        this.storage = storage;
-    }
-    // setando uma se��o e passando o tipo de usu�rio
-    SessionconfiguracoesProvider.prototype.create = function (configuracoes) {
-        this.storage.set('configuracoes', configuracoes);
-    };
-    SessionconfiguracoesProvider.prototype.get = function () {
-        return this.storage.get('configuracoes');
-    };
-    // Quando deslogar deve remova do storage
-    SessionconfiguracoesProvider.prototype.remove = function () {
-        this.storage.remove('configuracoes');
-    };
-    SessionconfiguracoesProvider.prototype.exist = function () {
-        this.get().then(function (res) {
-            console.log('resultado >>> ', res);
-            if (res) {
-                console.log('resultado IF');
-                return true;
-            }
-            else {
-                console.log('resultado else');
-                return false;
-            }
-        });
-    };
-    SessionconfiguracoesProvider = __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["A" /* Injectable */])(),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_0__ionic_storage__["b" /* Storage */]])
-    ], SessionconfiguracoesProvider);
-    return SessionconfiguracoesProvider;
-}());
-
-//# sourceMappingURL=sessionconfiguracoes.js.map
-
-/***/ }),
-
-/***/ 54:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return LoginPage; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_forms__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ionic_angular__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_native_http__ = __webpack_require__(21);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_map__ = __webpack_require__(34);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_map__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_rxjs_add_operator_timeout__ = __webpack_require__(35);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_rxjs_add_operator_timeout___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_rxjs_add_operator_timeout__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__providers_sessionlogin_sessionlogin__ = __webpack_require__(32);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__app_models_usuario__ = __webpack_require__(46);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__home_home__ = __webpack_require__(55);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__tutorial_tutorial__ = __webpack_require__(60);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__cadastro_cadastro__ = __webpack_require__(93);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__esquecisenha_esquecisenha__ = __webpack_require__(118);
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-
-
-
-
-
-
-
-
-
-
-
-// @IonicPage()
-var LoginPage = /** @class */ (function () {
-    function LoginPage(navCtrl, formBuilder, http, session, alertCtrl) {
-        this.navCtrl = navCtrl;
-        this.http = http;
-        this.session = session;
-        this.alertCtrl = alertCtrl;
-        this.messageUsuario = "";
-        this.messagePassword = "";
-        this.errorUsuario = false;
-        this.errorPassword = false;
-        this.endereco_select = "http://inclusio.engynios.com/api/read/login/usuario.php";
-        this.cadastroPage = __WEBPACK_IMPORTED_MODULE_10__cadastro_cadastro__["a" /* CadastroPage */];
-        this.loginForm = formBuilder.group({
-            usuario: ['', __WEBPACK_IMPORTED_MODULE_0__angular_forms__["f" /* Validators */].required],
-            password: ['', __WEBPACK_IMPORTED_MODULE_0__angular_forms__["f" /* Validators */].compose([__WEBPACK_IMPORTED_MODULE_0__angular_forms__["f" /* Validators */].minLength(6), __WEBPACK_IMPORTED_MODULE_0__angular_forms__["f" /* Validators */].maxLength(20),
-                    __WEBPACK_IMPORTED_MODULE_0__angular_forms__["f" /* Validators */].required])],
-        });
-    }
-    LoginPage.prototype.login = function () {
-        var _this = this;
-        var _a = this.loginForm.controls, usuario = _a.usuario, password = _a.password;
-        if (!this.loginForm.valid) {
-            if (!usuario.valid) {
-                this.errorUsuario = true;
-                this.messageUsuario = "Ops! Usuário inválido";
-            }
-            else {
-                this.messageUsuario = "";
-            }
-            if (!password.valid) {
-                this.errorPassword = true;
-                this.messagePassword = "Senha inválida";
-            }
-            else {
-                this.messagePassword = "";
-            }
-        }
-        else {
-            var teste = {
-                login_usuario: usuario.value
-            };
-            this.http.get(this.endereco_select, teste, {})
-                .then(function (data) {
-                //alert(password.value);
-                //alert(usuario.value);
-                _this.nome = "\"" + usuario.value + "\"";
-                _this.senha = "\"" + password.value + "\"";
-                //alert(this.nome);
-                //alert(this.senha);
-                var converter = _this.converte(data.data);
-                //alert(JSON.stringify(converter));
-                if (converter[0] == null) {
-                    _this.erro_usuario = "true";
-                }
-                else if (converter[0]['login_usuario'] == _this.nome) {
-                    _this.erro_usuario = "falso";
-                    //alert(converter[0]['senha']);
-                    //alert(converter[0]['login_usuario']);
-                    if (converter[0]['senha'] == _this.senha) {
-                        _this.erro_senha = "falso";
-                        // alert("Login realizado com sucesso");
-                        //criando uma sessao:
-                        var user = new __WEBPACK_IMPORTED_MODULE_7__app_models_usuario__["a" /* Usuario */]();
-                        //colocando valores nela:
-                        user.id_usuario = converter[0]['id_usuario']; // atenção!!! esse valor deve vir do bd
-                        //this.usuario.email= document.getElementById('email_login').value; 						
-                        //disparando a sessão:
-                        _this.session.create(user);
-                        //pode ir para o teclado
-                        //uma vez que ele cadastrou ele já loga:
-                        var pergunta_tutorial = _this.alertCtrl.create({
-                            title: 'Bem-vindo!',
-                            message: 'Deseja ver o tutorial?',
-                            buttons: [
-                                {
-                                    text: 'Não',
-                                    handler: function () { _this.navCtrl.setRoot(__WEBPACK_IMPORTED_MODULE_8__home_home__["a" /* HomePage */]); }
-                                },
-                                {
-                                    text: 'Sim',
-                                    handler: function () { _this.navCtrl.setRoot(__WEBPACK_IMPORTED_MODULE_9__tutorial_tutorial__["a" /* TutorialPage */]); }
-                                }
-                            ]
-                        });
-                        pergunta_tutorial.present();
-                    }
-                    else {
-                        _this.erro_senha = "true";
-                    }
-                }
-                else {
-                    _this.erro_usuario = "true";
-                }
-                if (_this.erro_senha == "true" && _this.erro_usuario == "falso") {
-                    alert("Senha incorreta");
-                    _this.limpa_senha();
-                }
-                if (_this.erro_usuario == "true") {
-                    alert("Usuário não encontrado");
-                    _this.limpa_usu();
-                }
-            })
-                .catch(function (error) {
-                console.log(error.status);
-                alert(error);
-            });
-        }
-    };
-    //função para converter dados do banco
-    LoginPage.prototype.converte = function (date) {
-        var data = JSON.stringify(date);
-        var re = /\\\"/gi;
-        data = data.replace(re, "\"");
-        var retorno = [];
-        while (data.indexOf('{') != -1) {
-            var str = data.substring(data.indexOf('{') + 1, data.indexOf('}') + 1);
-            data = data.substring(data.indexOf('}') + 1);
-            var objeto = {};
-            while (str.lastIndexOf('}') != -1) {
-                var campo = str.substring(str.indexOf('"') + 1, str.indexOf(':') - 1);
-                str = str.substring(str.indexOf(':') + 1);
-                // document.getElementById('resposta2').innerText += str;
-                var valor = void 0;
-                if (str.indexOf(',') == -1) {
-                    valor = str.substring(str.indexOf(':') + 1, str.indexOf('}') - 1);
-                    str = ' ';
-                }
-                else {
-                    valor = str.substring(0, str.indexOf(',') - 1);
-                    str = str.substring(str.indexOf(',') + 1);
-                }
-                if (valor == 'nul')
-                    valor = null;
-                else
-                    valor = valor + '"';
-                objeto[campo] = valor;
-                // document.getElementById('resposta2').innerText = str + str.lastIndexOf('}');
-            }
-            retorno.push(objeto);
-        }
-        return retorno;
-    };
-    LoginPage.prototype.limpa_usu = function () {
-        var usuario = this.loginForm.controls.usuario;
-        usuario = null;
-    };
-    LoginPage.prototype.limpa_senha = function () {
-        var password = this.loginForm.controls.password;
-        password = null;
-    };
-    LoginPage.prototype.limpa_tudo = function () {
-        var _a = this.loginForm.controls, usuario = _a.usuario, password = _a.password;
-        password = null;
-        usuario = null;
-    };
-    LoginPage.prototype.ir_cadastro = function () {
-        this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_10__cadastro_cadastro__["a" /* CadastroPage */]);
-    };
-    LoginPage.prototype.ir_esquecisenha = function () {
-        this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_11__esquecisenha_esquecisenha__["a" /* EsquecisenhaPage */]);
-    };
-    LoginPage = __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["m" /* Component */])({
-            selector: 'page-login',template:/*ion-inline-start:"C:\Users\ra1657100\Desktop\Inclusio\Lara\src\pages\login\login.html"*/'﻿<ion-header>\n\n		<ion-navbar color = "inclusio_2">\n\n		  <div id="titulo">\n\n			<ion-title>\n\n			 <span text-color="fonte-laranja"> Login </span>\n\n			</ion-title>\n\n		  </div>\n\n		  \n\n		</ion-navbar>\n\n	  </ion-header>\n\n\n\n<ion-content class="body" padding>\n\n \n\n	<div id="principal">\n\n\n\n  <!--Aqui é o modelo para os formularios-->\n\n  \n\n    <div id="formulario">\n\n		\n\n		<form [formGroup]="loginForm"  (submit)="login()" novalidate>	\n\n			 <div id="linha_form">\n\n				<div id="input_form">\n\n					 <ion-item>\n\n						 <ion-input [(ngModel)]="usuario"\n\n							 formControlName="usuario"\n\n							 type="textarea"\n\n							 placeholder="Usuário"\n\n							 clearInput clearOnEdit="false">\n\n						</ion-input>\n\n					 </ion-item>\n\n					 <h6 *ngIf="errorUsuario" class="error"> {{messageUsuario}}</h6>\n\n				</div> <!-- input_form -->\n\n			</div> <!-- linha_form -->\n\n			<br> <br>\n\n			<div id="linha_form">\n\n				<div id="input_form">\n\n					<ion-item>\n\n						<ion-input [(ngModel)]="password"\n\n							 formControlName="password"\n\n							 type="password"\n\n							 placeholder="Senha"\n\n							 clearInput clearOnEdit="false">\n\n						</ion-input>\n\n					</ion-item>\n\n					<h6 *ngIf="errorPassword" class="error"> {{messagePassword}}</h6>\n\n				</div> <!-- input_form -->\n\n			\n\n			</div> <!-- linha_form -->\n\n			<br>\n\n			<button ion-button round class="botao">Entrar</button>\n\n		</form>	\n\n		<br>\n\n	<button ion-button round class="botao"[navPush]="cadastroPage" >Ainda não sou cadastrado</button>\n\n	    <br>\n\n		<br>\n\n	<button ion-button round class="botao"[navPush]="esquecisenhaPage" (click)="ir_esquecisenha()" >Esqueci minha senha</button>\n\n   \n\n   </div> <!-- formulario -->\n\n  \n\n  </div> <!--principal-->\n\n\n\n</ion-content>\n\n'/*ion-inline-end:"C:\Users\ra1657100\Desktop\Inclusio\Lara\src\pages\login\login.html"*/,
-        }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_2_ionic_angular__["h" /* NavController */],
-            __WEBPACK_IMPORTED_MODULE_0__angular_forms__["a" /* FormBuilder */],
-            __WEBPACK_IMPORTED_MODULE_3__ionic_native_http__["a" /* HTTP */],
-            __WEBPACK_IMPORTED_MODULE_6__providers_sessionlogin_sessionlogin__["a" /* SessionloginProvider */],
-            __WEBPACK_IMPORTED_MODULE_2_ionic_angular__["a" /* AlertController */]])
-    ], LoginPage);
-    return LoginPage;
-}());
-
-//# sourceMappingURL=login.js.map
-
-/***/ }),
-
-/***/ 55:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return HomePage; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_forms__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ionic_angular__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_native_http__ = __webpack_require__(21);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_map__ = __webpack_require__(34);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_map__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_rxjs_add_operator_timeout__ = __webpack_require__(35);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_rxjs_add_operator_timeout___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_rxjs_add_operator_timeout__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__login_login__ = __webpack_require__(54);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__sobre_sobre__ = __webpack_require__(120);
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-
-
-
-
-
-
-
-// import { PalavrasPage } from '../palavras/palavras'; 
-var HomePage = /** @class */ (function () {
-    function HomePage(navCtrl, formBuilder, navParams, http) {
-        this.navCtrl = navCtrl;
-        this.navParams = navParams;
-        this.http = http;
-        this.loginPage = __WEBPACK_IMPORTED_MODULE_6__login_login__["a" /* LoginPage */];
-        this.endereco_select = "http://inclusio.engynios.com/api/read/id_usuario/categoria2-null.php";
-        this.endereco_palavras = "http://inclusio.engynios.com/api/read/id/categoria2-palavra2.php";
-        this.carrega_imagem();
-        //this.carrega_palavra();
-        this.pag = this.pagina;
-    }
-    HomePage.prototype.converte = function (date) {
-        var data = JSON.stringify(date);
-        var re = /\\\"/gi;
-        data = data.replace(re, "\"");
-        re = /\\\\\\\//gi;
-        data = data.replace(re, "/");
-        var retorno = [];
-        while (data.indexOf('{') != -1) {
-            var str = data.substring(data.indexOf('{') + 1, data.indexOf('}') + 1);
-            data = data.substring(data.indexOf('}') + 1);
-            var objeto = {};
-            while (str.lastIndexOf('}') != -1) {
-                var campo = str.substring(str.indexOf('"') + 1, str.indexOf(':') - 1);
-                str = str.substring(str.indexOf(':') + 1);
-                // document.getElementById('resposta2').innerText += str;
-                var valor = void 0;
-                if (str.indexOf(',') == -1) {
-                    valor = str.substring(str.indexOf(':') + 1, str.indexOf('}') - 1);
-                    str = ' ';
-                }
-                else {
-                    valor = str.substring(0, str.indexOf(',') - 1);
-                    str = str.substring(str.indexOf(',') + 1);
-                }
-                if (valor == 'nul')
-                    valor = null;
-                else
-                    valor = valor + '"';
-                objeto[campo] = valor;
-                // document.getElementById('resposta2').innerText = str + str.lastIndexOf('}');
-            }
-            retorno.push(objeto);
-        }
-        return retorno;
-    };
-    HomePage.prototype.carrega_imagem = function () {
-        var _this = this;
-        var teste = {
-            id_usuario: 1
-        };
-        this.http.get(this.endereco_select, teste, {})
-            .then(function (data) {
-            var converter = _this.converte(data.data);
-            _this.imagens = [];
-            _this.resultados = converter.length;
-            // alert(JSON.stringify(converter));
-            var table = document.createElement("table"); //cria uma tabela
-            table.setAttribute('border', '1');
-            table.setAttribute('id', 'tabela_cat');
-            for (var l = 0; l < _this.resultados / 2; l++) {
-                var tr = document.createElement("tr"); //cria um tr
-                table.appendChild(tr); //coloca o tr na tabela
-                for (var p = 0; p < 2 && l * 2 + p < converter.length; p++) {
-                    //let img = document.createElement("img");
-                    if (converter[l * 2 + p]['imagem\\\\'] == undefined)
-                        alert(JSON.stringify(converter[l * 2 + p]));
-                    var s = converter[l * 2 + p]['imagem\\\\'].replace(/\"/gi, "");
-                    s = s.replace(/\\/gi, "");
-                    s = s.replace(/\//gi, "/");
-                    var td = "<button id = " + converter[l * 2 + p]['id_categoria\\\\'] + " (click)='this.pagina()'> <img   src= 'https://inclusio.engynios.com/imagens/" + s + "'>  </button>";
-                    //alert(s);
-                    //img.setAttribute('src', 'https://inclusio.engynios.com/imagens/'+s);
-                    //img.setAttribute('alt', 'imagemmm');
-                    // td.onclick= this.pagina;
-                    //td.setAttribute('id',''+converter[l*2+p]['id_categoria\\\\']);
-                    //td.appendChild(img); //coloca a img no td
-                    // td.setAttribute('onclick', '{{pag}}');
-                    // alert(td.onclick)
-                    var tdReal = document.createElement('td');
-                    tdReal.innerHTML = td;
-                    tr.appendChild(tdReal);
-                }
-            }
-            document.getElementById('botoes').appendChild(table);
-        })
-            .catch(function (error) {
-            console.log(error.status);
-            alert(error.headers);
-        });
-    };
-    HomePage.prototype.pagina = function () {
-        alert('entrou');
-        try {
-            this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_7__sobre_sobre__["a" /* SobrePage */]);
-        }
-        catch (e) {
-            alert(JSON.stringify(e));
-        }
-    };
-    HomePage.prototype.carrega_palavra = function () {
-        var _this = this;
-        var teste = {
-            id_categoria: 1
-        };
-        this.http.get(this.endereco_palavras, teste, {})
-            .then(function (data) {
-            var converter = _this.converte(data.data);
-            _this.imagens = [];
-            _this.resultados = converter.length;
-            // alert(JSON.stringify(converter));
-            var table = document.createElement("table"); //cria uma tabela
-            table.setAttribute('border', '1');
-            for (var l = 0; l < _this.resultados / 2; l++) {
-                var tr = document.createElement("tr"); //cria um tr
-                table.appendChild(tr); //coloca o tr na tabela
-                for (var p = 0; p < 2 && l * 2 + p < converter.length; p++) {
-                    var td = document.createElement("td");
-                    var img = document.createElement("img");
-                    if (converter[l * 2 + p]['imagem\\\\'] == undefined)
-                        alert(JSON.stringify(converter[l * 2 + p]));
-                    var s = converter[l * 2 + p]['imagem\\\\'].replace(/\"/gi, "");
-                    s = s.replace(/\\/gi, "");
-                    s = s.replace(/\//gi, "/");
-                    img.setAttribute('src', 'https://inclusio.engynios.com/imagens/' + s);
-                    img.setAttribute('alt', 'imagemmm');
-                    td.setAttribute('id', '' + converter[l * 2 + p]['id_palavra\\\\']);
-                    td.appendChild(img); //coloca a img no td
-                    td.onclick = _this.sintetizador;
-                    tr.appendChild(td);
-                }
-            }
-            document.getElementById('botoes').appendChild(table);
-        })
-            .catch(function (error) {
-            console.log(error.status);
-            alert(error);
-        });
-    };
-    /*pushPage()
-    {
-        
-
-          alert(this.id);
-          this.id_cat= this.id;
-          let w = document.getElementById('tabela_cat');
-          w.remove();
-         
-         
-
-
-         
-       
-    }*/
-    HomePage.prototype.sintetizador = function () {
-        alert("Aqui entra");
-    };
-    HomePage = __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["m" /* Component */])({
-            selector: 'page-home',template:/*ion-inline-start:"C:\Users\ra1657100\Desktop\Inclusio\Lara\src\pages\home\home.html"*/'<ion-header>\n\n  <ion-navbar>\n\n\n\n	<!--caso a pag não tenha cabeçalho voc apaga tudo (a header e as coisas dentro-->\n\n	   <div  id="topo">\n\n		   <div id="btn_menu">\n\n			<ion-buttons left> \n\n				<button ion-button icon-only menuToggle> \n\n					<p class="menu"><ion-icon name="menu"> </ion-icon></p>\n\n				</button>\n\n\n\n			</ion-buttons>\n\n				</div>\n\n			<div id="titulo">\n\n			<ion-title>\n\n			 <span text-color="fonte-laranja"> Teclado </span>\n\n			</ion-title>\n\n			</div>\n\n		</div>\n\n  	\n\n  </ion-navbar>\n\n</ion-header>\n\n\n\n<ion-content class="body" padding>\n\n \n\n<div id="caixa_cadastro">\n\n  <div id="botoes"> \n\n    <h1>Nossas Categorias</h1>\n\n\n\n  </div>\n\n</div>\n\n</ion-content>\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n'/*ion-inline-end:"C:\Users\ra1657100\Desktop\Inclusio\Lara\src\pages\home\home.html"*/
-        }),
-        __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_2_ionic_angular__["h" /* NavController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2_ionic_angular__["h" /* NavController */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_0__angular_forms__["a" /* FormBuilder */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_forms__["a" /* FormBuilder */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_2_ionic_angular__["i" /* NavParams */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2_ionic_angular__["i" /* NavParams */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_3__ionic_native_http__["a" /* HTTP */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__ionic_native_http__["a" /* HTTP */]) === "function" && _d || Object])
-    ], HomePage);
-    return HomePage;
-    var _a, _b, _c, _d;
-}());
-
-//# sourceMappingURL=home.js.map
-
-/***/ }),
-
-/***/ 60:
+/***/ 121:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return TutorialPage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__home_home__ = __webpack_require__(55);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_storage__ = __webpack_require__(27);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__providers_sessionlogin_sessionlogin__ = __webpack_require__(32);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__app_models_usuario__ = __webpack_require__(46);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__providers_sessionconfiguracoes_sessionconfiguracoes__ = __webpack_require__(53);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__ionic_native_http__ = __webpack_require__(21);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_rxjs_add_operator_map__ = __webpack_require__(34);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_8_rxjs_add_operator_map__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9_rxjs_add_operator_timeout__ = __webpack_require__(35);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9_rxjs_add_operator_timeout___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_9_rxjs_add_operator_timeout__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__home_home__ = __webpack_require__(35);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_native_camera__ = __webpack_require__(48);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__ionic_storage__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__providers_sessionlogin_sessionlogin__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__app_models_usuario__ = __webpack_require__(49);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__providers_sessionconfiguracoes_sessionconfiguracoes__ = __webpack_require__(36);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__ionic_native_http__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9_rxjs_add_operator_map__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_9_rxjs_add_operator_map__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10_rxjs_add_operator_timeout__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10_rxjs_add_operator_timeout___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_10_rxjs_add_operator_timeout__);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -2293,6 +1642,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+
 
 
 
@@ -2310,7 +1660,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 ///TESTES
 
 var TutorialPage = /** @class */ (function () {
-    function TutorialPage(navCtrl, navParams, alertCtrl, session_login, session_config, http, storage, menu) {
+    function TutorialPage(navCtrl, navParams, alertCtrl, session_login, session_config, http, storage, menu, camera) {
         this.navCtrl = navCtrl;
         this.navParams = navParams;
         this.alertCtrl = alertCtrl;
@@ -2319,6 +1669,7 @@ var TutorialPage = /** @class */ (function () {
         this.http = http;
         this.storage = storage;
         this.menu = menu;
+        this.camera = camera;
         this.campoimg = [];
         this.campocat = [];
         this.mostra_campoimg = true; //começa mostrando o botão para ir para o proximo (campo img - true)
@@ -2328,27 +1679,136 @@ var TutorialPage = /** @class */ (function () {
         this.imagem = "https://img.olx.com.br/images/86/864708037631038.jpg";
         this.endereco = "https://inclusio.engynios.com/api/insert/palavra.php";
         this.endereco2 = "https://inclusio.engynios.com/api/insert/uniao.php";
+        this.imgHidden = true;
         //TESTE
         this.menu1Active();
+        // setTimeout(() => {
+        // 	this.carregaCategorias();
+        // }, 3000);
     }
-    //TESTE
-    TutorialPage.prototype.menu1Active = function () {
-        this.menu.enable(false, 'menu');
-    };
     //assim que o component existir capture a sessão do usuário
     TutorialPage.prototype.ngOnInit = function () {
+        var _this = this;
         /* IMPORTANTE!!!
             todas as páginas onde o usuario esta logado
             tem que pegar a session
         */
+        this.session_login.get().then(function (res) {
+            _this.usuarioLogado = new __WEBPACK_IMPORTED_MODULE_6__app_models_usuario__["a" /* Usuario */](res);
+            //   setTimeout(() => {
+            // 	  this.carregaCategorias();
+            //   }, 3000);
+        });
+    };
+    //TESTE
+    TutorialPage.prototype.menu1Active = function () {
+        this.menu.enable(false, 'menu');
+    };
+    TutorialPage.prototype.captureImage = function () {
         var _this = this;
-        this.session_login.get().then(function (res) { _this.usuarioLogado = new __WEBPACK_IMPORTED_MODULE_5__app_models_usuario__["a" /* Usuario */](res); });
+        var options = {
+            sourceType: this.camera.PictureSourceType.PHOTOLIBRARY,
+            destinationType: this.camera.DestinationType.DATA_URL,
+            quality: 25,
+            targetWidth: 512,
+            targetHeight: 512,
+            //encodingType: 1,
+            correctOrientation: true
+        };
+        this.camera.getPicture(options).then(function (imageData) {
+            _this.imageURI = "data:image/jpeg;base64," + imageData;
+            _this.imgHidden = false;
+        }, function (err) {
+            console.log(err);
+            // Handle error
+            console.log('Image error: ', err);
+        });
+    };
+    TutorialPage.prototype.takePicture = function () {
+        var _this = this;
+        this.camera.getPicture({
+            destinationType: this.camera.DestinationType.DATA_URL,
+            quality: 25,
+            targetWidth: 512,
+            targetHeight: 512,
+        }).then(function (imageData) {
+            // imageData is a base64 encoded string
+            _this.imageURI = "data:image/jpeg;base64," + imageData;
+            _this.imgHidden = false;
+        }, function (err) {
+            console.log(err);
+        });
+    };
+    TutorialPage.prototype.carregaCategorias = function () {
+        var _this = this;
+        this.http.get('https://inclusio.engynios.com/api/read/id_usuario/categoria-null.php', { id_usuario: this.usuarioLogado.id_usuario }, {})
+            .then(function (data) {
+            var divCat = document.getElementById('div_categorias');
+            // alert(divCat);
+            divCat.innerText = '';
+            var dados = _this.converte(JSON.stringify(data.data));
+            for (var i = 0; i < dados.length; i++) {
+                var cat = document.createElement('div');
+                var ckb = document.createElement('input');
+                ckb.type = "checkbox";
+                ckb.name = 'ckbsCat';
+                ckb.id = dados[i].id_categoria;
+                ckb.value = '' + dados[i].nome_categoria;
+                var label = document.createElement('label');
+                label.setAttribute('for', dados[i].id_categoria);
+                label.innerText = '' + dados[i].nome_categoria;
+                cat.appendChild(ckb);
+                cat.appendChild(label);
+                divCat.appendChild(cat);
+                // label.
+            }
+        })
+            .catch(function (error) {
+            alert('Erro ao acessar o banco, contactar os desenvolvedores. ' + JSON.stringify(error));
+        });
     };
     /*
         Como o intuíto de um tutorial é ser passo a passo, precisa
         mostrar o primeiro, esconder os demais e depois mostrar o segundo
         e assim sucessivamente
     */
+    TutorialPage.prototype.converte = function (date) {
+        var data = JSON.stringify(date);
+        var re = /\\\\\\\"/gi;
+        data = data.replace(re, "\"");
+        data = data.replace(/\\\\/gi, '');
+        var retorno = [];
+        while (data.indexOf('{') != -1) {
+            var str = data.substring(data.indexOf('{') + 1, data.indexOf('}') + 1);
+            data = data.substring(data.indexOf('}') + 1);
+            var objeto = {};
+            while (str.lastIndexOf('}') != -1) {
+                var campo = str.substring(str.indexOf('"') + 1, str.indexOf(':') - 1);
+                str = str.substring(str.indexOf(':') + 1);
+                // document.getElementById('resposta2').innerText += str;
+                var valor = void 0;
+                if (str.indexOf(',') == -1) {
+                    valor = str.substring(str.indexOf(':') + 1, str.indexOf('}') - 1);
+                    str = ' ';
+                }
+                else {
+                    valor = str.substring(0, str.indexOf(',') - 1);
+                    str = str.substring(str.indexOf(',') + 1);
+                }
+                if (valor == 'nul')
+                    valor = null;
+                else {
+                    valor = valor.replace(/\"/gi, "");
+                    valor = valor.replace(/_/gi, " ");
+                }
+                objeto[campo] = valor;
+                // alert(valor);
+                // document.getElementById('resposta2').innerText = str + str.lastIndexOf('}');
+            }
+            retorno.push(objeto);
+        }
+        return retorno;
+    };
     //apos o nome ser preenchido, vamos p a segunda etapa do tutorial, o campo img
     TutorialPage.prototype.aparece_img = function () {
         //primeiro iremos checar se o nome foi mesmo preenchido:
@@ -2361,10 +1821,9 @@ var TutorialPage = /** @class */ (function () {
             //Lara avisa que esta vazio
             balaozinho.innerHTML = 'O campo precisa estar preenchido!';
         }
-        else if (nomepalavra != "") {
+        else {
             //esta preenchido, pode avançar:
             //primeiro ele coloca o campo imagem na tela
-            console.log('this.campoimg', this.campoimg);
             this.data = true;
             this.campoimg.push({ 'value': '' });
             //depois esconde-se o botao q permite add inputs de categoria
@@ -2377,8 +1836,8 @@ var TutorialPage = /** @class */ (function () {
     };
     //apos a imagem ser preenchida, vamos p a ultima etapa do tutorial, o campo categoria
     TutorialPage.prototype.aparece_cat = function () {
+        this.carregaCategorias();
         //primeiro ele coloca o campo categoria na tela
-        console.log('this.campocat', this.campocat);
         this.data = true;
         this.campocat.push({ 'value': '' });
         //depois ele esconde o botao q permite add inputs de categoria
@@ -2471,12 +1930,16 @@ var TutorialPage = /** @class */ (function () {
         var palavra = document.getElementById('nomePalavra');
         var nomepalavra = palavra.value;
         var img = document.getElementById('txtimg');
-        var txtimg = img.value;
-        var categoria = document.getElementById('nomeCategoria');
-        var nomecategoria = categoria.value;
+        var cats = [];
         var balao3 = document.getElementById('balao3');
+        var ckbs = document.getElementsByName('ckbsCat');
+        for (var i = 0; i < ckbs.length; i++) {
+            var cb = ckbs[i];
+            if (cb.checked)
+                cats.push(cb.id);
+        }
         //ve se todos os campos estao preenchidos
-        if (nomepalavra == "" || nomepalavra == null || txtimg == "" || nomecategoria == "") {
+        if (nomepalavra == "" || nomepalavra == null || cats.length < 1) {
             //Lara avisa que esta vazio
             balao3.innerHTML = 'Todos os campos precisam estar preenchidos!';
         }
@@ -2485,7 +1948,7 @@ var TutorialPage = /** @class */ (function () {
             //1 PARTE DE INCLUIR PALAVRAS: TABELA PALAVRAS
             //pegar o valor da session
             this.session_login.get().then(function (res) {
-                _this.usuarioLogado = new __WEBPACK_IMPORTED_MODULE_5__app_models_usuario__["a" /* Usuario */](res);
+                _this.usuarioLogado = new __WEBPACK_IMPORTED_MODULE_6__app_models_usuario__["a" /* Usuario */](res);
                 //cria um objeto com os campos da tabela palavra
                 var objetos = {
                     nome_palavra: nomepalavra,
@@ -2496,30 +1959,41 @@ var TutorialPage = /** @class */ (function () {
                     headers: { 'Content-Type': 'application/json' }
                 })
                     .then(function (data) {
-                    //Cadastou na tabela Palavra
-                    //2 PARTE DE INCLUIR PALAVRAS: TABELA UNIÃO
-                    //cria um objeto com os campos da tabela uniao
-                    var objetos_uniao = {
-                        id_usuario: _this.usuarioLogado.id_usuario,
-                        id_categoria: 1,
-                        id_palavra: 1 //isso deve vir do bd
-                    };
-                    _this.http.post(_this.endereco2, objetos_uniao, {
-                        headers: { 'Content-Type': 'application/json' }
-                    })
-                        .then(function (data) {
-                        //Cadastou na tabela Uniao	
-                        //avisar o fim do tutorial e volta e ao home
-                        var alerta = _this.alertCtrl.create({
-                            title: 'Tutorial',
-                            message: 'Parabéns!! Você adicionou sua primeira palavra! Vamos voltar ao teclado agora',
-                            buttons: [{ text: 'Ok', handler: function () { _this.navCtrl.setRoot(__WEBPACK_IMPORTED_MODULE_2__home_home__["a" /* HomePage */]); } }]
-                        });
-                        alerta.present();
+                    _this.http.get('https://inclusio.engynios.com/api/read/nome/palavra.php', {
+                        nome_palavra: "\"" + nomepalavra + "\""
+                    }, { headers: { 'Content-Type': 'application/json' } })
+                        .then(function (palavras) {
+                        var retorno = _this.converte(JSON.stringify(palavras.data));
+                        var ad = retorno[retorno.length - 1];
+                        var flag = true;
+                        for (var i = 0; i < cats.length; i++) {
+                            var objetos_uniao = {
+                                id_palavra: ad.id_palavra,
+                                id_categoria: cats[i],
+                                id_usuario: _this.usuarioLogado.id_usuario
+                            };
+                            _this.http.post(_this.endereco2, objetos_uniao, { headers: { 'Content-Type': 'application/json' } })
+                                .then(function () { }).catch(function (error) {
+                                flag = false;
+                                alert('Erro ao cadastrar a palavra: ' + JSON.stringify(error));
+                            });
+                        }
+                        setTimeout(function () {
+                            if (flag) {
+                                //Cadastou na tabela Uniao	
+                                //avisar o fim do tutorial e volta e ao home
+                                var alerta = _this.alertCtrl.create({
+                                    title: 'Tutorial',
+                                    message: 'Parabéns!! Você adicionou sua primeira palavra! Vamos voltar ao teclado agora',
+                                    buttons: [{ text: 'Ok', handler: function () { _this.navCtrl.setRoot(__WEBPACK_IMPORTED_MODULE_2__home_home__["a" /* HomePage */]); } }]
+                                });
+                                alerta.present();
+                            }
+                        }, 3000);
                     }).catch(function (error) {
-                        //se deu erro na uniao
-                        alert(JSON.stringify(error));
+                        alert('Erro ao conferir o banco de dados: ' + JSON.stringify(error));
                     });
+                    //Cadastou na tabela Palavra
                 }).catch(function (error) {
                     //se deu erro na palavra
                     alert(JSON.stringify(error));
@@ -2532,21 +2006,1755 @@ var TutorialPage = /** @class */ (function () {
     };
     TutorialPage = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
-            selector: 'page-tutorial',template:/*ion-inline-start:"C:\Users\ra1657100\Desktop\Inclusio\Lara\src\pages\tutorial\tutorial.html"*/'﻿<meta charset="utf-8">\n\n\n\n<ion-content class="body" padding>\n\n  <div id="principal">\n\n    <div id="formulario">\n\n      <form action="" >\n\n      \n\n      <div id="linha_form"  >\n\n        <h1>  <ion-icon ios="ios-image" md="md-book"></ion-icon> Palavra</h1>\n\n        <div id="input_form">\n\n          <input type="text" maxlength="50" [(ngModel)]="palavra" name="palavra" id="nomePalavra" placeholder="Meu nome é..." >\n\n          <br>\n\n          <br>\n\n        </div>\n\n      </div> <!--Linha form-->\n\n\n\n      <div id="linha_tutorial" *ngIf="mostra_campoimg" >\n\n        <img src="./assets/imgs/lara.png"  class="lara_tutorial">\n\n        <p class="balao1" id="balao1"> Nesse campo insira o seu nome para cadastra-lo!</p>\n\n        <br>\n\n        <br>\n\n        <button ion-button *ngIf="mostra_campoimg" (click)="aparece_img()" class="botao_tut"> Próximo &nbsp; <ion-icon name="ios-arrow-forward-outline"></ion-icon></button>\n\n        <br>\n\n        <br>\n\n        <br>\n\n      </div> <!--Linha tutorial-->\n\n\n\n\n\n      <div id="linha_form" *ngFor="let att of campoimg; ">\n\n        <h1>  <ion-icon ios="ios-image" md="md-image"></ion-icon> Imagem</h1>\n\n        <div id="input_form">\n\n        <input type="text" [(ngModel)]="imagem" (input)="mudaImg()" name="imagem" id="txtimg" placeholder="Sua imagem"><br><br>\n\n        <img [src]="imagem" height="100px">\n\n        </div>\n\n        <br>\n\n        <br>\n\n      </div> <!--Linha form-->\n\n\n\n      <div id="linha_tutorial" *ngIf="mostra_campocat" >\n\n        <img src="./assets/imgs/lara.png" class="lara_tutorial">\n\n        <p class="balao2"> Aqui insira uma foto sua!</p>\n\n        <br>\n\n        <br>\n\n        <button ion-button  *ngIf="mostra_campocat" (click)="aparece_cat()" class="botao_tut"> Próximo &nbsp; <ion-icon name="ios-arrow-forward-outline"></ion-icon></button>\n\n        <br>\n\n        <br>\n\n        <br>\n\n      </div> <!--Linha tutorial-->\n\n\n\n\n\n      <div id="linha_form" *ngFor="let att of campocat;">\n\n        <h1>   <ion-icon ios="ios-image" md="md-image"></ion-icon> Categoria</h1>\n\n        <div id="input_form">\n\n          <input type="text"  maxlength="50" id="nomeCategoria"><br><br>\n\n        </div>\n\n        <img src="./assets/imgs/lara.png" class="lara_tutorial">\n\n        <p class="balao3"> Por fim, selecione uma catogoria, eu sugiro "Pessoas" já que você é um humano.</p>\n\n        <br>\n\n        <br>\n\n        <br>\n\n\n\n        <button ion-button round (click)="enviar()" class="botao">Enviar</button>\n\n        <br>\n\n        <br>\n\n        <button ion-button round (click)="limpar()" class="botao">Limpar</button>\n\n     \n\n      </div> <!--Linha form-->\n\n     \n\n      <!--div id="icone">\n\n      <ion-icon [name]="seta()" (click)="mostraPalavras();"></ion-icon>\n\n      <input type="checkbox" name="Categorias" value="Categoria 1" id="categoria1">&nbsp;&nbsp;Categoria 1<br>\n\n      <table id = "palavras"></table><br>\n\n      </div-->\n\n      \n\n       </form>\n\n    \n\n    </div> <!--Formulário-->\n\n  </div> <!--Principal-->\n\n</ion-content>\n\n'/*ion-inline-end:"C:\Users\ra1657100\Desktop\Inclusio\Lara\src\pages\tutorial\tutorial.html"*/,
+            selector: 'page-tutorial',template:/*ion-inline-start:"C:\Users\ivanp\Desktop\Estudos\CTI\Tecnico\TCC\Lara-ApresentacaoFinal.bkp\src\pages\tutorial\tutorial.html"*/'﻿<meta charset="utf-8">\n\n\n\n<ion-content class="body" padding>\n\n  <div id="principal">\n\n    <div id="formulario">\n\n      <form action="" >\n\n      \n\n      <div id="linha_form"  >\n\n        <h1>  <ion-icon ios="ios-image" md="md-book"></ion-icon> Palavra</h1>\n\n        <div id="input_form">\n\n          <input type="text" maxlength="50" [(ngModel)]="palavra" name="palavra" id="nomePalavra" placeholder="Meu nome é..." >\n\n          <br>\n\n          <br>\n\n        </div>\n\n      </div> <!--Linha form-->\n\n\n\n      <div id="linha_tutorial" *ngIf="mostra_campoimg" >\n\n        <img src="./assets/imgs/lara.png"  class="lara_tutorial">\n\n        <p class="balao1" id="balao1"> Nesse campo insira o seu nome para cadastra-lo!</p>\n\n        <br>\n\n        <br>\n\n        <button ion-button *ngIf="mostra_campoimg" (click)="aparece_img()" class="botao_tut"> Próximo &nbsp; <ion-icon name="ios-arrow-forward-outline"></ion-icon></button>\n\n        <br>\n\n        <br>\n\n        <br>\n\n      </div> <!--Linha tutorial-->\n\n\n\n\n\n      <div id="linha_form" *ngFor="let att of campoimg; ">\n\n        <h1>  <ion-icon ios="ios-image" md="md-image"></ion-icon> Imagem</h1>\n\n        <button ion-button full (click)="captureImage()">Acessar a galeria</button>\n\n				<button ion-button full (click)="takePicture()">Tirar Foto</button>\n\n				<ion-card>\n\n					<ion-card-header [hidden]="imgHidden">Imagem</ion-card-header>\n\n					<ion-card-content [hidden]="imgHidden">\n\n							<img [src]="imageURI"> \n\n					</ion-card-content>\n\n				</ion-card>\n\n        <br>\n\n        <br>\n\n      </div> <!--Linha form-->\n\n\n\n      <div id="linha_tutorial" *ngIf="mostra_campocat" >\n\n        <img src="./assets/imgs/lara.png" class="lara_tutorial">\n\n        <p class="balao2"> Aqui insira uma foto sua!</p>\n\n        <br>\n\n        <br>\n\n        <button ion-button  *ngIf="mostra_campocat" (click)="aparece_cat()" class="botao_tut"> Próximo &nbsp; <ion-icon name="ios-arrow-forward-outline"></ion-icon></button>\n\n        <br>\n\n        <br>\n\n        <br>\n\n      </div> <!--Linha tutorial-->\n\n\n\n\n\n      <div id="linha_form" *ngFor="let att of campocat;">\n\n        <h1>   <ion-icon ios="ios-image" md="md-image"></ion-icon> Categoria</h1>\n\n        <div id="input_form">\n\n          <div id="div_categorias" class="div_categorias"></div>\n\n          <!-- <input type="text"  maxlength="50" id="nomeCategoria"><br><br> -->\n\n        </div>\n\n        <img src="./assets/imgs/lara.png" class="lara_tutorial">\n\n        <p class="balao3"> Por fim, selecione uma catogoria, eu sugiro "Pessoas" já que você é um humano.</p>\n\n        <br>\n\n        <br>\n\n        <br>\n\n\n\n        <button ion-button round (click)="enviar()" class="botao">Enviar</button>\n\n        <br>\n\n        <br>\n\n        <button ion-button round (click)="limpar()" class="botao">Limpar</button>\n\n     \n\n      </div> <!--Linha form-->\n\n     \n\n      <!--div id="icone">\n\n      <ion-icon [name]="seta()" (click)="mostraPalavras();"></ion-icon>\n\n      <input type="checkbox" name="Categorias" value="Categoria 1" id="categoria1">&nbsp;&nbsp;Categoria 1<br>\n\n      <table id = "palavras"></table><br>\n\n      </div-->\n\n      \n\n       </form>\n\n    \n\n    </div> <!--Formulário-->\n\n  </div> <!--Principal-->\n\n</ion-content>\n\n'/*ion-inline-end:"C:\Users\ivanp\Desktop\Estudos\CTI\Tecnico\TCC\Lara-ApresentacaoFinal.bkp\src\pages\tutorial\tutorial.html"*/,
         }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["h" /* NavController */],
-            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavParams */],
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */],
+            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */],
             __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */],
-            __WEBPACK_IMPORTED_MODULE_4__providers_sessionlogin_sessionlogin__["a" /* SessionloginProvider */],
-            __WEBPACK_IMPORTED_MODULE_6__providers_sessionconfiguracoes_sessionconfiguracoes__["a" /* SessionconfiguracoesProvider */],
-            __WEBPACK_IMPORTED_MODULE_7__ionic_native_http__["a" /* HTTP */],
-            __WEBPACK_IMPORTED_MODULE_3__ionic_storage__["b" /* Storage */],
-            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* MenuController */]])
+            __WEBPACK_IMPORTED_MODULE_5__providers_sessionlogin_sessionlogin__["a" /* SessionloginProvider */],
+            __WEBPACK_IMPORTED_MODULE_7__providers_sessionconfiguracoes_sessionconfiguracoes__["a" /* SessionconfiguracoesProvider */],
+            __WEBPACK_IMPORTED_MODULE_8__ionic_native_http__["a" /* HTTP */],
+            __WEBPACK_IMPORTED_MODULE_4__ionic_storage__["b" /* Storage */],
+            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* MenuController */],
+            __WEBPACK_IMPORTED_MODULE_3__ionic_native_camera__["a" /* Camera */]])
     ], TutorialPage);
     return TutorialPage;
 }());
 
 //# sourceMappingURL=tutorial.js.map
+
+/***/ }),
+
+/***/ 122:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ListarcategoriaPage; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_forms__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_native_http__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_map__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_map__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_rxjs_add_operator_timeout__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_rxjs_add_operator_timeout___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_rxjs_add_operator_timeout__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__providers_sessionlogin_sessionlogin__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__app_models_usuario__ = __webpack_require__(49);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+//banco
+
+
+
+//usuario
+
+
+var ListarcategoriaPage = /** @class */ (function () {
+    function ListarcategoriaPage(navCtrl, navParams, 
+        //private ServiceProvider: ServiceProvider, //paginacao
+        http, //banco
+        session_login, //session	
+        formBuilder) {
+        this.navCtrl = navCtrl;
+        this.navParams = navParams;
+        this.http = http;
+        this.session_login = session_login;
+        this.endereco_alt = "http://inclusio.engynios.com/api/update/categoria.php";
+        this.endereco_del = "http://inclusio.engynios.com/api/delete/id/categoria.php";
+        this.messagenomeCategoria = "";
+        this.messageImagem = "";
+        this.errornomeCategoria = false;
+        this.errorImagem = false;
+        //mostrar coisa
+        this.nome_cat = "";
+        this.img_cat = "";
+        this.criarCategoriaForm = formBuilder.group({
+            nomeCategoria: ['', __WEBPACK_IMPORTED_MODULE_2__angular_forms__["f" /* Validators */].compose([__WEBPACK_IMPORTED_MODULE_2__angular_forms__["f" /* Validators */].required, __WEBPACK_IMPORTED_MODULE_2__angular_forms__["f" /* Validators */].pattern('^[a-zA-Z]+$')])],
+        });
+        this.carregacategoria();
+    }
+    ListarcategoriaPage.prototype.ngOnInit = function () {
+        //document.getElementById("caixa_cadastro").hidden = true;
+    };
+    ListarcategoriaPage.prototype.ionViewDidLoad = function () {
+        //document.getElementById("caixa_cadastro").hidden = true;
+    };
+    //fun��o para converter dados do banco
+    ListarcategoriaPage.prototype.converte = function (date) {
+        var data = JSON.stringify(date);
+        var re = /\\\"/gi;
+        data = data.replace(re, "\"");
+        re = /\\\\\\\//gi;
+        data = data.replace(re, "/");
+        var retorno = [];
+        while (data.indexOf('{') != -1) {
+            var str = data.substring(data.indexOf('{') + 1, data.indexOf('}') + 1);
+            data = data.substring(data.indexOf('}') + 1);
+            var objeto = {};
+            while (str.lastIndexOf('}') != -1) {
+                var campo = str.substring(str.indexOf('"') + 1, str.indexOf(':') - 1);
+                str = str.substring(str.indexOf(':') + 1);
+                // document.getElementById('resposta2').innerText += str;
+                var valor = void 0;
+                if (str.indexOf(',') == -1) {
+                    valor = str.substring(str.indexOf(':') + 1, str.indexOf('}') - 1);
+                    str = ' ';
+                }
+                else {
+                    valor = str.substring(0, str.indexOf(',') - 1);
+                    str = str.substring(str.indexOf(',') + 1);
+                }
+                if (valor == 'nul')
+                    valor = null;
+                else
+                    valor = valor + '"';
+                objeto[campo] = valor;
+                // document.getElementById('resposta2').innerText = str + str.lastIndexOf('}');
+            }
+            retorno.push(objeto);
+        }
+        return retorno;
+    };
+    ListarcategoriaPage.prototype.carregacategoria = function () {
+        //primeiro as nossas categorias
+        //SELECIONAR
+        //precisa-se faze dois selects: um de id null e outro de id session
+        var _this = this;
+        //id null (nossas categorias)
+        this.session_login.get().then(function (res) {
+            _this.usuarioLogado = new __WEBPACK_IMPORTED_MODULE_7__app_models_usuario__["a" /* Usuario */](res);
+            //Indicando o caminho da api
+            _this.caminho = 'https://inclusio.engynios.com/api/read/id_usuario/categoria.php';
+            //Faz um select (read), por id_usuario, na tabela categoria
+            var objeto = {
+                id_usuario: _this.usuarioLogado.id_usuario
+            };
+            _this.http.get(_this.caminho, objeto, {})
+                .then(function (data) {
+                //alert("ta certo mas ta errado");
+                _this.converter = _this.converte(data.data);
+                //  alert(this.converter.length);			
+            }).catch(function (e) {
+                alert(JSON.stringify(e + 'line 97'));
+            });
+            setTimeout(function () {
+                var div = document.getElementById('categorias');
+                for (var a = 0; a < _this.converter.length; a++) {
+                    //pegando as coisas
+                    _this.nome = _this.converter[a]['nome_categoria\\\\'];
+                    _this.id_cat = _this.converter[a]['id_categoria\\\\'];
+                    _this.img_cat = _this.converter[a]['imagem\\\\'];
+                    // alert("antes do replace"+nome);
+                    //substituindo
+                    _this.nome = _this.nome.replace(/\\/gi, "");
+                    _this.nome = _this.nome.replace(/\//gi, "/");
+                    _this.nome = _this.nome.replace(/\"/gi, "");
+                    _this.id_cat = _this.id_cat.replace(/\\/gi, "");
+                    _this.id_cat = _this.id_cat.replace(/\//gi, "/");
+                    _this.img_cat = _this.img_cat.replace(/\//gi, "/");
+                    _this.img_cat = _this.img_cat.replace(/\\/gi, "");
+                    //criando
+                    var img = document.createElement("img");
+                    //img.setAttribute('src', 'https://inclusio.engynios.com/imagens/'+this.img_cat);
+                    //img.setAttribute('alt', 'imagem');
+                    //img.setAttribute('id', this.id_cat);
+                    //img.appendChild(div);
+                    var p = document.createElement("p");
+                    p.setAttribute("id", _this.id_cat);
+                    p.innerText = '' + _this.nome.toUpperCase() + '';
+                    //p.setAttribute("onclick", "this.vai();" /*"this.navCtrl.push(EditarcategoriaPage)"*/ );
+                    p.addEventListener('click', function () {
+                        var input = document.getElementById('nomeCategoria');
+                        //let id_cat = document.getElementById("1");
+                        //alert(this.id);
+                        input.innerText = JSON.stringify(this.innerText).replace(/\"/gi, ""); //tirar as aspas!!!
+                        //let pala = document.getElementById('categorias');
+                        document.getElementById("categorias").hidden = true;
+                        document.getElementById("caixa_cadastro").hidden = false;
+                        var p = document.getElementById("flag");
+                        //p.hidden =true;
+                        var img = document.getElementById("img");
+                        p.innerText = "" + this.id.replace(/\"/gi, "");
+                        // alert(p.innerText);
+                    });
+                    div.appendChild(p); //coloca a img no td
+                } //for
+            }, 2000);
+        }).catch(function (error) {
+            alert('Erro: ' + JSON.stringify(error));
+        });
+    };
+    ListarcategoriaPage.prototype.alterar = function () {
+        var _this = this;
+        /*let nomes = [];
+            for(let n = 0;n<this.palavrasG.length;n++)
+                nomes.push(this.palavrasG[n]['nome_categoria'].toLowerCase());
+    
+        let {palavra} = this.criarCategoriaForm.controls;
+        if (!this.criarCategoriaForm.valid)
+        {
+          this.errornomeCategoria = true;
+          this.messagenomeCategoria = "Campo obrigatorio";
+        }
+       else
+        {
+          if(nomes.indexOf(palavra.value.toLowerCase()) != -1){
+                    this.errornomeCategoria = true;
+                    this.messagenomeCategoria = "Já existe uma Categoria com esse nome";
+            return;
+          }
+          let id = document.getElementById("flag");
+          this.id_alterar = id.innerText.replace(/\"/gi, "");
+          let objeto = {
+          id_categoria: this.id_alterar,
+          nome_categoria:document.getElementById("nomeCategoria")
+          
+          };*/
+        this.session_login.get().then(function (res) {
+            _this.usuarioLogado = new __WEBPACK_IMPORTED_MODULE_7__app_models_usuario__["a" /* Usuario */](res);
+            var id = document.getElementById("flag");
+            var nome = _this.nomeCategoria;
+            //alert(nome);
+            _this.id_alterar = id.innerText.replace(/\"/gi, "");
+            var objeto = {
+                id_categoria: _this.id_alterar,
+                nome_categoria: nome,
+                id_usuario: _this.usuarioLogado.id_usuario,
+                versao: 1.0
+            };
+            _this.http.post(_this.endereco_alt, objeto, { headers: { 'Content-Type': 'application/json' }
+            })
+                .then(function (data) {
+                alert("Palavra alterada!");
+                // this.navCtrl.push(HomePage);
+                //alert(JSON.stringify(data.data));
+            }).catch(function (error) {
+                alert(JSON.stringify(error) + "erro na alteração de categorias. Favor contactar os desenvolvedores");
+            });
+        }).catch(function (error) {
+            alert('Erro: ' + JSON.stringify(error));
+        });
+    };
+    ListarcategoriaPage.prototype.excluir = function () {
+        var id = document.getElementById("flag");
+        this.id_deletar = id.innerText.replace(/\"/gi, "");
+        alert(this.id_deletar);
+        var objeto = {
+            id_categoria: this.id_deletar
+        };
+        this.http.post(this.endereco_del, objeto, { headers: { 'Content-Type': 'application/json' }
+        })
+            .then(function (data) {
+            alert("Categoria excluída com sucesso!");
+            //this.navCtrl.push(HomePage);
+            //alert(JSON.stringify(data.data));
+        }).catch(function (error) {
+            alert(JSON.stringify(error) + "erro na exclusao de categorias. Favor contatar os desenvolvedores");
+        });
+    };
+    ListarcategoriaPage = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
+            selector: 'page-listarcategoria',template:/*ion-inline-start:"C:\Users\ivanp\Desktop\Estudos\CTI\Tecnico\TCC\Lara-ApresentacaoFinal.bkp\src\pages\listarcategoria\listarcategoria.html"*/'<ion-header>\n  <ion-navbar>\n  \n	<!--caso a pag n�o tenha cabe�alho voc apaga tudo (a header e as coisas dentro-->\n	   <div  id="topo">\n		   <div id="btn_menu">\n			<ion-buttons left> \n				<button ion-button icon-only menuToggle> \n					<p class="menu"><ion-icon name="menu"> </ion-icon></p>\n				</button>\n\n			</ion-buttons>\n				</div>\n			<div id="titulo">\n			<ion-title>\n			 <span text-color="fonte-laranja"> Categorias </span>\n			</ion-title>\n			</div>\n		</div>\n	\n  </ion-navbar>\n</ion-header>\n<ion-content padding>\n\n\n<ion-content >\n  <div id="main">\n    <div id="categorias"> <!--listar todas as categorias-->\n	\n		</div>\n		\n		<div id="caixa_cadastro" hidden>\n				&nbsp; &nbsp;  <!--p class="icon"><ion-icon ios="ios-person" md="md-person"></ion-icon></p> <!-- <h1>Criar Categoria</h1>-->\n				<form  [formGroup]="criarCategoriaForm" novalidate>\n						<ion-row>\n							<ion-col>\n								<ion-list inset>\n									<div id="input_form">\n							<div id="texto"> Categoria:</div>\n						<ion-item>\n							<ion-input [(ngModel)]="nomeCategoria" id="nomeCategoria" value="" formControlName="nomeCategoria" type="textarea"  id="nomeCategoria" clearInput clearOnEdit="false"></ion-input>\n									</ion-item>\n						<h6 *ngIf="errornomeCategoria" class="error"> {{messagenomeCategoria}}</h6>\n						<br>\n						\n						<div id="texto"> Imagem:</div>\n						\n							<ion-card>\n								<ion-card-header>Imagem</ion-card-header>\n								<ion-card-content>\n										<img [src]="base64Image" id="imagem">\n								</ion-card-content>\n							</ion-card>\n							<button ion-button full (click)="captureImage()">Acessar a galeria</button>\n							<button ion-button full (click)="takePicture()">Tirar Foto</button>\n						\n						<div id="texto"> Palavras disponíveis:</div>\n						<div id="div_categorias" class="div_categorias"></div>\n						</div>\n						</ion-list>  \n							</ion-col>\n						</ion-row>		\n					<p id="flag" hidden></p>\n						<ion-row>\n							<div id="botoes">\n								<button ion-button round class="botaoCad" (click)="alterar()">Alterar</button>\n								<button ion-button round class="botaoCad" (click)="excluir()">Excluir</button>\n							</div>\n						</ion-row>\n				</form>\n			</div>\n\n  </div>\n</ion-content>\n'/*ion-inline-end:"C:\Users\ivanp\Desktop\Estudos\CTI\Tecnico\TCC\Lara-ApresentacaoFinal.bkp\src\pages\listarcategoria\listarcategoria.html"*/,
+        }),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */],
+            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */],
+            __WEBPACK_IMPORTED_MODULE_3__ionic_native_http__["a" /* HTTP */],
+            __WEBPACK_IMPORTED_MODULE_6__providers_sessionlogin_sessionlogin__["a" /* SessionloginProvider */],
+            __WEBPACK_IMPORTED_MODULE_2__angular_forms__["a" /* FormBuilder */]])
+    ], ListarcategoriaPage);
+    return ListarcategoriaPage;
+}());
+
+//# sourceMappingURL=listarcategoria.js.map
+
+/***/ }),
+
+/***/ 123:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return SairPage; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ionic_storage__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__providers_sessionlogin_sessionlogin__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__app_models_usuario__ = __webpack_require__(49);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__splash_splash__ = __webpack_require__(61);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__home_home__ = __webpack_require__(35);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+//imports da session
+
+
+
+//paginas
+
+
+var SairPage = /** @class */ (function () {
+    function SairPage(navCtrl, navParams, session_login, storage, alertCtrl) {
+        this.navCtrl = navCtrl;
+        this.navParams = navParams;
+        this.session_login = session_login;
+        this.storage = storage;
+        this.alertCtrl = alertCtrl;
+    }
+    //assim que o component existir capture a sessão do usuário
+    SairPage.prototype.ngOnInit = function () {
+        /* IMPORTANTE!!!
+            todas as páginas onde o usuario esta logado
+            tem que pegar a session
+        */
+        var _this = this;
+        this.session_login.get().then(function (res) { _this.usuario = new __WEBPACK_IMPORTED_MODULE_4__app_models_usuario__["a" /* Usuario */](res); });
+        var confirma_sair = this.alertCtrl.create({
+            title: 'Sair',
+            message: 'Deseja sair do app?',
+            buttons: [
+                {
+                    text: 'Não',
+                    role: 'cancel',
+                    handler: function () { _this.navCtrl.setRoot(__WEBPACK_IMPORTED_MODULE_6__home_home__["a" /* HomePage */]); }
+                },
+                {
+                    text: 'Sim',
+                    handler: function () {
+                        _this.session_login.remove(); //remove os valores
+                        _this.navCtrl.setRoot(__WEBPACK_IMPORTED_MODULE_5__splash_splash__["a" /* SplashPage */]); //volta para o comeco
+                    }
+                }
+            ]
+        });
+        confirma_sair.present();
+    };
+    SairPage.prototype.ionViewDidLoad = function () {
+    };
+    SairPage = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
+            selector: 'page-sair',template:/*ion-inline-start:"C:\Users\ivanp\Desktop\Estudos\CTI\Tecnico\TCC\Lara-ApresentacaoFinal.bkp\src\pages\sair\sair.html"*/'<!--\n\n  Generated template for the SairPage page.\n\n\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n\n  Ionic pages and navigation.\n\n-->\n\n<ion-header>\n\n\n\n  <ion-navbar>\n\n    <ion-title>Saindo do Aplicativo</ion-title>\n\n  </ion-navbar>\n\n\n\n</ion-header>\n\n<ion-content padding>\n\n\n\n</ion-content>\n\n'/*ion-inline-end:"C:\Users\ivanp\Desktop\Estudos\CTI\Tecnico\TCC\Lara-ApresentacaoFinal.bkp\src\pages\sair\sair.html"*/,
+        }),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */], __WEBPACK_IMPORTED_MODULE_3__providers_sessionlogin_sessionlogin__["a" /* SessionloginProvider */], __WEBPACK_IMPORTED_MODULE_2__ionic_storage__["b" /* Storage */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["a" /* AlertController */]])
+    ], SairPage);
+    return SairPage;
+}());
+
+//# sourceMappingURL=sair.js.map
+
+/***/ }),
+
+/***/ 124:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return SobrePage; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(7);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+/**
+ * Generated class for the SobrePage page.
+ *
+ * See https://ionicframework.com/docs/components/#navigation for more info on
+ * Ionic pages and navigation.
+ */
+var SobrePage = /** @class */ (function () {
+    function SobrePage(navCtrl, navParams) {
+        this.navCtrl = navCtrl;
+        this.navParams = navParams;
+    }
+    SobrePage.prototype.ionViewDidLoad = function () {
+        console.log('ionViewDidLoad SobrePage');
+    };
+    SobrePage = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
+            selector: 'page-sobre',template:/*ion-inline-start:"C:\Users\ivanp\Desktop\Estudos\CTI\Tecnico\TCC\Lara-ApresentacaoFinal.bkp\src\pages\sobre\sobre.html"*/'<ion-header>\n\n  <ion-navbar>\n\n\n\n	<!--caso a pag não tenha cabeçalho voc apaga tudo (a header e as coisas dentro-->\n\n  <ion-header>\n\n    <ion-navbar>\n\n      <button ion-button menuToggle>\n\n        <ion-icon name="menu"></ion-icon>\n\n      </button>\n\n      <span text-color = "fonte-laranja">Sobre</span>\n\n    </ion-navbar>\n\n  </ion-header>\n\n  	\n\n  </ion-navbar>\n\n</ion-header>\n\n\n\n<meta charset="utf-8">\n\n\n\n\n\n<ion-content class="body" padding>\n\n \n\n	<div id="principal">\n\n  \n\n  <h1>O Aplicativo</h1>\n\n  \n\n   <img class="sobre" src="../assets/imgs/logo_lara.png">\n\n  \n\n  <p> Lara CAA foi idealizada pela Inclusio, equipe desenvolvedora, que tinha como\n\n  propósito a aumentar a acessibilidade e eficiência dos já existentes aplicativos de mesma função, \n\n  priorisando sempre o usuário e as palavras que compõe seu universo. </p>\n\n  \n\n  <br>\n\n  <br>\n\n  \n\n  <h1>A Equipe</h1>\n\n  \n\n  <img class="sobre" src="../assets/imgs/logo_equipe.png">\n\n  \n\n  <p>Fundada em 2018, a Inclusio buscou para que cada detalhe de seu projeto refletissem os valores de inclusão e\n\n  empatia.</p>\n\n  \n\n  <br>\n\n  \n\n  <img class="sobre" src="../assets/imgs/equipe.jpg">\n\n  \n\n  <p>\n\n     A equipe é composta por: Ana Laura Maffei, Beatriz Dinat, Gabriela Miyajima, Gabriela Guimarães, \n\n      Ivan Prearo, Joana Cuesta, Leonardo Caldas e Maria Eduarda Corrêa.</p>\n\n      \n\n  <br>\n\n  <br>\n\n  \n\n  <h1>Apoio</h1>\n\n  \n\n   <img class="sobre" src="../assets/imgs/logo_cti.png">\n\n    <p> Um agradecimento ao Colégio Técnico Industrial Prof. Isaac Portal Roldán e aos professores coordenadores do projeto: \n\n    André Bicudo, Celso Kawashima, Jovita Baenas, Rodrigo Ferreira e Vitor Simeão.</p>\n\n    \n\n   <img class="sobre" src="../assets/imgs/logo_sorri.png">\n\n    <p> Um agradecimento especial também a instituição Sorri Bauru que abraçou o projeto, em especial o Luís Fernando M. Bento Gestor de TI </p>\n\n  \n\n  </div> <!--principal-->\n\n\n\n</ion-content>\n\n'/*ion-inline-end:"C:\Users\ivanp\Desktop\Estudos\CTI\Tecnico\TCC\Lara-ApresentacaoFinal.bkp\src\pages\sobre\sobre.html"*/,
+        }),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */]])
+    ], SobrePage);
+    return SobrePage;
+}());
+
+//# sourceMappingURL=sobre.js.map
+
+/***/ }),
+
+/***/ 133:
+/***/ (function(module, exports) {
+
+function webpackEmptyAsyncContext(req) {
+	// Here Promise.resolve().then() is used instead of new Promise() to prevent
+	// uncatched exception popping up in devtools
+	return Promise.resolve().then(function() {
+		throw new Error("Cannot find module '" + req + "'.");
+	});
+}
+webpackEmptyAsyncContext.keys = function() { return []; };
+webpackEmptyAsyncContext.resolve = webpackEmptyAsyncContext;
+module.exports = webpackEmptyAsyncContext;
+webpackEmptyAsyncContext.id = 133;
+
+/***/ }),
+
+/***/ 15:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return SessionloginProvider; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ionic_storage__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(0);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+//pacote para transformar nossa classe em injetável
+
+var SessionloginProvider = /** @class */ (function () {
+    function SessionloginProvider(storage) {
+        this.storage = storage;
+    }
+    // setando uma seção e passando o tipo de usuário
+    SessionloginProvider.prototype.create = function (usuario) {
+        this.storage.set('usuario', usuario);
+    };
+    SessionloginProvider.prototype.get = function () {
+        return this.storage.get('usuario');
+    };
+    // Quando deslogar deve remova do storage
+    SessionloginProvider.prototype.remove = function () {
+        this.storage.remove('usuario');
+    };
+    SessionloginProvider.prototype.exist = function () {
+        this.get().then(function (res) {
+            console.log('resultado >>> ', res);
+            if (res) {
+                console.log('resultado IF');
+                return true;
+            }
+            else {
+                console.log('resultado else');
+                return false;
+            }
+        });
+    };
+    SessionloginProvider = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["A" /* Injectable */])(),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_0__ionic_storage__["b" /* Storage */]])
+    ], SessionloginProvider);
+    return SessionloginProvider;
+}());
+
+//# sourceMappingURL=sessionlogin.js.map
+
+/***/ }),
+
+/***/ 175:
+/***/ (function(module, exports, __webpack_require__) {
+
+var map = {
+	"../pages/ajuda/ajuda.module": [
+		306,
+		14
+	],
+	"../pages/alteradados/alteradados.module": [
+		307,
+		13
+	],
+	"../pages/alterarpalavras/alterarpalavras.module": [
+		308,
+		12
+	],
+	"../pages/configuracoes/configuracoes.module": [
+		309,
+		11
+	],
+	"../pages/criarcat/criarcat.module": [
+		310,
+		10
+	],
+	"../pages/criarpal/criarpal.module": [
+		311,
+		9
+	],
+	"../pages/esquecisenha/esquecisenha.module": [
+		312,
+		8
+	],
+	"../pages/inserecod/inserecod.module": [
+		313,
+		0
+	],
+	"../pages/inseresenha/inseresenha.module": [
+		314,
+		7
+	],
+	"../pages/listarcategoria/listarcategoria.module": [
+		315,
+		6
+	],
+	"../pages/listarpalavras/listarpalavras.module": [
+		316,
+		5
+	],
+	"../pages/sair/sair.module": [
+		317,
+		4
+	],
+	"../pages/sobre/sobre.module": [
+		318,
+		3
+	],
+	"../pages/splash/splash.module": [
+		319,
+		2
+	],
+	"../pages/tutorial/tutorial.module": [
+		320,
+		1
+	]
+};
+function webpackAsyncContext(req) {
+	var ids = map[req];
+	if(!ids)
+		return Promise.reject(new Error("Cannot find module '" + req + "'."));
+	return __webpack_require__.e(ids[1]).then(function() {
+		return __webpack_require__(ids[0]);
+	});
+};
+webpackAsyncContext.keys = function webpackAsyncContextKeys() {
+	return Object.keys(map);
+};
+webpackAsyncContext.id = 175;
+module.exports = webpackAsyncContext;
+
+/***/ }),
+
+/***/ 221:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return PerfilPage; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ionic_native_http__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_timeout__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_timeout___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_timeout__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__ionic_storage__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__providers_sessionlogin_sessionlogin__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__providers_sessionconfiguracoes_sessionconfiguracoes__ = __webpack_require__(36);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__alteradados_alteradados__ = __webpack_require__(115);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__inseresenha_inseresenha__ = __webpack_require__(113);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+//banco
+
+
+
+//imports da session:
+
+//usuario
+
+
+
+
+// @IonicPage()
+var PerfilPage = /** @class */ (function () {
+    //usuarioLogado:any;
+    function PerfilPage(navCtrl, navParams, http, session_login, session_config, storage) {
+        this.navCtrl = navCtrl;
+        this.navParams = navParams;
+        this.http = http;
+        this.session_login = session_login;
+        this.session_config = session_config;
+        this.storage = storage;
+        this.nomeUsuario = "";
+        this.email = "";
+    }
+    PerfilPage.prototype.ngOnInit = function () {
+        var _this = this;
+        this.session_login.get().then(function (res) {
+            _this.usuario = res;
+            _this.banco();
+        }); //session	
+    };
+    PerfilPage.prototype.getSession = function () {
+        var _this = this;
+        this.session_login.get().then(function (res) {
+            _this.usuario = res;
+        }); //session		
+    };
+    //função para converter dados do banco
+    PerfilPage.prototype.converte = function (date) {
+        var data = JSON.stringify(date);
+        var re = /\\\"/gi;
+        data = data.replace(re, "\"");
+        var retorno = [];
+        while (data.indexOf('{') != -1) {
+            var str = data.substring(data.indexOf('{') + 1, data.indexOf('}') + 1);
+            data = data.substring(data.indexOf('}') + 1);
+            var objeto = {};
+            while (str.lastIndexOf('}') != -1) {
+                var campo = str.substring(str.indexOf('"') + 1, str.indexOf(':') - 1);
+                str = str.substring(str.indexOf(':') + 1);
+                // document.getElementById('resposta2').innerText += str;
+                var valor = void 0;
+                if (str.indexOf(',') == -1) {
+                    valor = str.substring(str.indexOf(':') + 1, str.indexOf('}') - 1);
+                    str = ' ';
+                }
+                else {
+                    valor = str.substring(0, str.indexOf(',') - 1);
+                    str = str.substring(str.indexOf(',') + 1);
+                }
+                if (valor == 'nul')
+                    valor = null;
+                else
+                    valor = valor + '"';
+                objeto[campo] = valor;
+                // document.getElementById('resposta2').innerText = str + str.lastIndexOf('}');
+            }
+            retorno.push(objeto);
+        }
+        return retorno;
+    };
+    PerfilPage.prototype.banco = function () {
+        var _this = this;
+        this.endereco = 'https://inclusio.engynios.com/api/read/id/usuario.php';
+        this.http.get(this.endereco, { id_usuario: this.usuario.id_usuario }, {})
+            .then(function (data) {
+            //caso tenha dado tudo certo
+            var converter_usu = _this.converte(data.data);
+            //alert(""+ converter_usu[0]['login_usuario']+""+converter_usu[0]['email']);
+            //this.nomeUsuario = converter_usu[0]['login_usuario'];
+            var usuario = document.getElementById('usuario');
+            usuario.innerText = '' + converter_usu[0]['login_usuario'].replace(/\"/gi, "");
+            var email = document.getElementById('email');
+            email.innerText = '' + converter_usu[0]['email'].replace(/\"/gi, "");
+        })
+            .catch(function (error) {
+            alert("" + JSON.stringify(error));
+            console.log(error + "\n");
+            console.log(error.status);
+            console.log(error.error); // error message as string
+            console.log(error.headers);
+        }); //catch
+    };
+    PerfilPage.prototype.altera_dados = function () {
+        this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_8__alteradados_alteradados__["a" /* AlteradadosPage */]);
+    };
+    PerfilPage.prototype.altera_senha = function () {
+        this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_9__inseresenha_inseresenha__["a" /* InseresenhaPage */]);
+    };
+    PerfilPage = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
+            selector: 'page-perfil',template:/*ion-inline-start:"C:\Users\ivanp\Desktop\Estudos\CTI\Tecnico\TCC\Lara-ApresentacaoFinal.bkp\src\pages\perfil\perfil.html"*/'﻿<ion-header>\n\n  <ion-navbar>\n\n  \n\n	<!--caso a pag não tenha cabeçalho voc apaga tudo (a header e as coisas dentro-->\n\n	   <div  id="topo">\n\n		   <div id="btn_menu">\n\n			<ion-buttons left> \n\n				<button ion-button icon-only menuToggle> \n\n					<p class="menu"><ion-icon name="menu"> </ion-icon></p>\n\n				</button>\n\n\n\n			</ion-buttons>\n\n				</div>\n\n			<div id="titulo">\n\n			<ion-title>\n\n			 <span text-color="fonte-laranja"> Perfil </span>\n\n			</ion-title>\n\n			</div>\n\n		</div>\n\n	\n\n  </ion-navbar>\n\n</ion-header>\n\n\n\n<ion-content class="body" padding>\n\n \n\n	<div id="principal">\n\n		<ion-row>\n\n			<ion-col>\n\n			<ion-list inset>\n\n  <!--Aqui é o modelo para os formularios-->\n\n  \n\n    <div id="formulario">\n\n		\n\n		<div id="linha_form">\n\n     <h1>Usuário:</h1> \n\n    <div id="input_form">\n\n  		<p id="usuario">\n\n				<ion-item>\n\n					<ion-input [(ngModel)]="login" type="textarea" id="usuario" [readonly]="true" clearInput clearOnEdit="false"></ion-input>\n\n					</ion-item>\n\n			</p>\n\n    </div> <!-- input_form -->\n\n    \n\n    </div> <!-- linha_form -->\n\n    <div id="linha_form">\n\n     \n\n      <h1>Email:</h1> \n\n     <div id="input_form">\n\n        		<p id="email">\n\n								<ion-item>\n\n										<ion-input [(ngModel)]="email" type="textarea" id="email" [readonly]="true" clearInput clearOnEdit="false"></ion-input>\n\n								</ion-item>\n\n						</p>\n\n     </div> <!-- input_form -->\n\n     \n\n     </div> <!-- linha_form -->\n\n     <br> <br>\n\n		<button ion-button round class="botao"[navPush]="alteradadosPage" (click)="altera_dados()" >Alterar Email</button>\n\n		<br>\n\n	<br>\n\n<button ion-button round class="botao"[navPush]="inseresenhaPage" (click)="altera_senha()">Alterar Senha</button>\n\n \n\n   </div> <!-- formulario -->\n\n  </ion-list>  \n\n</ion-col>\n\n</ion-row>		\n\n  </div> <!--principal-->\n\n\n\n</ion-content>\n\n'/*ion-inline-end:"C:\Users\ivanp\Desktop\Estudos\CTI\Tecnico\TCC\Lara-ApresentacaoFinal.bkp\src\pages\perfil\perfil.html"*/,
+        }),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */], __WEBPACK_IMPORTED_MODULE_2__ionic_native_http__["a" /* HTTP */],
+            __WEBPACK_IMPORTED_MODULE_6__providers_sessionlogin_sessionlogin__["a" /* SessionloginProvider */], __WEBPACK_IMPORTED_MODULE_7__providers_sessionconfiguracoes_sessionconfiguracoes__["a" /* SessionconfiguracoesProvider */], __WEBPACK_IMPORTED_MODULE_5__ionic_storage__["b" /* Storage */]])
+    ], PerfilPage);
+    return PerfilPage;
+}());
+
+//# sourceMappingURL=perfil.js.map
+
+/***/ }),
+
+/***/ 222:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__ = __webpack_require__(223);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__app_module__ = __webpack_require__(245);
+
+
+Object(__WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__["a" /* platformBrowserDynamic */])().bootstrapModule(__WEBPACK_IMPORTED_MODULE_1__app_module__["a" /* AppModule */]);
+//# sourceMappingURL=main.js.map
+
+/***/ }),
+
+/***/ 245:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppModule; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__ = __webpack_require__(38);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ionic_angular__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_native_status_bar__ = __webpack_require__(219);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__ionic_native_splash_screen__ = __webpack_require__(220);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__ionic_native_http__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__ionic_native_text_to_speech__ = __webpack_require__(179);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__ionic_native_camera__ = __webpack_require__(48);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__ionic_storage__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__providers_sessionlogin_sessionlogin__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__providers_sessionconfiguracoes_sessionconfiguracoes__ = __webpack_require__(36);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__app_component__ = __webpack_require__(304);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__pages_home_home__ = __webpack_require__(35);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__pages_list_list__ = __webpack_require__(305);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__pages_splash_splash__ = __webpack_require__(61);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__pages_login_login__ = __webpack_require__(50);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__pages_esquecisenha_esquecisenha__ = __webpack_require__(120);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17__pages_cadastro_cadastro__ = __webpack_require__(91);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_18__pages_tutorial_tutorial__ = __webpack_require__(121);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_19__pages_perfil_perfil__ = __webpack_require__(221);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_20__pages_criarcat_criarcat__ = __webpack_require__(118);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_21__pages_criarpal_criarpal__ = __webpack_require__(119);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_22__pages_configuracoes_configuracoes__ = __webpack_require__(117);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_23__pages_ajuda_ajuda__ = __webpack_require__(114);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_24__pages_sobre_sobre__ = __webpack_require__(124);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_25__pages_sair_sair__ = __webpack_require__(123);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_26__pages_inseresenha_inseresenha__ = __webpack_require__(113);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_27__pages_alteradados_alteradados__ = __webpack_require__(115);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_28__pages_alterarpalavras_alterarpalavras__ = __webpack_require__(116);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_29__pages_listarcategoria_listarcategoria__ = __webpack_require__(122);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+
+
+
+
+
+//banco:
+
+//sintetizador:
+
+//Camera
+
+//session:
+
+
+
+//paginas do app:
+
+
+
+//paginas de fora
+ //splash
+//login
+
+ //esquecisenha
+//cadastro
+
+//paginas de dentro:
+//tutorial
+
+ //criar categoria
+ //criar categoria
+ //criar categoria
+ //configuracoes
+ //configuracoes
+ //configuracoes
+ //sair
+
+
+
+
+var AppModule = /** @class */ (function () {
+    function AppModule() {
+    }
+    AppModule = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["I" /* NgModule */])({
+            declarations: [
+                __WEBPACK_IMPORTED_MODULE_11__app_component__["a" /* MyApp */],
+                __WEBPACK_IMPORTED_MODULE_12__pages_home_home__["a" /* HomePage */],
+                __WEBPACK_IMPORTED_MODULE_13__pages_list_list__["a" /* ListPage */],
+                __WEBPACK_IMPORTED_MODULE_14__pages_splash_splash__["a" /* SplashPage */],
+                __WEBPACK_IMPORTED_MODULE_15__pages_login_login__["a" /* LoginPage */],
+                __WEBPACK_IMPORTED_MODULE_16__pages_esquecisenha_esquecisenha__["a" /* EsquecisenhaPage */],
+                __WEBPACK_IMPORTED_MODULE_17__pages_cadastro_cadastro__["a" /* CadastroPage */],
+                __WEBPACK_IMPORTED_MODULE_20__pages_criarcat_criarcat__["a" /* CriarcatPage */],
+                __WEBPACK_IMPORTED_MODULE_21__pages_criarpal_criarpal__["a" /* CriarpalPage */],
+                __WEBPACK_IMPORTED_MODULE_22__pages_configuracoes_configuracoes__["a" /* ConfiguracoesPage */],
+                __WEBPACK_IMPORTED_MODULE_23__pages_ajuda_ajuda__["a" /* AjudaPage */],
+                __WEBPACK_IMPORTED_MODULE_24__pages_sobre_sobre__["a" /* SobrePage */],
+                __WEBPACK_IMPORTED_MODULE_19__pages_perfil_perfil__["a" /* PerfilPage */],
+                __WEBPACK_IMPORTED_MODULE_25__pages_sair_sair__["a" /* SairPage */],
+                __WEBPACK_IMPORTED_MODULE_26__pages_inseresenha_inseresenha__["a" /* InseresenhaPage */],
+                __WEBPACK_IMPORTED_MODULE_27__pages_alteradados_alteradados__["a" /* AlteradadosPage */],
+                __WEBPACK_IMPORTED_MODULE_28__pages_alterarpalavras_alterarpalavras__["a" /* AlterarpalavrasPage */],
+                __WEBPACK_IMPORTED_MODULE_29__pages_listarcategoria_listarcategoria__["a" /* ListarcategoriaPage */],
+                __WEBPACK_IMPORTED_MODULE_18__pages_tutorial_tutorial__["a" /* TutorialPage */]
+            ],
+            imports: [
+                __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__["a" /* BrowserModule */],
+                __WEBPACK_IMPORTED_MODULE_2_ionic_angular__["d" /* IonicModule */].forRoot(__WEBPACK_IMPORTED_MODULE_11__app_component__["a" /* MyApp */], {}, {
+                    links: [
+                        { loadChildren: '../pages/ajuda/ajuda.module#AjudaPageModule', name: 'AjudaPage', segment: 'ajuda', priority: 'low', defaultHistory: [] },
+                        { loadChildren: '../pages/alteradados/alteradados.module#AlteradadosPageModule', name: 'AlteradadosPage', segment: 'alteradados', priority: 'low', defaultHistory: [] },
+                        { loadChildren: '../pages/alterarpalavras/alterarpalavras.module#AlterarpalavrasPageModule', name: 'AlterarpalavrasPage', segment: 'alterarpalavras', priority: 'low', defaultHistory: [] },
+                        { loadChildren: '../pages/configuracoes/configuracoes.module#ConfiguracoesPageModule', name: 'ConfiguracoesPage', segment: 'configuracoes', priority: 'low', defaultHistory: [] },
+                        { loadChildren: '../pages/criarcat/criarcat.module#CriarcatPageModule', name: 'CriarcatPage', segment: 'criarcat', priority: 'low', defaultHistory: [] },
+                        { loadChildren: '../pages/criarpal/criarpal.module#CriarpalPageModule', name: 'CriarpalPage', segment: 'criarpal', priority: 'low', defaultHistory: [] },
+                        { loadChildren: '../pages/esquecisenha/esquecisenha.module#EsquecisenhaPageModule', name: 'EsquecisenhaPage', segment: 'esquecisenha', priority: 'low', defaultHistory: [] },
+                        { loadChildren: '../pages/inserecod/inserecod.module#InserecodPageModule', name: 'InserecodPage', segment: 'inserecod', priority: 'low', defaultHistory: [] },
+                        { loadChildren: '../pages/inseresenha/inseresenha.module#InseresenhaPageModule', name: 'InseresenhaPage', segment: 'inseresenha', priority: 'low', defaultHistory: [] },
+                        { loadChildren: '../pages/listarcategoria/listarcategoria.module#ListarcategoriaPageModule', name: 'ListarcategoriaPage', segment: 'listarcategoria', priority: 'low', defaultHistory: [] },
+                        { loadChildren: '../pages/listarpalavras/listarpalavras.module#ListarpalavrasPageModule', name: 'listarpalavrasPage', segment: 'listarpalavras', priority: 'low', defaultHistory: [] },
+                        { loadChildren: '../pages/sair/sair.module#SairPageModule', name: 'SairPage', segment: 'sair', priority: 'low', defaultHistory: [] },
+                        { loadChildren: '../pages/sobre/sobre.module#SobrePageModule', name: 'SobrePage', segment: 'sobre', priority: 'low', defaultHistory: [] },
+                        { loadChildren: '../pages/splash/splash.module#SplashPageModule', name: 'SplashPage', segment: 'splash', priority: 'low', defaultHistory: [] },
+                        { loadChildren: '../pages/tutorial/tutorial.module#TutorialPageModule', name: 'TutorialPage', segment: 'tutorial', priority: 'low', defaultHistory: [] }
+                    ]
+                }),
+                __WEBPACK_IMPORTED_MODULE_8__ionic_storage__["a" /* IonicStorageModule */].forRoot() // import do pacote IonicStorageModule -> session
+            ],
+            bootstrap: [__WEBPACK_IMPORTED_MODULE_2_ionic_angular__["b" /* IonicApp */]],
+            entryComponents: [
+                __WEBPACK_IMPORTED_MODULE_11__app_component__["a" /* MyApp */],
+                __WEBPACK_IMPORTED_MODULE_12__pages_home_home__["a" /* HomePage */],
+                __WEBPACK_IMPORTED_MODULE_13__pages_list_list__["a" /* ListPage */],
+                __WEBPACK_IMPORTED_MODULE_14__pages_splash_splash__["a" /* SplashPage */],
+                __WEBPACK_IMPORTED_MODULE_15__pages_login_login__["a" /* LoginPage */],
+                __WEBPACK_IMPORTED_MODULE_16__pages_esquecisenha_esquecisenha__["a" /* EsquecisenhaPage */],
+                __WEBPACK_IMPORTED_MODULE_17__pages_cadastro_cadastro__["a" /* CadastroPage */],
+                __WEBPACK_IMPORTED_MODULE_20__pages_criarcat_criarcat__["a" /* CriarcatPage */],
+                __WEBPACK_IMPORTED_MODULE_21__pages_criarpal_criarpal__["a" /* CriarpalPage */],
+                __WEBPACK_IMPORTED_MODULE_22__pages_configuracoes_configuracoes__["a" /* ConfiguracoesPage */],
+                __WEBPACK_IMPORTED_MODULE_23__pages_ajuda_ajuda__["a" /* AjudaPage */],
+                __WEBPACK_IMPORTED_MODULE_24__pages_sobre_sobre__["a" /* SobrePage */],
+                __WEBPACK_IMPORTED_MODULE_19__pages_perfil_perfil__["a" /* PerfilPage */],
+                __WEBPACK_IMPORTED_MODULE_25__pages_sair_sair__["a" /* SairPage */],
+                __WEBPACK_IMPORTED_MODULE_26__pages_inseresenha_inseresenha__["a" /* InseresenhaPage */],
+                __WEBPACK_IMPORTED_MODULE_27__pages_alteradados_alteradados__["a" /* AlteradadosPage */],
+                __WEBPACK_IMPORTED_MODULE_29__pages_listarcategoria_listarcategoria__["a" /* ListarcategoriaPage */],
+                __WEBPACK_IMPORTED_MODULE_18__pages_tutorial_tutorial__["a" /* TutorialPage */]
+            ],
+            providers: [
+                __WEBPACK_IMPORTED_MODULE_5__ionic_native_http__["a" /* HTTP */],
+                __WEBPACK_IMPORTED_MODULE_3__ionic_native_status_bar__["a" /* StatusBar */],
+                __WEBPACK_IMPORTED_MODULE_4__ionic_native_splash_screen__["a" /* SplashScreen */],
+                __WEBPACK_IMPORTED_MODULE_9__providers_sessionlogin_sessionlogin__["a" /* SessionloginProvider */],
+                __WEBPACK_IMPORTED_MODULE_6__ionic_native_text_to_speech__["a" /* TextToSpeech */],
+                __WEBPACK_IMPORTED_MODULE_10__providers_sessionconfiguracoes_sessionconfiguracoes__["a" /* SessionconfiguracoesProvider */],
+                { provide: __WEBPACK_IMPORTED_MODULE_1__angular_core__["u" /* ErrorHandler */], useClass: __WEBPACK_IMPORTED_MODULE_2_ionic_angular__["c" /* IonicErrorHandler */] },
+                __WEBPACK_IMPORTED_MODULE_7__ionic_native_camera__["a" /* Camera */],
+                { provide: __WEBPACK_IMPORTED_MODULE_1__angular_core__["u" /* ErrorHandler */], useClass: __WEBPACK_IMPORTED_MODULE_2_ionic_angular__["c" /* IonicErrorHandler */] }
+            ]
+        })
+    ], AppModule);
+    return AppModule;
+}());
+
+//# sourceMappingURL=app.module.js.map
+
+/***/ }),
+
+/***/ 286:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* unused harmony export Model */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Configuracoes; });
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var Model = /** @class */ (function () {
+    function Model(objeto) {
+        Object.assign(this, objeto);
+    }
+    return Model;
+}());
+
+//classe configuracoes extendendo a classe Model
+var Configuracoes = /** @class */ (function (_super) {
+    __extends(Configuracoes, _super);
+    function Configuracoes() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    return Configuracoes;
+}(Model));
+
+//# sourceMappingURL=configuracoes.js.map
+
+/***/ }),
+
+/***/ 304:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return MyApp; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ionic_native_status_bar__ = __webpack_require__(219);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__ = __webpack_require__(220);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pages_home_home__ = __webpack_require__(35);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__pages_splash_splash__ = __webpack_require__(61);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__pages_perfil_perfil__ = __webpack_require__(221);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__pages_configuracoes_configuracoes__ = __webpack_require__(117);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__pages_criarcat_criarcat__ = __webpack_require__(118);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__pages_criarpal_criarpal__ = __webpack_require__(119);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__pages_sobre_sobre__ = __webpack_require__(124);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__pages_sair_sair__ = __webpack_require__(123);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__pages_ajuda_ajuda__ = __webpack_require__(114);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__pages_alterarpalavras_alterarpalavras__ = __webpack_require__(116);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__pages_listarcategoria_listarcategoria__ = __webpack_require__(122);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+
+
+// import { TutorialPage } from '../pages/tutorial/tutorial';
+ //criar categoria
+ //configuracoes
+ //criarcat
+ //criarcat
+ //configuracoes
+ //sair
+ //configuracoes
+
+
+var MyApp = /** @class */ (function () {
+    function MyApp(platform, statusBar, splashScreen) {
+        this.platform = platform;
+        this.statusBar = statusBar;
+        this.splashScreen = splashScreen;
+        this.rootPage = __WEBPACK_IMPORTED_MODULE_5__pages_splash_splash__["a" /* SplashPage */];
+        this.initializeApp();
+        // used for an example of ngFor and navigation
+        this.pages = [
+            { title: 'Home', component: __WEBPACK_IMPORTED_MODULE_4__pages_home_home__["a" /* HomePage */] },
+            { title: 'Perfil', component: __WEBPACK_IMPORTED_MODULE_6__pages_perfil_perfil__["a" /* PerfilPage */] },
+            { title: 'Criar Categoria', component: __WEBPACK_IMPORTED_MODULE_8__pages_criarcat_criarcat__["a" /* CriarcatPage */] },
+            { title: 'Criar Palavra', component: __WEBPACK_IMPORTED_MODULE_9__pages_criarpal_criarpal__["a" /* CriarpalPage */] },
+            { title: 'Alterar Categoria', component: __WEBPACK_IMPORTED_MODULE_14__pages_listarcategoria_listarcategoria__["a" /* ListarcategoriaPage */] },
+            { title: 'Alterar Palavra', component: __WEBPACK_IMPORTED_MODULE_13__pages_alterarpalavras_alterarpalavras__["a" /* AlterarpalavrasPage */] },
+            { title: 'Configurações', component: __WEBPACK_IMPORTED_MODULE_7__pages_configuracoes_configuracoes__["a" /* ConfiguracoesPage */] },
+            { title: 'Ajuda', component: __WEBPACK_IMPORTED_MODULE_12__pages_ajuda_ajuda__["a" /* AjudaPage */] },
+            { title: 'Sobre', component: __WEBPACK_IMPORTED_MODULE_10__pages_sobre_sobre__["a" /* SobrePage */] },
+            { title: 'Sair', component: __WEBPACK_IMPORTED_MODULE_11__pages_sair_sair__["a" /* SairPage */] }
+        ];
+    }
+    MyApp.prototype.initializeApp = function () {
+        var _this = this;
+        this.platform.ready().then(function () {
+            // Okay, so the platform is ready and our plugins are available.
+            // Here you can do any higher level native things you might need.
+            _this.statusBar.styleDefault();
+            _this.splashScreen.hide();
+        });
+    };
+    MyApp.prototype.openPage = function (page) {
+        // Reset the content nav to have just this page
+        // we wouldn't want the back button to show in this scenario
+        this.nav.setRoot(page.component);
+    };
+    __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_8" /* ViewChild */])(__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["h" /* Nav */]),
+        __metadata("design:type", __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["h" /* Nav */])
+    ], MyApp.prototype, "nav", void 0);
+    MyApp = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({template:/*ion-inline-start:"C:\Users\ivanp\Desktop\Estudos\CTI\Tecnico\TCC\Lara-ApresentacaoFinal.bkp\src\app\app.html"*/'<ion-menu [content]="content">\n\n  <ion-header>\n\n    <ion-toolbar>\n\n      <ion-title>Menu</ion-title>\n\n    </ion-toolbar>\n\n  </ion-header>\n\n\n\n  <ion-content>\n\n    <ion-list>\n\n      <button menuClose ion-item *ngFor="let p of pages" (click)="openPage(p)">\n\n        {{p.title}}\n\n      </button>\n\n    </ion-list>\n\n  </ion-content>\n\n\n\n</ion-menu>\n\n\n\n<!-- Disable swipe-to-go-back because it\'s poor UX to combine STGB with side menus -->\n\n<ion-nav [root]="rootPage" #content swipeBackEnabled="false"></ion-nav>'/*ion-inline-end:"C:\Users\ivanp\Desktop\Estudos\CTI\Tecnico\TCC\Lara-ApresentacaoFinal.bkp\src\app\app.html"*/
+        }),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["k" /* Platform */], __WEBPACK_IMPORTED_MODULE_2__ionic_native_status_bar__["a" /* StatusBar */], __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__["a" /* SplashScreen */]])
+    ], MyApp);
+    return MyApp;
+}());
+
+//# sourceMappingURL=app.component.js.map
+
+/***/ }),
+
+/***/ 305:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ListPage; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(7);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+var ListPage = /** @class */ (function () {
+    function ListPage(navCtrl, navParams) {
+        this.navCtrl = navCtrl;
+        this.navParams = navParams;
+        // If we navigated to this page, we will have an item available as a nav param
+        this.selectedItem = navParams.get('item');
+        // Let's populate this page with some filler content for funzies
+        this.icons = ['flask', 'wifi', 'beer', 'football', 'basketball', 'paper-plane',
+            'american-football', 'boat', 'bluetooth', 'build'];
+        this.items = [];
+        for (var i = 1; i < 11; i++) {
+            this.items.push({
+                title: 'Item ' + i,
+                note: 'This is item #' + i,
+                icon: this.icons[Math.floor(Math.random() * this.icons.length)]
+            });
+        }
+    }
+    ListPage_1 = ListPage;
+    ListPage.prototype.itemTapped = function (event, item) {
+        // That's right, we're pushing to ourselves!
+        this.navCtrl.push(ListPage_1, {
+            item: item
+        });
+    };
+    ListPage = ListPage_1 = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
+            selector: 'page-list',template:/*ion-inline-start:"C:\Users\ivanp\Desktop\Estudos\CTI\Tecnico\TCC\Lara-ApresentacaoFinal.bkp\src\pages\list\list.html"*/'<ion-header>\n\n  <ion-navbar>\n\n    <button ion-button menuToggle>\n\n      <ion-icon name="menu"></ion-icon>\n\n    </button>\n\n    <ion-title>List</ion-title>\n\n  </ion-navbar>\n\n</ion-header>\n\n\n\n<ion-content>\n\n  <ion-list>\n\n    <button ion-item *ngFor="let item of items" (click)="itemTapped($event, item)">\n\n      <ion-icon [name]="item.icon" item-start></ion-icon>\n\n      {{item.title}}\n\n      <div class="item-note" item-end>\n\n        {{item.note}}\n\n      </div>\n\n    </button>\n\n  </ion-list>\n\n  <div *ngIf="selectedItem" padding>\n\n    You navigated here from <b>{{selectedItem.title}}</b>\n\n  </div>\n\n</ion-content>\n\n'/*ion-inline-end:"C:\Users\ivanp\Desktop\Estudos\CTI\Tecnico\TCC\Lara-ApresentacaoFinal.bkp\src\pages\list\list.html"*/
+        }),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */]])
+    ], ListPage);
+    return ListPage;
+    var ListPage_1;
+}());
+
+//# sourceMappingURL=list.js.map
+
+/***/ }),
+
+/***/ 35:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return HomePage; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_forms__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ionic_angular__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_native_http__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_map__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_map__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_rxjs_add_operator_timeout__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_rxjs_add_operator_timeout___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_rxjs_add_operator_timeout__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__ionic_native_text_to_speech__ = __webpack_require__(179);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__ionic_storage__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__providers_sessionlogin_sessionlogin__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__providers_sessionconfiguracoes_sessionconfiguracoes__ = __webpack_require__(36);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+
+
+//sintetizador
+
+
+
+
+var HomePage = /** @class */ (function () {
+    function HomePage(navCtrl, formBuilder, navParams, http, session_login, //session
+        session_config, //session
+        storage, //session
+        tts) {
+        this.navCtrl = navCtrl;
+        this.navParams = navParams;
+        this.http = http;
+        this.session_login = session_login;
+        this.session_config = session_config;
+        this.storage = storage;
+        this.tts = tts;
+        this.palavras = {};
+        this.categorias = {};
+        this.mostra_img = true;
+        this.imagem = "https://img.olx.com.br/images/86/864708037631038.jpg";
+        this.fraseFormada = "";
+        this.endereco_select = "http://inclusio.engynios.com/api/read/id_usuario/categoria-null.php";
+    }
+    HomePage.prototype.ngOnInit = function () {
+        var _this = this;
+        this.session_login.get().then(function (res) {
+            _this.usuario = res;
+            // alert(JSON.stringify(this.usuario));
+            // callback();
+            _this.session_config.get().then(function (ret) {
+                _this.config = ret;
+                document.getElementById('config').innerText = JSON.stringify(ret);
+                _this.carrega_imagem();
+            }).catch(function (error) {
+                alert('Erro ao verificar as configurações do usuário ' + JSON.stringify(error));
+            });
+        }).catch(function (error) {
+            alert('Erro ao reconhecer o usuário ' + JSON.stringify(error));
+        });
+    };
+    HomePage.prototype.voltar = function () {
+        document.getElementById('tabela').remove();
+        document.getElementById('btn_voltar').hidden = true;
+        var table = document.createElement("tabela"); //cria uma tabela
+        table.setAttribute('id', 'tabela');
+        table.setAttribute('border', '1');
+        var h1 = document.getElementById("h1");
+        h1.innerText = "Nossas Categorias";
+        var objeto = JSON.parse(document.getElementById('categorias').innerText);
+        objeto.length = function (obj) {
+            var size = 0, key;
+            for (key in obj)
+                if (obj.hasOwnProperty(key))
+                    size++;
+            size--;
+            return size;
+        };
+        for (var l = 0; l < objeto.length(objeto) / 2; l++) {
+            var tr = document.createElement("tr"); //cria um tr
+            table.appendChild(tr); //coloca o tr na tabela
+            for (var p = 0; p < 2 && l * 2 + p < objeto.length(objeto); p++) {
+                var td = document.createElement("td");
+                // if(objeto[l*2+p]['imagem\\\\'] == undefined)
+                // 	alert(JSON.stringify(objeto[l*2+p]));
+                var s = objeto[l * 2 + p]['imagem\\\\'].replace(/\"/gi, "");
+                s = s.replace(/\\/gi, "");
+                s = s.replace(/\//gi, "/");
+                td.setAttribute('id', objeto[l * 2 + p]['id_categoria\\\\']);
+                td.setAttribute('name', objeto[l * 2 + p]['nome_palavra\\\\']);
+                //alert(JSON.stringify(converter[l*2+p]));
+                var nome = objeto[l * 2 + p]['nome_categoria\\\\'].replace(/\"/gi, "");
+                nome = nome.replace(/\\/gi, "");
+                nome = nome.replace(/\//gi, "/");
+                //alert(JSON.stringify(objeto));
+                td.innerText = '' + nome.toUpperCase() + '';
+                if (JSON.parse(document.getElementById('config').innerText).imagem == 's') {
+                    var img = document.createElement("img");
+                    img.setAttribute('src', 'https://inclusio.engynios.com/imagens/' + s);
+                    img.setAttribute('alt', 'imagem');
+                    img.setAttribute('style', 'max-width: 100px; max-heigth: 100px;');
+                    img.setAttribute('id', 'imagem' + l * 2 + p);
+                    td.appendChild(img); //coloca a img no td
+                }
+                td.addEventListener('click', function () {
+                    var pala = JSON.parse(document.getElementById('palavras').innerText)[this.id.replace(/\\\\\"/gi, "")];
+                    //alert(JSON.stringify(pala));
+                    document.getElementById('tabela').remove();
+                    document.getElementById('btn_voltar').hidden = false;
+                    h1.innerText = "Nossas Palavras";
+                    //criação da tabela de palavras
+                    var resultado = pala.length;
+                    // alert(JSON.stringify(converter));
+                    var table = document.createElement("table"); //cria uma tabela
+                    table.setAttribute('id', 'tabela');
+                    table.setAttribute('border', '1');
+                    for (var l_1 = 0; l_1 < resultado / 2; l_1++) {
+                        var tr_1 = document.createElement("tr"); //cria um tr
+                        table.appendChild(tr_1); //coloca o tr na tabela
+                        for (var p_1 = 0; p_1 < 2 && l_1 * 2 + p_1 < pala.length; p_1++) {
+                            var td = document.createElement("td");
+                            // if(pala[l*2+p]['imagem\\\\'] == undefined)
+                            // 	alert(JSON.stringify(pala[l*2+p]));
+                            var s_1 = pala[l_1 * 2 + p_1]['imagem\\\\'].replace(/\"/gi, "");
+                            s_1 = s_1.replace(/\\/gi, "");
+                            s_1 = s_1.replace(/\//gi, "/");
+                            td.setAttribute('id', pala[l_1 * 2 + p_1]['id_categoria\\\\']);
+                            //alert(JSON.stringify( pala[l*2+p]['nome_palavra\\\\']));
+                            var nome_1 = pala[l_1 * 2 + p_1]['nome_palavra\\\\'].replace(/\"/gi, "");
+                            nome_1 = nome_1.replace(/\\/gi, "");
+                            nome_1 = nome_1.replace(/\//gi, "/");
+                            td.innerText = '' + nome_1.toUpperCase() + '';
+                            if (JSON.parse(document.getElementById('config').innerText).imagem == 's') {
+                                var img = document.createElement("img");
+                                img.setAttribute('src', 'https://inclusio.engynios.com/imagens/' + s_1);
+                                img.setAttribute('alt', 'imagem');
+                                img.setAttribute('style', 'max-width: 100px; max-heigth: 100px;');
+                                img.setAttribute('id', 'imagem' + l_1 * 2 + p_1);
+                                td.appendChild(img); //coloca a img no td
+                            }
+                            else
+                                td.setAttribute('style', 'font-size: 2vw');
+                            td.addEventListener('click', function () {
+                                document.getElementById('texto').innerHTML += this.innerText.toUpperCase() + ' ';
+                            });
+                            tr_1.appendChild(td);
+                        }
+                    }
+                    document.getElementById('botoes').appendChild(table);
+                });
+                tr.appendChild(td);
+            }
+        }
+        document.getElementById('botoes').appendChild(table);
+    };
+    HomePage.prototype.converte = function (date) {
+        var data = JSON.stringify(date);
+        var re = /\\\"/gi;
+        data = data.replace(re, "\"");
+        re = /\\\\\\\//gi;
+        data = data.replace(re, "/");
+        var retorno = [];
+        while (data.indexOf('{') != -1) {
+            var str = data.substring(data.indexOf('{') + 1, data.indexOf('}') + 1);
+            data = data.substring(data.indexOf('}') + 1);
+            var objeto = {};
+            while (str.lastIndexOf('}') != -1) {
+                var campo = str.substring(str.indexOf('"') + 1, str.indexOf(':') - 1);
+                str = str.substring(str.indexOf(':') + 1);
+                // document.getElementById('resposta2').innerText += str;
+                var valor = void 0;
+                if (str.indexOf(',') == -1) {
+                    valor = str.substring(str.indexOf(':') + 1, str.indexOf('}') - 1);
+                    str = ' ';
+                }
+                else {
+                    valor = str.substring(0, str.indexOf(',') - 1);
+                    str = str.substring(str.indexOf(',') + 1);
+                }
+                if (valor == 'nul')
+                    valor = null;
+                else
+                    valor = valor + '"';
+                objeto[campo] = valor;
+                // document.getElementById('resposta2').innerText = str + str.lastIndexOf('}');
+            }
+            retorno.push(objeto);
+        }
+        return retorno;
+    };
+    HomePage.prototype.carrega_imagem = function () {
+        var _this = this;
+        var user = {
+            id_usuario: this.usuario.id_usuario
+        };
+        this.http.get(this.endereco_select, user, {})
+            .then(function (data) {
+            //usar aqui
+            var converter = _this.converte(data.data);
+            var _loop_1 = function (a) {
+                _this.http.get('https://inclusio.engynios.com/api/read/id/categoria-palavra.php', { id_categoria: converter[a]['id_categoria\\\\'].replace(/\\\\\"/gi, '"') }, {}).then(function (dados) {
+                    if (JSON.stringify(_this.converte(dados.data)).length < 5) {
+                        converter.splice(a);
+                        a--;
+                    }
+                    else
+                        _this.palavras[converter[a]['id_categoria\\\\'].replace(/\\\\\"/gi, "")] = _this.converte(dados.data);
+                }).catch(function (e) {
+                    alert('Erro ao acessar as palavras. Favor verificar a conexão com a internet ou contactar os desenvolvedores: ' + JSON.stringify(e));
+                });
+                out_a_1 = a;
+            };
+            var out_a_1;
+            for (var a = 0; a < converter.length; a++) {
+                _loop_1(a);
+                a = out_a_1;
+            }
+            setTimeout(function () {
+                document.getElementById('palavras').innerText = JSON.stringify(_this.palavras);
+                _this.resultados = converter.length;
+                // alert(JSON.stringify(converter));
+                var table = document.createElement("table"); //cria uma tabela
+                table.setAttribute('id', 'tabela');
+                table.setAttribute('border', '1');
+                var h1 = document.getElementById("h1");
+                h1.innerText = "Nossas Categorias";
+                for (var l = 0; l < _this.resultados / 2; l++) {
+                    var tr = document.createElement("tr"); //cria um tr
+                    table.appendChild(tr); //coloca o tr na tabela
+                    for (var p = 0; p < 2 && l * 2 + p < converter.length; p++) {
+                        var td = document.createElement("td");
+                        var img = document.createElement("img");
+                        // if(converter[l*2+p]['imagem\\\\'] == undefined)
+                        // 	alert(JSON.stringify(converter[l*2+p]));
+                        var s = converter[l * 2 + p]['imagem\\\\'].replace(/\"/gi, "");
+                        s = s.replace(/\\/gi, "");
+                        s = s.replace(/\//gi, "/");
+                        td.setAttribute('id', converter[l * 2 + p]['id_categoria\\\\']);
+                        td.setAttribute('name', converter[l * 2 + p]['nome_palavra\\\\']);
+                        _this.categorias[l * 2 + p] = {};
+                        _this.categorias[l * 2 + p]['nome_categoria\\\\'] = converter[l * 2 + p]['nome_categoria\\\\'];
+                        _this.categorias[l * 2 + p]['imagem\\\\'] = converter[l * 2 + p]['imagem\\\\'];
+                        _this.categorias[l * 2 + p]['id_categoria\\\\'] = converter[l * 2 + p]['id_categoria\\\\'];
+                        document.getElementById('categorias').innerText = JSON.stringify(_this.categorias);
+                        //alert(JSON.stringify(converter[l*2+p]));
+                        var nome = converter[l * 2 + p]['nome_categoria\\\\'].replace(/\"/gi, "");
+                        nome = nome.replace(/\\/gi, "");
+                        nome = nome.replace(/\//gi, "/");
+                        td.innerText = '' + nome.toUpperCase() + '';
+                        if (_this.config.imagem == 's') {
+                            var img_1 = document.createElement("img");
+                            img_1.setAttribute('src', 'https://inclusio.engynios.com/imagens/' + s);
+                            img_1.setAttribute('alt', 'imagem');
+                            img_1.setAttribute('style', 'max-width: 100px; max-heigth: 100px;');
+                            img_1.setAttribute('id', 'imagem' + l * 2 + p);
+                            td.appendChild(img_1); //coloca a img no td
+                        }
+                        td.addEventListener('click', function () {
+                            var pala = JSON.parse(document.getElementById('palavras').innerText)[this.id.replace(/\\\\"/gi, "")];
+                            // alert(JSON.stringify(pala));
+                            document.getElementById('tabela').remove();
+                            document.getElementById('btn_voltar').hidden = false;
+                            h1.innerText = "Nossas Palavras";
+                            //criação da tabela de palavras
+                            var resultado = pala.length;
+                            // alert(JSON.stringify(converter));
+                            var table = document.createElement("tabela"); //cria uma tabela
+                            table.setAttribute('id', 'tabela');
+                            table.setAttribute('border', '1');
+                            for (var l_2 = 0; l_2 < resultado / 2; l_2++) {
+                                var tr_2 = document.createElement("tr"); //cria um tr
+                                table.appendChild(tr_2); //coloca o tr na tabela
+                                for (var p_2 = 0; p_2 < 2 && l_2 * 2 + p_2 < pala.length; p_2++) {
+                                    var td = document.createElement("td");
+                                    // if(pala[l*2+p]['imagem\\\\'] == undefined)
+                                    // 	alert(JSON.stringify(pala[l*2+p]));
+                                    var s_2 = pala[l_2 * 2 + p_2]['imagem\\\\'].replace(/\"/gi, "");
+                                    s_2 = s_2.replace(/\\/gi, "");
+                                    s_2 = s_2.replace(/\//gi, "/");
+                                    td.setAttribute('id', pala[l_2 * 2 + p_2]['id_categoria\\\\']);
+                                    //alert(JSON.stringify( pala[l*2+p]['nome_palavra\\\\']));
+                                    var nome_2 = pala[l_2 * 2 + p_2]['nome_palavra\\\\'].replace(/\"/gi, "");
+                                    nome_2 = nome_2.replace(/\\/gi, "");
+                                    nome_2 = nome_2.replace(/\//gi, "/");
+                                    td.innerText = '' + nome_2.toUpperCase() + '';
+                                    if (JSON.parse(document.getElementById('config').innerText).imagem == 's') {
+                                        var img_2 = document.createElement("img");
+                                        img_2.setAttribute('src', 'https://inclusio.engynios.com/imagens/' + s_2);
+                                        img_2.setAttribute('alt', 'imagem');
+                                        img_2.setAttribute('style', 'max-width: 100px; max-heigth: 100px;');
+                                        img_2.setAttribute('id', 'imagem' + l_2 * 2 + p_2);
+                                        td.appendChild(img_2); //coloca a img no td
+                                    }
+                                    td.addEventListener('click', function () {
+                                        document.getElementById('texto').innerHTML += this.innerText.toUpperCase() + ' ';
+                                    });
+                                    tr_2.appendChild(td);
+                                }
+                            }
+                            document.getElementById('botoes').appendChild(table);
+                        });
+                        tr.appendChild(td);
+                    }
+                }
+                document.getElementById('botoes').appendChild(table);
+            }, 2000);
+        })
+            .catch(function (error) {
+            console.log(error.status);
+            alert('Erro ao carregar as categorias. Favor verificar a conexão com a internet ou contactar os desenvolvedores: ' + JSON.stringify(error));
+        });
+    };
+    HomePage.prototype.sintetizador = function () {
+        var frase = document.getElementById('texto');
+        this.tts.speak({
+            text: frase.innerText,
+            rate: 1,
+            locale: 'pt-BR'
+        }).then(function () {
+            alert('Sucesso');
+        })
+            .catch(function (error) {
+            alert('Erro no sintetizador de voz: ' + JSON.stringify(error));
+        });
+    };
+    HomePage.prototype.limpar_texto = function () {
+        document.getElementById('texto').innerText = null;
+    };
+    HomePage = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["m" /* Component */])({
+            selector: 'page-home',template:/*ion-inline-start:"C:\Users\ivanp\Desktop\Estudos\CTI\Tecnico\TCC\Lara-ApresentacaoFinal.bkp\src\pages\home\home.html"*/'<ion-header>\n\n  <ion-navbar>\n\n\n\n	<!--caso a pag não tenha cabeçalho voc apaga tudo (a header e as coisas dentro-->\n\n	   <div  id="topo">\n\n		   <div id="btn_menu">\n\n			<ion-buttons left> \n\n				<button ion-button icon-only menuToggle> \n\n					<p class="menu"><ion-icon name="menu"> </ion-icon></p>\n\n				</button>\n\n\n\n			</ion-buttons>\n\n				</div>\n\n			<div id="titulo">\n\n			<ion-title>\n\n			 <span text-color="fonte-laranja"> Teclado </span>\n\n			</ion-title>\n\n			</div>\n\n		</div>\n\n  	\n\n  </ion-navbar>\n\n</ion-header>\n\n\n\n<ion-content class="body" padding>\n\n \n\n<div id="caixa_cadastro">\n\n		<p id = "palavras" hidden="true"></p>\n\n		<p id = "categorias" hidden="true"></p>\n\n		<p id = "config" hidden="true"></p>\n\n		<div class="imagem">	\n\n			<img id="btn_voltar" (click)="voltar()"   hidden src = "assets/imgs/setaVoltar.png"> \n\n			<img id="volume" (click)="sintetizador()"    src = "assets/imgs/volume.png"> \n\n			<img id="limpar" (click)="limpar_texto()"    src = "assets/imgs/cancelar.png"> \n\n		</div>\n\n	\n\n		\n\n  <div class="caixa"> <textarea readonly id="texto" placeholder="Frase Formada" style="float:left;"></textarea> </div>\n\n  <div id="botoes" > \n\n    <h1 id="h1"> </h1>\n\n    \n\n  </div>\n\n</div>\n\n</ion-content>\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n'/*ion-inline-end:"C:\Users\ivanp\Desktop\Estudos\CTI\Tecnico\TCC\Lara-ApresentacaoFinal.bkp\src\pages\home\home.html"*/
+        }),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_2_ionic_angular__["i" /* NavController */],
+            __WEBPACK_IMPORTED_MODULE_0__angular_forms__["a" /* FormBuilder */],
+            __WEBPACK_IMPORTED_MODULE_2_ionic_angular__["j" /* NavParams */],
+            __WEBPACK_IMPORTED_MODULE_3__ionic_native_http__["a" /* HTTP */],
+            __WEBPACK_IMPORTED_MODULE_8__providers_sessionlogin_sessionlogin__["a" /* SessionloginProvider */],
+            __WEBPACK_IMPORTED_MODULE_9__providers_sessionconfiguracoes_sessionconfiguracoes__["a" /* SessionconfiguracoesProvider */],
+            __WEBPACK_IMPORTED_MODULE_7__ionic_storage__["b" /* Storage */],
+            __WEBPACK_IMPORTED_MODULE_6__ionic_native_text_to_speech__["a" /* TextToSpeech */]])
+    ], HomePage);
+    return HomePage;
+}());
+
+//# sourceMappingURL=home.js.map
+
+/***/ }),
+
+/***/ 36:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return SessionconfiguracoesProvider; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ionic_storage__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(0);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+//pacote para transformar nossa classe em injet�vel
+
+var SessionconfiguracoesProvider = /** @class */ (function () {
+    function SessionconfiguracoesProvider(storage) {
+        this.storage = storage;
+    }
+    // setando uma se��o e passando o tipo de usu�rio
+    SessionconfiguracoesProvider.prototype.create = function (configuracoes) {
+        this.storage.set('configuracoes', configuracoes);
+    };
+    SessionconfiguracoesProvider.prototype.get = function () {
+        return this.storage.get('configuracoes');
+    };
+    // Quando deslogar deve remova do storage
+    SessionconfiguracoesProvider.prototype.remove = function () {
+        this.storage.remove('configuracoes');
+    };
+    SessionconfiguracoesProvider.prototype.exist = function () {
+        this.get().then(function (res) {
+            console.log('resultado >>> ', res);
+            if (res) {
+                console.log('resultado IF');
+                return true;
+            }
+            else {
+                console.log('resultado else');
+                return false;
+            }
+        });
+    };
+    SessionconfiguracoesProvider = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["A" /* Injectable */])(),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_0__ionic_storage__["b" /* Storage */]])
+    ], SessionconfiguracoesProvider);
+    return SessionconfiguracoesProvider;
+}());
+
+//# sourceMappingURL=sessionconfiguracoes.js.map
+
+/***/ }),
+
+/***/ 49:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* unused harmony export Model */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Usuario; });
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var Model = /** @class */ (function () {
+    function Model(objeto) {
+        Object.assign(this, objeto);
+    }
+    return Model;
+}());
+
+//classe usuario extendendo a classe Model
+var Usuario = /** @class */ (function (_super) {
+    __extends(Usuario, _super);
+    function Usuario() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    return Usuario;
+}(Model));
+
+//# sourceMappingURL=usuario.js.map
+
+/***/ }),
+
+/***/ 50:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return LoginPage; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_forms__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ionic_angular__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_native_http__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_map__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_map__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_rxjs_add_operator_timeout__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_rxjs_add_operator_timeout___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_rxjs_add_operator_timeout__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__providers_sessionlogin_sessionlogin__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__app_models_usuario__ = __webpack_require__(49);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__home_home__ = __webpack_require__(35);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__tutorial_tutorial__ = __webpack_require__(121);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__cadastro_cadastro__ = __webpack_require__(91);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__esquecisenha_esquecisenha__ = __webpack_require__(120);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+
+
+
+
+
+
+
+
+// @IonicPage()
+var LoginPage = /** @class */ (function () {
+    function LoginPage(navCtrl, formBuilder, http, session, menuCtrl, alertCtrl) {
+        this.navCtrl = navCtrl;
+        this.http = http;
+        this.session = session;
+        this.menuCtrl = menuCtrl;
+        this.alertCtrl = alertCtrl;
+        this.messageUsuario = "";
+        this.messagePassword = "";
+        this.errorUsuario = false;
+        this.errorPassword = false;
+        this.endereco_select = "http://inclusio.engynios.com/api/read/login/usuario.php";
+        this.cadastroPage = __WEBPACK_IMPORTED_MODULE_10__cadastro_cadastro__["a" /* CadastroPage */];
+        this.menuCtrl.swipeEnable(false);
+        this.loginForm = formBuilder.group({
+            usuario: ['', __WEBPACK_IMPORTED_MODULE_0__angular_forms__["f" /* Validators */].required],
+            password: ['', __WEBPACK_IMPORTED_MODULE_0__angular_forms__["f" /* Validators */].compose([__WEBPACK_IMPORTED_MODULE_0__angular_forms__["f" /* Validators */].minLength(6), __WEBPACK_IMPORTED_MODULE_0__angular_forms__["f" /* Validators */].maxLength(20),
+                    __WEBPACK_IMPORTED_MODULE_0__angular_forms__["f" /* Validators */].required])],
+        });
+    }
+    LoginPage.prototype.login = function () {
+        var _this = this;
+        var _a = this.loginForm.controls, usuario = _a.usuario, password = _a.password;
+        if (!this.loginForm.valid) {
+            if (!usuario.valid) {
+                this.errorUsuario = true;
+                this.messageUsuario = "Ops! Usuário inválido";
+            }
+            else {
+                this.messageUsuario = "";
+            }
+            if (!password.valid) {
+                this.errorPassword = true;
+                this.messagePassword = "Senha inválida";
+            }
+            else {
+                this.messagePassword = "";
+            }
+        }
+        else {
+            var teste = {
+                login_usuario: usuario.value
+            };
+            this.http.get(this.endereco_select, teste, {})
+                .then(function (data) {
+                //alert(password.value);
+                //alert(usuario.value);
+                _this.nome = "\"" + usuario.value + "\"";
+                _this.senha = "\"" + password.value + "\"";
+                //alert(this.nome);
+                //alert(this.senha);
+                var converter = _this.converte(data.data);
+                //alert(JSON.stringify(converter));
+                if (converter[0] == null) {
+                    _this.erro_usuario = "true";
+                }
+                else if (converter[0]['login_usuario'] == _this.nome) {
+                    _this.erro_usuario = "falso";
+                    //alert(converter[0]['senha']);
+                    //alert(converter[0]['login_usuario']);
+                    if (converter[0]['senha'] == _this.senha) {
+                        _this.erro_senha = "falso";
+                        // alert("Login realizado com sucesso");
+                        //criando uma sessao:
+                        var user = new __WEBPACK_IMPORTED_MODULE_7__app_models_usuario__["a" /* Usuario */]();
+                        //colocando valores nela:
+                        user.id_usuario = converter[0]['id_usuario']; // atenção!!! esse valor deve vir do bd
+                        //this.usuario.email= document.getElementById('email_login').value; 						
+                        //disparando a sessão:
+                        _this.session.create(user);
+                        //pode ir para o teclado
+                        //uma vez que ele cadastrou ele já loga:
+                        var pergunta_tutorial = _this.alertCtrl.create({
+                            title: 'Bem-vindo!',
+                            message: 'Deseja ver o tutorial?',
+                            buttons: [
+                                {
+                                    text: 'Não',
+                                    handler: function () {
+                                        _this.menuCtrl.swipeEnable(true);
+                                        _this.navCtrl.setRoot(__WEBPACK_IMPORTED_MODULE_8__home_home__["a" /* HomePage */]);
+                                    }
+                                },
+                                {
+                                    text: 'Sim',
+                                    handler: function () {
+                                        _this.menuCtrl.swipeEnable(true);
+                                        _this.navCtrl.setRoot(__WEBPACK_IMPORTED_MODULE_9__tutorial_tutorial__["a" /* TutorialPage */]);
+                                    }
+                                }
+                            ]
+                        });
+                        pergunta_tutorial.present();
+                    }
+                    else {
+                        _this.erro_senha = "true";
+                    }
+                }
+                else {
+                    _this.erro_usuario = "true";
+                }
+                if (_this.erro_senha == "true" && _this.erro_usuario == "falso") {
+                    alert("Senha incorreta");
+                    _this.limpa_senha();
+                }
+                if (_this.erro_usuario == "true") {
+                    alert("Usuário não encontrado");
+                    _this.limpa_usu();
+                }
+            })
+                .catch(function (error) {
+                console.log(error.status);
+                alert(error);
+            });
+        }
+    };
+    //função para converter dados do banco
+    LoginPage.prototype.converte = function (date) {
+        var data = JSON.stringify(date);
+        var re = /\\\"/gi;
+        data = data.replace(re, "\"");
+        var retorno = [];
+        while (data.indexOf('{') != -1) {
+            var str = data.substring(data.indexOf('{') + 1, data.indexOf('}') + 1);
+            data = data.substring(data.indexOf('}') + 1);
+            var objeto = {};
+            while (str.lastIndexOf('}') != -1) {
+                var campo = str.substring(str.indexOf('"') + 1, str.indexOf(':') - 1);
+                str = str.substring(str.indexOf(':') + 1);
+                // document.getElementById('resposta2').innerText += str;
+                var valor = void 0;
+                if (str.indexOf(',') == -1) {
+                    valor = str.substring(str.indexOf(':') + 1, str.indexOf('}') - 1);
+                    str = ' ';
+                }
+                else {
+                    valor = str.substring(0, str.indexOf(',') - 1);
+                    str = str.substring(str.indexOf(',') + 1);
+                }
+                if (valor == 'nul')
+                    valor = null;
+                else
+                    valor = valor + '"';
+                objeto[campo] = valor;
+                // document.getElementById('resposta2').innerText = str + str.lastIndexOf('}');
+            }
+            retorno.push(objeto);
+        }
+        return retorno;
+    };
+    LoginPage.prototype.limpa_usu = function () {
+        var usuario = this.loginForm.controls.usuario;
+        usuario = null;
+    };
+    LoginPage.prototype.limpa_senha = function () {
+        var password = this.loginForm.controls.password;
+        password = null;
+    };
+    LoginPage.prototype.limpa_tudo = function () {
+        var _a = this.loginForm.controls, usuario = _a.usuario, password = _a.password;
+        password = null;
+        usuario = null;
+    };
+    LoginPage.prototype.ir_cadastro = function () {
+        this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_10__cadastro_cadastro__["a" /* CadastroPage */]);
+    };
+    LoginPage.prototype.ir_esquecisenha = function () {
+        this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_11__esquecisenha_esquecisenha__["a" /* EsquecisenhaPage */]);
+    };
+    LoginPage = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["m" /* Component */])({
+            selector: 'page-login',template:/*ion-inline-start:"C:\Users\ivanp\Desktop\Estudos\CTI\Tecnico\TCC\Lara-ApresentacaoFinal.bkp\src\pages\login\login.html"*/'﻿<ion-header>\n\n		<ion-navbar color = "inclusio_2">\n\n		  <div id="titulo">\n\n			<ion-title>\n\n			 <span text-color="fonte-laranja"> Login </span>\n\n			</ion-title>\n\n		  </div>\n\n		  \n\n		</ion-navbar>\n\n	  </ion-header>\n\n\n\n<ion-content class="body" padding>\n\n \n\n	<div id="principal">\n\n\n\n  <!--Aqui é o modelo para os formularios-->\n\n  \n\n    <div id="formulario">\n\n		\n\n		<form [formGroup]="loginForm"  (submit)="login()" novalidate>	\n\n			 <div id="linha_form">\n\n				<div id="input_form">\n\n					 <ion-item>\n\n						 <ion-input [(ngModel)]="usuario"\n\n							 formControlName="usuario"\n\n							 type="textarea"\n\n							 placeholder="Usuário"\n\n							 clearInput clearOnEdit="false">\n\n						</ion-input>\n\n					 </ion-item>\n\n					 <h6 *ngIf="errorUsuario" class="error"> {{messageUsuario}}</h6>\n\n				</div> <!-- input_form -->\n\n			</div> <!-- linha_form -->\n\n			<br> <br>\n\n			<div id="linha_form">\n\n				<div id="input_form">\n\n					<ion-item>\n\n						<ion-input [(ngModel)]="password"\n\n							 formControlName="password"\n\n							 type="password"\n\n							 placeholder="Senha"\n\n							 clearInput clearOnEdit="false">\n\n						</ion-input>\n\n					</ion-item>\n\n					<h6 *ngIf="errorPassword" class="error"> {{messagePassword}}</h6>\n\n				</div> <!-- input_form -->\n\n			\n\n			</div> <!-- linha_form -->\n\n			<br>\n\n			<button ion-button round class="botao">Entrar</button>\n\n		</form>	\n\n		<br>\n\n	<button ion-button round class="botao"[navPush]="cadastroPage" >Ainda não sou cadastrado</button>\n\n	    <br>\n\n		<br>\n\n	<button ion-button round class="botao"[navPush]="esquecisenhaPage" (click)="ir_esquecisenha()" >Esqueci minha senha</button>\n\n   \n\n   </div> <!-- formulario -->\n\n  \n\n  </div> <!--principal-->\n\n\n\n</ion-content>\n\n'/*ion-inline-end:"C:\Users\ivanp\Desktop\Estudos\CTI\Tecnico\TCC\Lara-ApresentacaoFinal.bkp\src\pages\login\login.html"*/,
+        }),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_2_ionic_angular__["i" /* NavController */],
+            __WEBPACK_IMPORTED_MODULE_0__angular_forms__["a" /* FormBuilder */],
+            __WEBPACK_IMPORTED_MODULE_3__ionic_native_http__["a" /* HTTP */],
+            __WEBPACK_IMPORTED_MODULE_6__providers_sessionlogin_sessionlogin__["a" /* SessionloginProvider */],
+            __WEBPACK_IMPORTED_MODULE_2_ionic_angular__["g" /* MenuController */],
+            __WEBPACK_IMPORTED_MODULE_2_ionic_angular__["a" /* AlertController */]])
+    ], LoginPage);
+    return LoginPage;
+}());
+
+//# sourceMappingURL=login.js.map
 
 /***/ }),
 
@@ -2556,9 +3764,9 @@ var TutorialPage = /** @class */ (function () {
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return SplashPage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__login_login__ = __webpack_require__(54);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__cadastro_cadastro__ = __webpack_require__(93);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__login_login__ = __webpack_require__(50);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__cadastro_cadastro__ = __webpack_require__(91);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -2591,16 +3799,16 @@ var SplashPage = /** @class */ (function () {
         setTimeout(function () { return _this.splash_2 = false; }, 7000); //quando da 7 s ele diz q é falso e some 
     };
     SplashPage.prototype.ir_login = function () {
-        this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_2__login_login__["a" /* LoginPage */]);
+        this.navCtrl.setRoot(__WEBPACK_IMPORTED_MODULE_2__login_login__["a" /* LoginPage */]);
     };
     SplashPage.prototype.ir_cadastro = function () {
-        this.navCtrl.push(__WEBPACK_IMPORTED_MODULE_3__cadastro_cadastro__["a" /* CadastroPage */]);
+        this.navCtrl.setRoot(__WEBPACK_IMPORTED_MODULE_3__cadastro_cadastro__["a" /* CadastroPage */]);
     };
     SplashPage = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
-            selector: 'page-splash',template:/*ion-inline-start:"C:\Users\ra1657100\Desktop\Inclusio\Lara\src\pages\splash\splash.html"*/'﻿<meta charset="utf-8">\n\n\n\n<div id="custom-overlay" [style.display]="splash_2 ? \'flex\': \'none\'"> <!--Essa vem depois-->\n\n      <div id="logos">\n\n        <div id="linha_logos">\n\n          <img class="logos_splash" src="../assets/imgs/logo_equipe.png">\n\n          <img class="logos_splash" src="../assets/imgs/logo_sorri.png"> \n\n       </div>\n\n       <ion-grid style="height: 100%">\n\n        <ion-row justify-content-center align-items-center style="height: 100%">\n\n        <img class="logos_splash" src="../assets/imgs/logo_cti.png">\n\n        </ion-row>\n\n      </ion-grid>\n\n       </div>\n\n</div>\n\n\n\n<div id="custom-overlay" [style.display]="splash_1 ? \'flex\': \'none\'"> <!--Essa vem primeiro-->\n\n      <div id="logo_lara">\n\n       <img src="../assets/imgs/logo_lara.png">\n\n      </div>       \n\n</div>\n\n\n\n<ion-content class="body" padding>\n\n\n\n<ion-slides>\n\n\n\n  <ion-slide>\n\n  <div id="caixa">\n\n    <h1 class="h1_inicio">Olá, seja bem-vindo a Lara CAA!</h1>\n\n    <div id="texto_inicio">\n\n    <p class="p_inicio">Um aplicativo de Comunição Aumentativa Alternativa desenvolvido como trabalho de conclusão de curso \n\n    do curso de informática do Colégio Técnico Industrial Isaac Portal Roldán.\n\n    <br><br>\n\n    <b>Deslize para continuar</b> \n\n    </p>\n\n    </div>\n\n  </div>\n\n  </ion-slide>\n\n  \n\n  <ion-slide>\n\n  <div id="caixa">\n\n    <h1 class="h1_inicio">Flexível</h1>\n\n     <div id="texto_inicio">\n\n    <p class="p_inicio">Seu universo é muito grande para que nós satisfaçamos todas as possibilidades,\n\n    mas não se preocupe, através das muitas opções de personalização, o aplicativo consegue abrager melhor a qualquer realidade!\n\n    <br><br>\n\n    Inclua Palavras, adicione imagens, crie e altere categorias.\n\n    <br><br>\n\n    <b>Deslize para continuar</b> \n\n    </p>\n\n    </div>\n\n  \n\n  </div>\n\n  </ion-slide>\n\n  \n\n  <ion-slide>\n\n    <div id="caixa">\n\n    <h1 class="h1_inicio">Para todas as idades</h1>\n\n     <div id="texto_inicio">\n\n    <p class="p_inicio">Caso as imagens sejam muito infantis e você deseje retirá-las, acesse o menu de configurações\n\n    determine sua preferência sobre o teclado!\n\n    <br><br>\n\n    <b>Deslize para continuar</b> \n\n    </p>\n\n    </div>\n\n  \n\n  </div>\n\n  </ion-slide>\n\n  \n\n  <ion-slide>\n\n   <div id="caixa">\n\n    <h1 class="h1_inicio">VAMOS LÁ!</h1>\n\n     <div id="texto_inicio">\n\n      <button ion-button round (click)="ir_login()" class="botao">LOGIN</button>\n\n      <p class="p_inicio"><br>Ou</p>\n\n      <br>\n\n      <button ion-button round (click)="ir_cadastro()" class="botao">CADASTRE-SE</button>  \n\n    </div>\n\n  \n\n  </div>\n\n    \n\n</ion-slide>\n\n  \n\n</ion-slides>\n\n\n\n</ion-content>\n\n'/*ion-inline-end:"C:\Users\ra1657100\Desktop\Inclusio\Lara\src\pages\splash\splash.html"*/,
+            selector: 'page-splash',template:/*ion-inline-start:"C:\Users\ivanp\Desktop\Estudos\CTI\Tecnico\TCC\Lara-ApresentacaoFinal.bkp\src\pages\splash\splash.html"*/'﻿<meta charset="utf-8">\n\n\n\n<div id="custom-overlay" [style.display]="splash_2 ? \'flex\': \'none\'"> <!--Essa vem depois-->\n\n      <div id="logos">\n\n        <div id="linha_logos">\n\n          <img class="logos_splash" src="../assets/imgs/logo_equipe.png">\n\n          <img class="logos_splash" src="../assets/imgs/logo_sorri.png"> \n\n       </div>\n\n       <ion-grid style="height: 100%">\n\n        <ion-row justify-content-center align-items-center style="height: 100%">\n\n        <img class="logos_splash" src="../assets/imgs/logo_cti.png">\n\n        </ion-row>\n\n      </ion-grid>\n\n       </div>\n\n</div>\n\n\n\n<div id="custom-overlay" [style.display]="splash_1 ? \'flex\': \'none\'"> <!--Essa vem primeiro-->\n\n      <div id="logo_lara">\n\n       <img src="../assets/imgs/logo_lara.png">\n\n      </div>       \n\n</div>\n\n\n\n<ion-content class="body" padding>\n\n\n\n<ion-slides>\n\n\n\n  <ion-slide>\n\n  <div id="caixa">\n\n    <h1 class="h1_inicio">Olá, seja bem-vindo a Lara CAA!</h1>\n\n    <div id="texto_inicio">\n\n    <p class="p_inicio">Um aplicativo de Comunição Aumentativa Alternativa desenvolvido como trabalho de conclusão de curso \n\n    do curso de informática do Colégio Técnico Industrial Isaac Portal Roldán.\n\n    <br><br>\n\n    <b>Deslize para continuar</b> \n\n    </p>\n\n    </div>\n\n  </div>\n\n  </ion-slide>\n\n  \n\n  <ion-slide>\n\n  <div id="caixa">\n\n    <h1 class="h1_inicio">Flexível</h1>\n\n     <div id="texto_inicio">\n\n    <p class="p_inicio">Seu universo é muito grande para que nós satisfaçamos todas as possibilidades,\n\n    mas não se preocupe, através das muitas opções de personalização, o aplicativo consegue abrager melhor a qualquer realidade!\n\n    <br><br>\n\n    Inclua Palavras, adicione imagens, crie e altere categorias.\n\n    <br><br>\n\n    <b>Deslize para continuar</b> \n\n    </p>\n\n    </div>\n\n  \n\n  </div>\n\n  </ion-slide>\n\n  \n\n  <ion-slide>\n\n    <div id="caixa">\n\n    <h1 class="h1_inicio">Para todas as idades</h1>\n\n     <div id="texto_inicio">\n\n    <p class="p_inicio">Caso as imagens sejam muito infantis e você deseje retirá-las, acesse o menu de configurações\n\n    determine sua preferência sobre o teclado!\n\n    <br><br>\n\n    <b>Deslize para continuar</b> \n\n    </p>\n\n    </div>\n\n  \n\n  </div>\n\n  </ion-slide>\n\n  \n\n  <ion-slide>\n\n   <div id="caixa">\n\n    <h1 class="h1_inicio">VAMOS LÁ!</h1>\n\n     <div id="texto_inicio">\n\n      <button ion-button round (click)="ir_login()" class="botao">LOGIN</button>\n\n      <p class="p_inicio"><br>Ou</p>\n\n      <br>\n\n      <button ion-button round (click)="ir_cadastro()" class="botao">CADASTRE-SE</button>  \n\n    </div>\n\n  \n\n  </div>\n\n    \n\n</ion-slide>\n\n  \n\n</ion-slides>\n\n\n\n</ion-content>\n\n'/*ion-inline-end:"C:\Users\ivanp\Desktop\Estudos\CTI\Tecnico\TCC\Lara-ApresentacaoFinal.bkp\src\pages\splash\splash.html"*/,
         }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["h" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavParams */]])
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["i" /* NavController */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["j" /* NavParams */]])
     ], SplashPage);
     return SplashPage;
 }());
@@ -2609,20 +3817,20 @@ var SplashPage = /** @class */ (function () {
 
 /***/ }),
 
-/***/ 93:
+/***/ 91:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return CadastroPage; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_forms__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_forms__ = __webpack_require__(9);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ionic_angular__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_native_http__ = __webpack_require__(21);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_map__ = __webpack_require__(34);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ionic_angular__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_native_http__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_map__ = __webpack_require__(24);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_rxjs_add_operator_map__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_rxjs_add_operator_timeout__ = __webpack_require__(35);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_rxjs_add_operator_timeout__ = __webpack_require__(25);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_rxjs_add_operator_timeout___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_rxjs_add_operator_timeout__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__login_login__ = __webpack_require__(54);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__login_login__ = __webpack_require__(50);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -2805,9 +4013,9 @@ var CadastroPage = /** @class */ (function () {
     };
     CadastroPage = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["m" /* Component */])({
-            selector: 'page-cadastro',template:/*ion-inline-start:"C:\Users\ra1657100\Desktop\Inclusio\Lara\src\pages\cadastro\cadastro.html"*/'﻿\n\n<ion-header>\n\n  <ion-navbar color = "inclusio_2">\n\n    <div id="titulo">\n\n	  <ion-title>\n\n	   <span text-color="fonte-laranja"> Cadastro </span>\n\n	  </ion-title>\n\n    </div>\n\n	\n\n  </ion-navbar>\n\n</ion-header>\n\n\n\n<ion-content class="body" padding>\n\n \n\n<div id="caixa_cadastro">\n\n	&nbsp; &nbsp;  <p class="icon"><ion-icon ios="ios-person" md="md-person"></ion-icon></p> <!-- <h1>Cadastro</h1>-->\n\n	<form  [formGroup]="cadastroForm" (submit)="cadastro()" novalidate>\n\n      <ion-row>\n\n        <ion-col>\n\n          <ion-list inset>\n\n           <div id = "input_form">\n\n		   <div id="texto"> Usuário:</div>\n\n            <ion-item>\n\n              <ion-input [(ngModel)]="nome" formControlName="nome" type="textarea" placeholder="Nome do Usuário" clearInput clearOnEdit="false" id="usuario"></ion-input>\n\n            </ion-item>\n\n            \n\n            <h6 *ngIf="errorNome" class="error"> {{messageNome}}</h6>\n\n			<br><br>\n\n            <div id="texto"> E-mail:</div>\n\n            <ion-item>\n\n              <ion-input [(ngModel)]="email" formControlName="email"  type="email" placeholder="exemplo@hotmail.com" clearInput clearOnEdit="false"></ion-input>\n\n            </ion-item>\n\n        \n\n            <h6 *ngIf="errorEmail" class="error"> {{messageEmail}}</h6>\n\n			<br><br>\n\n			<div id="texto"> Senha:</div>\n\n            <ion-item>\n\n              <ion-input [(ngModel)]="password" formControlName="password" type="password" placeholder="Senha" clearInput clearOnEdit="false"></ion-input>\n\n            </ion-item>\n\n\n\n            <h6 *ngIf="errorPassword" class="error"> {{messagePassword}}</h6>\n\n			<br><br>\n\n            <div id="texto"> Confirma senha:</div>\n\n            <ion-item>\n\n                <ion-input [(ngModel)]="password_1" formControlName="password_1" type="password" placeholder="Confirma Senha" clearInput clearOnEdit="false"></ion-input>\n\n            </ion-item>\n\n			\n\n            <h6 *ngIf="errorPassword_1" class="error"> {{messagePassword_1}}</h6>\n\n            </div>\n\n          </ion-list>  \n\n        </ion-col>\n\n      </ion-row>\n\n      \n\n      <ion-row>\n\n        <div id="botoes">\n\n          <button ion-button round class="botaoCad" >CADASTRAR</button><br><br>\n\n          <a class ="login" (click)="ir_login()">Já sou cadastrado</a>\n\n          \n\n        </div>\n\n      </ion-row>\n\n	</form>\n\n</div>\n\n</ion-content>\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n'/*ion-inline-end:"C:\Users\ra1657100\Desktop\Inclusio\Lara\src\pages\cadastro\cadastro.html"*/
+            selector: 'page-cadastro',template:/*ion-inline-start:"C:\Users\ivanp\Desktop\Estudos\CTI\Tecnico\TCC\Lara-ApresentacaoFinal.bkp\src\pages\cadastro\cadastro.html"*/'﻿\n\n<ion-header>\n\n  <ion-navbar color = "inclusio_2">\n\n    <div id="titulo">\n\n	  <ion-title>\n\n	   <span text-color="fonte-laranja"> Cadastro </span>\n\n	  </ion-title>\n\n    </div>\n\n	\n\n  </ion-navbar>\n\n</ion-header>\n\n\n\n<ion-content class="body" padding>\n\n \n\n<div id="caixa_cadastro">\n\n	&nbsp; &nbsp;  <p class="icon"><ion-icon ios="ios-person" md="md-person"></ion-icon></p> <!-- <h1>Cadastro</h1>-->\n\n	<form  [formGroup]="cadastroForm" (submit)="cadastro()" novalidate>\n\n      <ion-row>\n\n        <ion-col>\n\n          <ion-list inset>\n\n           <div id = "input_form">\n\n		   <div id="texto"> Usuário:</div>\n\n            <ion-item>\n\n              <ion-input [(ngModel)]="nome" formControlName="nome" type="textarea" placeholder="Nome do Usuário" clearInput clearOnEdit="false" id="usuario"></ion-input>\n\n            </ion-item>\n\n            \n\n            <h6 *ngIf="errorNome" class="error"> {{messageNome}}</h6>\n\n			<br><br>\n\n            <div id="texto"> E-mail:</div>\n\n            <ion-item>\n\n              <ion-input [(ngModel)]="email" formControlName="email"  type="email" placeholder="exemplo@hotmail.com" clearInput clearOnEdit="false"></ion-input>\n\n            </ion-item>\n\n        \n\n            <h6 *ngIf="errorEmail" class="error"> {{messageEmail}}</h6>\n\n			<br><br>\n\n			<div id="texto"> Senha:</div>\n\n            <ion-item>\n\n              <ion-input [(ngModel)]="password" formControlName="password" type="password" placeholder="Senha" clearInput clearOnEdit="false"></ion-input>\n\n            </ion-item>\n\n\n\n            <h6 *ngIf="errorPassword" class="error"> {{messagePassword}}</h6>\n\n			<br><br>\n\n            <div id="texto"> Confirma senha:</div>\n\n            <ion-item>\n\n                <ion-input [(ngModel)]="password_1" formControlName="password_1" type="password" placeholder="Confirma Senha" clearInput clearOnEdit="false"></ion-input>\n\n            </ion-item>\n\n			\n\n            <h6 *ngIf="errorPassword_1" class="error"> {{messagePassword_1}}</h6>\n\n            </div>\n\n          </ion-list>  \n\n        </ion-col>\n\n      </ion-row>\n\n      \n\n      <ion-row>\n\n        <div id="botoes">\n\n          <button ion-button round class="botaoCad" >CADASTRAR</button><br><br>\n\n          <a class ="login" (click)="ir_login()">Já sou cadastrado</a>\n\n          \n\n        </div>\n\n      </ion-row>\n\n	</form>\n\n</div>\n\n</ion-content>\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n'/*ion-inline-end:"C:\Users\ivanp\Desktop\Estudos\CTI\Tecnico\TCC\Lara-ApresentacaoFinal.bkp\src\pages\cadastro\cadastro.html"*/
         }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_2_ionic_angular__["h" /* NavController */], __WEBPACK_IMPORTED_MODULE_0__angular_forms__["a" /* FormBuilder */], __WEBPACK_IMPORTED_MODULE_2_ionic_angular__["i" /* NavParams */], __WEBPACK_IMPORTED_MODULE_3__ionic_native_http__["a" /* HTTP */]])
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_2_ionic_angular__["i" /* NavController */], __WEBPACK_IMPORTED_MODULE_0__angular_forms__["a" /* FormBuilder */], __WEBPACK_IMPORTED_MODULE_2_ionic_angular__["j" /* NavParams */], __WEBPACK_IMPORTED_MODULE_3__ionic_native_http__["a" /* HTTP */]])
     ], CadastroPage);
     return CadastroPage;
 }());
@@ -2816,5 +4024,5 @@ var CadastroPage = /** @class */ (function () {
 
 /***/ })
 
-},[219]);
+},[222]);
 //# sourceMappingURL=main.js.map
