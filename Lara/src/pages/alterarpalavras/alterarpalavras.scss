@@ -1,3 +1,34 @@
 page-alterarpalavras {
 
 }
+
+.seta
+{
+    height: 20px;
+    // padding-left:50px; 
+        
+    float: left;
+}
+
+.linhas{
+    text-align: left;
+}
+
+.checkbox{
+    float: left;
+}
+
+label.palavras{
+    color:#602901;
+     font-size: 110%;
+     text-align: justify;
+     position: relative;
+     left: 10px;
+    //  float: left;
+ }
+
+ .categoria{
+    text-align: left;
+   //  font-size: 20px;
+   //  float: left;
+}

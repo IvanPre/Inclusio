@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams} from 'ionic-angular';
+import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import {Validators, FormBuilder, FormGroup, FormControl} from '@angular/forms';
 import {HTTP} from '@ionic-native/http';
 import { Storage } from "@ionic/storage";
@@ -39,12 +39,7 @@ export class AlterarpalavrasPage implements OnInit
   endereco ="http://inclusio.engynios.com/api/update/palavra.php";
   
   
-	constructor(public navCtrl: NavController,
-		public camera: Camera,
-		formBuilder: FormBuilder, 
-		public navParams: NavParams, 
-		public session_login: SessionloginProvider,  
-		public storage: Storage) 
+  constructor(public navCtrl: NavController,public camera: Camera, formBuilder: FormBuilder, public navParams: NavParams, public http: HTTP, public session_login: SessionloginProvider,  public storage: Storage) 
   {
     this.alteraPalavraForm = formBuilder.group(
     {
@@ -187,7 +182,7 @@ export class AlterarpalavrasPage implements OnInit
         })
         .then(data => {
           alert("Palavra alterada!");
-          this.navCtrl.setRoot(HomePage);
+          this.navCtrl.push(HomePage);
           //alert(JSON.stringify(data.data));
         }).catch(error => {
           alert(JSON.stringify(error)+"erro na alteração de palavras. Favor contactar os desenvolvedores");
@@ -264,7 +259,7 @@ export class AlterarpalavrasPage implements OnInit
 						ion.className = 'palavra';
 						let seta = <HTMLImageElement> document.createElement('img');
 						seta.src = 'assets/imgs/seta_dir.png';
-						seta.className = 'seta-direita';
+						seta.className = 'seta';
 						seta.setAttribute('id', dados[a]['id_categoria']);
 						let id2 = dados[a]['id_categoria'].replace(/\"/gi, "");
 						id2.replace(/\\\\/gi, "");				
@@ -284,6 +279,7 @@ export class AlterarpalavrasPage implements OnInit
 							let p = <HTMLDivElement> document.createElement('div');
 							p.hidden = true;
 							p.id = 'p'+dados[a].id_categoria;
+							p.className = 'linhas';
 							for(let count = 0; count < pala.length; count++){
 								if(pala[count].nome_palavra.indexOf('capa ') != -1 || pala[count].nome_palavra.indexOf('capa_') != -1)
 									continue;
@@ -295,14 +291,17 @@ export class AlterarpalavrasPage implements OnInit
 								ckb.id = pala[count].id_palavra;
 								this.ckb_id = ckb.id.replace(/\"/gi,"");	
 								mdiv.appendChild(ckb);
-								let palavra = <HTMLParagraphElement> document.createElement('p');
+								let palavra = <HTMLLabelElement> document.createElement('label');
 								palavra.innerText = pala[count].nome_palavra;
+								palavra.setAttribute('for', ckb.id);
+								palavra.className = 'palavras';
 								mdiv.appendChild(palavra);
 								p.appendChild(mdiv);
 							}
 							let ion = document.createElement('ion-item');
 							let cat = <HTMLParagraphElement> document.createElement('p');
 							cat.innerText = dados[a]['nome_categoria'];	
+							cat.className = 'categoria'
 							ion.appendChild(seta);
 							ion.appendChild(cat);
 							ion.appendChild(p);
