@@ -33,12 +33,12 @@ export class SplashPage {
 	
 	ir_login()
 	{
-		this.navCtrl.push(LoginPage);
+		this.navCtrl.setRoot(LoginPage);
 	}
 	
 	ir_cadastro()
 	{
-		this.navCtrl.push(CadastroPage);
+		this.navCtrl.setRoot(CadastroPage);
 	}
 
 }

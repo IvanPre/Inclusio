@@ -13,10 +13,10 @@ import 'rxjs/add/operator/timeout';
 
 @IonicPage()
 @Component({
-  selector: 'page-listarcategoria',
-  templateUrl: 'listarcategoria.html',
+  selector: 'page-listarpalavras',
+  templateUrl: 'listarpalavras.html',
 })
-export class ListarcategoriaPage {
+export class listarpalavrasPage {
 
 	//BANCO
   caminho:string;
@@ -49,7 +49,7 @@ export class ListarcategoriaPage {
 	}
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad ListarcategoriaPage');
+    console.log('ionViewDidLoad listarpalavraPage');
   }
 //função para converter dados do banco
 	converte(date)

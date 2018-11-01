@@ -18,6 +18,7 @@ export class AlteradadosPage {
   messageEmail = "";
   errorEmail = false;
   usuario: Usuario;
+  email:any;
   endereco ="http://inclusio.engynios.com/api/update/altera_dados.php";
   
   constructor(public navCtrl: NavController, formBuilder: FormBuilder, public navParams: NavParams, public http: HTTP, public session_login: SessionloginProvider,  public storage: Storage) 

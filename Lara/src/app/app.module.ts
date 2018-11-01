@@ -45,7 +45,7 @@ import { SairPage } from '../pages/sair/sair'; //sair
 import {InseresenhaPage} from '../pages/inseresenha/inseresenha';
 import {AlteradadosPage} from '../pages/alteradados/alteradados';
 import {AlterarpalavrasPage} from '../pages/alterarpalavras/alterarpalavras';
-import {ListarcategoriaPage} from '../pages/listarcategorias/listarcategoria';
+import {ListarcategoriaPage} from '../pages/listarcategoria/listarcategoria';
 
 
 @NgModule(

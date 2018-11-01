@@ -20,6 +20,8 @@ export class InseresenhaPage {
   messageSenha_1 = "";
   errorSenha_1 = false;
   usuario: Usuario;
+  senha:any;
+  senha_conf:any;
   endereco ="http://inclusio.engynios.com/api/update/altera_senha_1.php";
   
   constructor(public navCtrl: NavController, formBuilder: FormBuilder, public navParams: NavParams, public http: HTTP, public session_login: SessionloginProvider,  public storage: Storage) 

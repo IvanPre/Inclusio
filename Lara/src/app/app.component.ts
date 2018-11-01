@@ -19,7 +19,7 @@ import { TutorialPage } from '../pages/tutorial/tutorial'; //configuracoes
 import {AlteradadosPage} from '../pages/alteradados/alteradados';
 import {InseresenhaPage} from '../pages/inseresenha/inseresenha';
 import {AlterarpalavrasPage} from '../pages/alterarpalavras/alterarpalavras';
-import {ListarcategoriaPage} from '../pages/listarcategorias/listarcategoria';
+import {ListarcategoriaPage} from '../pages/listarcategoria/listarcategoria';
 
 
 
@@ -29,7 +29,7 @@ import {ListarcategoriaPage} from '../pages/listarcategorias/listarcategoria';
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
 
-    rootPage: any = LoginPage;
+    rootPage: any = SplashPage;
 
   pages: Array<{title: string, component: any}>;
 
