@@ -42,8 +42,11 @@ export class SplashPage implements OnInit
   ngOnInit(){
 	this.session_login.get().then(res => {
 		this.usuario = res;
-		if(this.usuario != null && this.usuario != undefined)
-			this.navCtrl.setRoot(HomePage);
+		// alert(JSON.stringify(res));
+		setTimeout(() => {
+			if(this.usuario != null && this.usuario != undefined)
+				this.navCtrl.setRoot(HomePage);
+		}, 2000);
 	}).catch(error => {
 		alert('Erro ao verificar login prévio: ' + JSON.stringify(error));
 	});
