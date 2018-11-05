@@ -44,7 +44,7 @@ import { SobrePage } from '../pages/sobre/sobre'; //configuracoes
 import { SairPage } from '../pages/sair/sair'; //sair
 import {InseresenhaPage} from '../pages/inseresenha/inseresenha';
 import {AlteradadosPage} from '../pages/alteradados/alteradados';
-import {AlterarpalavrasPage} from '../pages/alterarpalavras/alterarpalavras';
+import { AlterarpalavrasPage } from '../pages/alterarpalavras/alterarpalavras';
 import {ListarcategoriaPage} from '../pages/listarcategoria/listarcategoria';
 
 
@@ -96,6 +96,7 @@ import {ListarcategoriaPage} from '../pages/listarcategoria/listarcategoria';
     SairPage,
     InseresenhaPage,
     AlteradadosPage,
+    AlterarpalavrasPage,
     ListarcategoriaPage,
     TutorialPage
   ],

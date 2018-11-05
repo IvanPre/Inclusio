@@ -1,5 +1,10 @@
 ﻿import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, MenuController } from 'ionic-angular';
+import { OnInit } from '@angular/core';
+import { SessionloginProvider } from '../../providers/sessionlogin/sessionlogin';
+import { Storage } from "@ionic/storage";
+import { Usuario } from '../../app/models/usuario';
+import { HomePage } from '../home/home';
 
 /**
  * Generated class for the SplashPage page.
@@ -15,14 +20,33 @@ import { CadastroPage } from '../cadastro/cadastro';
   selector: 'page-splash',
   templateUrl: 'splash.html',
 })
-export class SplashPage {
+export class SplashPage implements OnInit
+{
 
 	splash_1 = true; // no comeco ele aparece o logo da Lara
 	splash_2 = true; // depois a logo do inclusio, cti e sorri 
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(
+	public navCtrl: NavController,
+	public navParams: NavParams,
+	public storage: Storage,
+	public session_login: SessionloginProvider,
+	public menu: MenuController
+	) {
   
-  
+		this.menu.swipeEnable(false);
+  }
+
+  usuario: Usuario;
+
+  ngOnInit(){
+	this.session_login.get().then(res => {
+		this.usuario = res;
+		if(this.usuario != null && this.usuario != undefined)
+			this.navCtrl.setRoot(HomePage);
+	}).catch(error => {
+		alert('Erro ao verificar login prévio: ' + JSON.stringify(error));
+	});
   }
 
 	ionViewDidLoad() 
