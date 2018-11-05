@@ -183,15 +183,6 @@ converte(date){
 					break;
 				}
 			}
-			if(!f){
-				alert("Selecione no minimo um checkbox!");
-				return;
-			}
-			if (this.imageURI==null)
-			{
-				alert("Campo imagem obrigatorio");
-				return;
-			}
 	
 			let palavras = [];
 			for(let a = 0; a < ckbs.length; a++){
@@ -228,22 +219,21 @@ converte(date){
 						this.http.get('http://inclusio.engynios.com/api/read/nome/categoria.php', {nome_categoria: '"'+nomeCategoria.value+'"'}, {headers: { 'Content-Type': 'application/json' }})
 						.then(data => {
 							let dados = this.converte(data.data);
-		
-							for(let a = 0; a < palavras.length; a++){
-					
-								let ad = {
-									id_categoria: dados[dados.length-1]['id_categoria'],//pegar a ultima categoria
-									id_palavra: palavras[a],
-									id_usuario: this.usuario.id_usuario
+							if(!f)
+								for(let a = 0; a < palavras.length; a++){
+						
+									let ad = {
+										id_categoria: dados[dados.length-1]['id_categoria'],//pegar a ultima categoria
+										id_palavra: palavras[a],
+										id_usuario: this.usuario.id_usuario
+									}
+			
+									this.http.post('http://inclusio.engynios.com/api/insert/uniao.php', ad, {headers: { 'Content-Type': 'application/json' }})
+									.then().catch(error => {
+										alert("Erro na inclusão de palavras na categoria. Favor contactar os desenvolvedores:\n" + JSON.stringify(error));
+										return;
+									});
 								}
-		
-								this.http.post('http://inclusio.engynios.com/api/insert/uniao.php', ad, {headers: { 'Content-Type': 'application/json' }})
-								.then().catch(error => {
-									alert("Erro na inclusão de palavras na categoria. Favor contactar os desenvolvedores:\n" + JSON.stringify(error));
-									return;
-								});
-							}
-							
 						}).catch(error => {
 							alert("Erro no acesso ao banco. Favor contactar os desenvolvedores:\n" + JSON.stringify(error));
 							return;

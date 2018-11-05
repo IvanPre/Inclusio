@@ -18,8 +18,8 @@ import { AjudaPage } from '../pages/ajuda/ajuda'; //configuracoes
 import { TutorialPage } from '../pages/tutorial/tutorial'; //configuracoes
 import {AlteradadosPage} from '../pages/alteradados/alteradados';
 import {InseresenhaPage} from '../pages/inseresenha/inseresenha';
-import {ListarcategoriaPage} from '../pages/listarcategoria/listarcategoria';
 import {AlterarpalavrasPage} from '../pages/alterarpalavras/alterarpalavras';
+import {ListarcategoriaPage} from '../pages/listarcategoria/listarcategoria';
 
 
 
