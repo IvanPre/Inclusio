@@ -1,4 +1,4 @@
-﻿import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
+﻿import { Validators, FormBuilder, FormGroup, FormControl, AlertController} from '@angular/forms';
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { HTTP } from '@ionic-native/http';
@@ -28,7 +28,7 @@ export class CadastroPage
 	endereco ="http://inclusio.engynios.com/api/insert/usuario.php";
 	endereco_select = "http://inclusio.engynios.com/api/read/login/usuario.php";
 
-    constructor(public navCtrl: NavController, formBuilder: FormBuilder, public navParams: NavParams, public http: HTTP)
+    constructor(public navCtrl: NavController, private alertCtrl: AlertController,formBuilder: FormBuilder, public navParams: NavParams, public http: HTTP)
     {
 		
       this.cadastroForm = formBuilder.group(
@@ -204,8 +204,15 @@ export class CadastroPage
 					{
 						if(data.data.length > 2)
 						{
-							alert("Esse usuário já é cadastrado!");
-							this.limpar();
+							
+							let alerta = this.alertCtrl.create(
+								{
+									title: 'Cadastro',
+									message: 'Esse usuário já é cadastrado!',
+									buttons: [{text: 'Ok', handler: () => {this.limpar(); }}]
+								}
+							);
+							alerta.present();
 						}
 						else 
 						{
@@ -226,10 +233,13 @@ export class CadastroPage
 							})
 							
 							.then(data => {
-							  alert("Cadastro realizado com sucesso!");
-							  //pode ir para o teclado
-								this.navCtrl.setRoot(LoginPage);
-							  
+								let alerta = this.alertCtrl.create(
+									{
+										title: 'Cadastro realizado!',
+										buttons: [{text: 'Ok', handler: () => {this.navCtrl.setRoot(LoginPage);}}]
+									}
+								);
+								alerta.present();
 							}).catch(error => {
 							
 							  alert(JSON.stringify(error));
