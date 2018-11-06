@@ -214,7 +214,7 @@ converte(date){
 				this.http.post(this.imgAPI, {image: this.imageURI}, {headers: header})
 				.then(imgRet => {
 					alert(JSON.stringify(imgRet.data));*/
-						this.http.post(this.endereco, objeto, { headers: { 'Content-Type': 'application/json' }})
+					this.http.post(this.endereco, objeto, { headers: { 'Content-Type': 'application/json' }})
 					.then(() => {
 						this.http.get('http://inclusio.engynios.com/api/read/nome/categoria.php', {nome_categoria: '"'+nomeCategoria.value+'"'}, {headers: { 'Content-Type': 'application/json' }})
 						.then(data => {
@@ -249,11 +249,13 @@ converte(date){
 				});
 			})
 			.catch(error => {
-				alert("Erro ao requisitar token:\n" + JSON.stringify(error))
+				alert("Erro ao requisitar token:\n" + JSON.stringify(error));
+				return;
 			});*/
 
-			/*setTimeout(() => {
-			}, 5000);*/
+			setTimeout(() => {
+				alert('Categoria criada com sucesso!');
+			}, 5000);
 		}
 	}
 

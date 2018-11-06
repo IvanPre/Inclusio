@@ -1,6 +1,6 @@
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { Component, Input, OnInit } from '@angular/core';
-import { NavController, NavParams, Button } from 'ionic-angular';
+import { NavController, NavParams, Button, MenuController } from 'ionic-angular';
 import { HTTP } from '@ionic-native/http';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/timeout';
@@ -38,8 +38,11 @@ export class HomePage implements OnInit
 		public session_login: SessionloginProvider, //session
 		public session_config: SessionconfiguracoesProvider, //session
 		public storage: Storage, //session
-		public tts: TextToSpeech)
-	{}
+		public tts: TextToSpeech,
+		public menu: MenuController)
+	{
+		this.menu.swipeEnable(true);
+	}
 	
 	usuario: Usuario;
 	config: Configuracoes;
@@ -235,7 +238,7 @@ export class HomePage implements OnInit
         let user ={
 			id_usuario: this.usuario.id_usuario
 		};
-					
+
 		this.http.get(this.endereco_select, user, {})
 		.then(data => 
 		{	
@@ -243,19 +246,24 @@ export class HomePage implements OnInit
 			
 			//usar aqui
 			let converter = this.converte(data.data);
-
+			var np = [];
 			for(let a = 0; a < converter.length; a++){
 				this.http.get('https://inclusio.engynios.com/api/read/id/categoria-palavra.php', {id_categoria: converter[a]['id_categoria\\\\'].replace(/\\\\\"/gi, '"')}, {}).then(dados => {
+					// alert(JSON.stringify(this.converte(dados.data)));
+					// alert('a');
 					if(JSON.stringify(this.converte(dados.data)).length < 5){
-						converter.splice(a);
-						a--;
+						// converter.splice(a, 1);
+						// a--;
+						np.push(a);
 					}else
-						this.palavras[converter[a]['id_categoria\\\\'].replace(/\\\\\"/gi, "")] = this.converte(dados.data);
+						this.palavras[converter[a]['id_categoria\\\\'].replace(/\\\\\"/gi, "").replace(/o!/gi, 'ó')] = this.converte(dados.data);
 				}).catch(e => {
 					alert('Erro ao acessar as palavras. Favor verificar a conexão com a internet ou contactar os desenvolvedores: ' + JSON.stringify(e));
 				});
 			}
 			setTimeout(() => {
+				for(let i = 0; i < np.length; i++)
+					converter.splice(np[i], 1);
 				document.getElementById('palavras').innerText = JSON.stringify(this.palavras);
 				this.resultados = converter.length;
 				// alert(JSON.stringify(converter));
@@ -301,23 +309,20 @@ export class HomePage implements OnInit
 						}
 						td.addEventListener('click', function()
 						{
-							let pala = JSON.parse(document.getElementById('palavras').innerText)[this.id.replace(/\\\\"/gi, "")];
-							// alert(JSON.stringify(pala));
+							var pala = JSON.parse(document.getElementById('palavras').innerText)[this.id.replace(/\\\\"/gi, "")];
+							// alert(JSON.stringify(pala.length));
 							document.getElementById('tabela').remove();
 							
 							document.getElementById('btn_voltar').hidden=false;
-							h1.innerText= "Nossas Palavras";
-							
+							document.getElementById('h1').innerText= "Nossas Palavras";
 							//criação da tabela de palavras
-							
-							let resultado = pala.length;
+							// let resultado = pala.length;
 							// alert(JSON.stringify(converter));
 							let table = document.createElement("tabela"); //cria uma tabela
 							table.setAttribute('id', 'tabela');
 							table.setAttribute('border', '1');
-							
 
-							for(let l=0;l<resultado/2;l++)
+							for(let l=0;l<pala.length/2;l++)
 							{
 								
 								let tr = document.createElement("tr"); //cria um tr
@@ -358,7 +363,6 @@ export class HomePage implements OnInit
 							}
 			
 							document.getElementById('botoes').appendChild(table);
-
 						});
 						tr.appendChild(td);
 					}
