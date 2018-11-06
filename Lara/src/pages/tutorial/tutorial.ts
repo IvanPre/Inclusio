@@ -1,5 +1,5 @@
 ﻿import { Component, OnInit } from '@angular/core';
-import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, AlertController, MenuController } from 'ionic-angular';
 import { HomePage } from '../home/home';
 import { Camera, CameraOptions } from '@ionic-native/camera';
 
@@ -73,6 +73,7 @@ export class TutorialPage implements OnInit
 				public menu: MenuController,
 				public camera: Camera) 
   {
+	this.menu.swipeEnable(false);
 	//TESTE
 	this.menu1Active();
 	// setTimeout(() => {

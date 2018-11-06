@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, MenuController } from 'ionic-angular';
 import {Validators, FormBuilder, FormGroup, FormControl} from '@angular/forms';
 import {HTTP} from '@ionic-native/http';
 import { Storage } from "@ionic/storage";
@@ -21,8 +21,15 @@ export class AlteradadosPage {
   email:any;
   endereco ="http://inclusio.engynios.com/api/update/altera_dados.php";
   
-  constructor(public navCtrl: NavController, formBuilder: FormBuilder, public navParams: NavParams, public http: HTTP, public session_login: SessionloginProvider,  public storage: Storage) 
+  constructor(public navCtrl: NavController, 
+    formBuilder: FormBuilder, 
+    public navParams: NavParams, 
+    public http: HTTP, 
+    public session_login: SessionloginProvider,  
+    public storage: Storage,
+    public menu: MenuController) 
   {
+    this.menu.swipeEnable(false);
   this.alteraDadosForm = formBuilder.group(
     {
       email:['', Validators.compose([Validators.required,Validators.pattern('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+[.][a-zA-Z0-9-.]+$')])]
