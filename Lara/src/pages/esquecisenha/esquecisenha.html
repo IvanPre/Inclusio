@@ -36,11 +36,13 @@
               <ion-input [(ngModel)]="email" formControlName="email"  type="email" placeholder="exemplo@hotmail.com" clearInput clearOnEdit="false"></ion-input>
             </ion-item>
             <h6 *ngIf="errorEmail" class="error"> {{messageEmail}}</h6>
-            <br><br>  
+            <br>
           <br>
-          <button ion-button round class="botao">Ok</button>
+          <button ion-button round class="botao">Ok</button><br>
         <!--  <button ion-button round class="botao" (click)="ir_inserecod()"  </button>>Ok</button>       -->   
-  			</form>
+        </form>
+        <button ion-button round class="botao" (click)="limpar()">Limpar</button>
+        
       </div> <!-- input_form -->
     	
     </div> <!-- linha_form -->

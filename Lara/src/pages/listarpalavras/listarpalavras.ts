@@ -10,6 +10,8 @@ import { Usuario } from '../../app/models/usuario';
 import { HTTP } from '@ionic-native/http';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/timeout';
+import { AlertController } from 'ionic-angular';
+
 
 @IonicPage()
 @Component({
@@ -30,7 +32,7 @@ export class listarpalavrasPage {
             public http: HTTP, //banco
             public formBuilder: FormBuilder,
             public session_login: SessionloginProvider,  
-            public storage: Storage) 
+            public storage: Storage, private alertCtrl: AlertController) 
   					{
             }
   ngOnInit() {
@@ -99,10 +101,7 @@ export class listarpalavrasPage {
 			let div = document.getElementById('div_categorias');
 
 			for(let a = 0; a < dados.length; a++){
-				// if(dados[a].nome_palavra.indexOf('capa_') != -1 || dados[a].nome_palavra.indexOf('capa ') != -1)
-				// 	continue;
-				// dados[a].nome_palavra = dados[a].nome_palavra.replace(/_/gi, " ");
-
+		
 				let ion = document.createElement('ion-item');
 				ion.className = 'palavra';
 				let seta = <HTMLImageElement> document.createElement('img');
@@ -169,7 +168,15 @@ export class listarpalavrasPage {
       }
     }
   if(!f){
-    alert("Selecione um radiobutton!");
+    let alerta = this.alertCtrl.create(
+			{
+				title: 'Alteração',
+				message: 'Selecione um radiobutton!',
+				buttons: [{text: 'Ok'}]
+			}
+		);
+		alerta.present();		
+		
     return;
     }
   }

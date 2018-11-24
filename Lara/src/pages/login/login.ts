@@ -46,8 +46,7 @@ export class LoginPage {
 	  this.loginForm = formBuilder.group
 	  ({
 		  usuario: ['', Validators.required],
-		  password: ['', Validators.compose([Validators.minLength(6), Validators.maxLength(20),
-		  Validators.required])],
+		  password: ['',Validators.required]
 	  });
   }
  
@@ -61,7 +60,7 @@ export class LoginPage {
 		  if (!usuario.valid) 
 		  {
 			this.errorUsuario = true;
-			this.messageUsuario = "Ops! Usuário inválido";
+			this.messageUsuario = "Campo obrigatório";
 		  } 
 		  else 
 		  {
@@ -71,7 +70,7 @@ export class LoginPage {
 		  if (!password.valid) 
 		  {
 			this.errorPassword = true;
-			this.messagePassword ="Senha inválida"
+			this.messagePassword ="Campo obrigatório";
 		  } 
 		  else 
 		  {
@@ -159,12 +158,27 @@ export class LoginPage {
 
 				if (this.erro_senha=="true" && this.erro_usuario=="falso")
 				{
-					alert("Senha incorreta");
+					let alerta = this.alertCtrl.create(
+						{
+							title: 'Senha',
+							message: 'Senha incorreta',
+							buttons: [{text: 'Ok'}]
+						}
+					);
+					alerta.present();		
 					this.limpa_senha();
 				}
 				if (this.erro_usuario=="true")
 				{
-					alert("Usuário não encontrado");
+					let alerta = this.alertCtrl.create(
+						{
+							title: 'Login',
+							message: 'Usuario não encontrado',
+							buttons: [{text: 'Ok'}]
+						}
+					);
+					alerta.present();
+							
 					this.limpa_usu();
 				}
 			})

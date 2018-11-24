@@ -13,6 +13,7 @@ import { HomePage } from '../home/home';
 import { Camera, CameraOptions } from '@ionic-native/camera';
 import { OnInit } from '@angular/core/src/metadata/lifecycle_hooks';
 import { setTestabilityGetter } from '@angular/core/src/testability/testability';
+import { AlertController } from 'ionic-angular';
 
 @IonicPage()
 @Component({
@@ -35,11 +36,12 @@ export class AlterarpalavrasPage implements OnInit
 	public base64Image: string;
 	caminho:string;
 	ckb_id:any;
+	id_setas:any;
 
   endereco ="http://inclusio.engynios.com/api/update/palavra.php";
   
   
-  constructor(public navCtrl: NavController,public camera: Camera, formBuilder: FormBuilder, public navParams: NavParams, public http: HTTP, public session_login: SessionloginProvider,  public storage: Storage) 
+  constructor(public navCtrl: NavController,public camera: Camera, private alertCtrl: AlertController, formBuilder: FormBuilder, public navParams: NavParams, public http: HTTP, public session_login: SessionloginProvider,  public storage: Storage) 
   {
     this.alteraPalavraForm = formBuilder.group(
     {
@@ -109,7 +111,6 @@ export class AlterarpalavrasPage implements OnInit
 		  {
 			let campo = str.substring(str.indexOf('"')+1, str.indexOf(':')-1);
 			str = str.substring(str.indexOf(':')+1);
-			// document.getElementById('resposta2').innerText += str;
 			let valor;
 			if(str.indexOf(',') == -1)
 			{
@@ -126,17 +127,51 @@ export class AlterarpalavrasPage implements OnInit
 			else
 			  valor = valor + '"';
 			objeto[campo] = valor;
-			// document.getElementById('resposta2').innerText = str + str.lastIndexOf('}');
 		  }
 		  retorno.push(objeto);
 		}
 		return retorno;
-  }
+	}
+	alterar2()
+	{
+
+		let f = false;
+		let ckbs = document.getElementsByClassName('checkbox');
+		for(let c = 0; c < ckbs.length; c++){
+			let ckb = <HTMLInputElement> ckbs[c];
+			if(ckb.checked){
+				f = true;
+				this.ckb_id = ckb.id;
+				break;
+			}
+		}
+		if(!f)
+		{
+			let alerta = this.alertCtrl.create(
+				{
+					title: 'Alteração',
+					message: 'Selecione no minimo um radiobutton!',
+					buttons: [{text: 'Ok'}]
+				}
+			);
+			alerta.present();		
+			
+		
+			return;
+		}
+		else 
+		{
+			document.getElementById("caixa_cadastro").hidden = false;
+			document.getElementById("forms").hidden = false;
+			document.getElementById("disponivel").hidden = true;
+			document.getElementById("div_categorias").hidden = true;
+			document.getElementById("btn2").hidden = true;
+			document.getElementById("btn1").hidden = false;
+			document.getElementById("excluir").hidden = true;
+		}
+	}
 	alterar() 
   {
-		document.getElementById("caixa_cadastro").hidden = false;
-		document.getElementById("texto").hidden = true;
-		document.getElementById("div_categorias").hidden = true;
     let nomes = [];
 		for(let n = 0;n<this.categoriasG.length;n++)
 			nomes.push(this.categoriasG[n]['nome_categoria'].toLowerCase());
@@ -154,41 +189,59 @@ export class AlterarpalavrasPage implements OnInit
 				this.messagePalavra = "Já existe uma palavra com esse nome";
         return;
 			}
-			let f = false;
-			let ckbs = document.getElementsByClassName('checkbox');
-			for(let c = 0; c < ckbs.length; c++){
-				let ckb = <HTMLInputElement> ckbs[c];
-				if(ckb.checked){
-					f = true;
-					this.ckb_id = ckb.id;
-					break;
-				}
 			}
-			if(!f){
-				alert("Selecione no minimo um radiobutton!");
-				return;
-			}
-			
-			alert(this.ckb_id);
-      let objeto = {
-			id_palavra:this.ckb_id,
-      nome_palavra:palavra.value,
-      id_usuario:this.usuario.id_usuario,
-      versao:"1.0"
-      };
+			let confirma_a = this.alertCtrl.create({
+				title: 'Confirma alteração',
+				message: 'Você deseja mesmo alterar essa palavra?',
+				buttons: [
+					{
+						text: 'Cancelar',
+						role: 'cancel',
+						handler: () => {
+							return;
+						}
+					},
+					{
+						text: 'Confirmar',
+						handler: () => {
+							let objeto = {
+								id_palavra:this.ckb_id,
+								nome_palavra:palavra.value,
+								id_usuario:this.usuario.id_usuario,
+								versao:"1.0"
+								};
+					
+								this.http.post(this.endereco, objeto,
+									{ headers: { 'Content-Type': 'application/json' }	  
+									})
+									.then(data => {
+									
+										let alerta = this.alertCtrl.create(
+											{
+												title: 'Alteração',
+												message: 'Palavra Alterada!',
+												buttons: [{text: 'Ok'}]
+											}
+										);
+										alerta.present();	
 
-      this.http.post(this.endereco, objeto,
-        { headers: { 'Content-Type': 'application/json' }	  
-        })
-        .then(data => {
-          alert("Palavra alterada!");
-          this.navCtrl.push(HomePage);
-          //alert(JSON.stringify(data.data));
-        }).catch(error => {
-          alert(JSON.stringify(error)+"erro na alteração de palavras. Favor contactar os desenvolvedores");
-        });
+										this.navCtrl.setRoot(HomePage);
+									}).catch(error => {
+										let alerta = this.alertCtrl.create(
+											{
+												title: 'Alteração',
+												message: JSON.stringify(error)+"erro na alteração de palavras. Favor contactar os desenvolvedores",
+												buttons: [{text: 'Ok'}]
+											}
+										);
+										alerta.present();		
+								});					
+						}
+					}
+				]
+			});
+			confirma_a.present();
     }  
-	}
 	limpar()
 	{
     this.palavra="";
@@ -197,6 +250,11 @@ export class AlterarpalavrasPage implements OnInit
 		let ckbs = document.getElementsByClassName('checkbox');
 		for(let c = 0; c < ckbs.length; c++){
 			let ckb = <HTMLInputElement> ckbs[c];
+			ckb.checked=false;
+			}
+		let setas = document.getElementsByClassName('seta');
+		for(let c = 0; c < setas.length; c++){
+			let ckb = <HTMLInputElement> setas[c];
 			ckb.checked=false;
 			}
   }
@@ -212,26 +270,90 @@ export class AlterarpalavrasPage implements OnInit
 				break;
 			}
 		}
-		document.getElementById("caixa_cadastro").hidden = true;
-		document.getElementById("texto").hidden = true;
-		document.getElementById("div_categorias").hidden = true;
-		let path_1 = "http://inclusio.engynios.com/api/delete/id/palavra.php";
-    let objeto = {
-			id_palavra: this.ckb_id
-		};
-		alert(this.ckb_id);
-    this.http.get(path_1, objeto,
-      { headers: { 'Content-Type': 'application/json' }	  
-      })
-      .then(data => {
-        alert("Palavra excluida!");
-        //alert(JSON.stringify(data.data));
-      }).catch(error => {
-        alert(JSON.stringify(error)+"erro na exclusao de palavras. Favor contactar os desenvolvedores");
+
+		if(!f)
+		{
+			let alerta = this.alertCtrl.create(
+				{
+					title: 'Exclusão',
+					message: 'Selecione no minimo um radiobutton!',
+					buttons: [{text: 'Ok'}]
+				}
+			);
+			alerta.present();		
+			
+		
+			return;
+		}
+		else
+		{
+			document.getElementById("caixa_cadastro").hidden = true;
+			document.getElementById("texto").hidden = true;
+			document.getElementById("div_categorias").hidden = true;
+
+			let seta = document.getElementsByClassName('seta');
+			for(let c = 0; c < seta.length; c++){
+				let setas = <HTMLInputElement> seta[c];
+				if(setas.checked)
+				{
+					
+					this.id_setas = setas.id;
+					break;
+				}
+			}
+			
+			let alerta1= this.alertCtrl.create({
+				title: 'Confirma exclusão',
+				message: 'Você deseja mesmo excluir essa palavra?',
+				buttons: [
+					{
+						text: 'Cancelar',
+						role: 'cancel',
+						handler: () => {
+							this.navCtrl.setRoot(AlterarpalavrasPage);
+							
+						}
+					},
+					{
+						text: 'Confirmar',
+						handler: () => {
+
+							let path_1 = "http://inclusio.engynios.com/api/delete/id/palavra-uniao.php";
+							let objeto = {
+								id_palavra: this.ckb_id,
+								id_categoria: this.id_setas
+							};
+							this.http.get(path_1, objeto,
+							{ headers: { 'Content-Type': 'application/json' }	  
+							})
+							.then(data => {
+								let alerta = this.alertCtrl.create(
+									{
+										title: 'Exclusão',
+										message: 'Palavra excluida!',
+										buttons: [{text: 'Ok'}]
+									}
+								);
+								alerta.present();		
+								this.navCtrl.setRoot(HomePage);
+							}).catch(error => {
+								let alerta = this.alertCtrl.create(
+									{
+										title: 'Exclusão',
+										message: JSON.stringify(error)+"erro na exclusao de palavras. Favor contactar os desenvolvedores",
+										buttons: [{text: 'Ok'}]
+									}
+								);				
+								alerta.present();		
+							});	
+						}
+					}
+				]
 			});
-			setTimeout(() => {
-				this.navCtrl.push(HomePage);
-			}, 3000);
+			
+			alerta1.present();
+			
+		}
 	}
 
 
@@ -251,29 +373,47 @@ export class AlterarpalavrasPage implements OnInit
 					let div = document.getElementById('div_categorias');
 		
 					for(let a = 0; a < dados.length; a++){
-						// if(dados[a].nome_palavra.indexOf('capa_') != -1 || dados[a].nome_palavra.indexOf('capa ') != -1)
-						// 	continue;
-						// dados[a].nome_palavra = dados[a].nome_palavra.replace(/_/gi, " ");
-		
+				
 						let ion = document.createElement('ion-item');
 						ion.className = 'palavra';
-						let seta = <HTMLImageElement> document.createElement('img');
-						seta.src = 'assets/imgs/seta_dir.png';
+						let seta = <HTMLInputElement> document.createElement('input');
+						seta.type = 'radio';
+						seta.name='cat';
 						seta.className = 'seta';
 						seta.setAttribute('id', dados[a]['id_categoria']);
 						let id2 = dados[a]['id_categoria'].replace(/\"/gi, "");
 						id2.replace(/\\\\/gi, "");				
 						id2.replace(/\//gi, "/");
+						
+						this.setas= id2;
 						seta.addEventListener('click', function(){
-							if(document.getElementById('p'+this.id).hidden){
-								this.src = 'assets/imgs/seta_esq.png';
+							if(document.getElementById('p'+this.id).hidden)
+							{
 								document.getElementById('p'+this.id).hidden = false;
+								let ckbs = document.getElementsByClassName('checkbox');
+								for(let c = 0; c < ckbs.length; c++){
+									let ckb = <HTMLInputElement> ckbs[c];
+									ckb.checked=false;
+									}
+								
 							}
 							else{
-								this.src = 'assets/imgs/seta_dir.png';
 								document.getElementById('p'+this.id).hidden = true;
+								let setas = document.getElementsByClassName('seta');
+								for(let c = 0; c < setas.length; c++){
+									let seta = <HTMLInputElement> setas[c];
+									seta.checked=false;
+								}	
+								let ckbs = document.getElementsByClassName('checkbox');
+								for(let c = 0; c < ckbs.length; c++){
+									let ckb = <HTMLInputElement> ckbs[c];
+									ckb.checked=false;
+									}
+								
 							}
+							
 						});
+						
 						this.http.get('http://inclusio.engynios.com/api/read/id/categoria-palavra-teste.php', {id_usuario: this.usuario.id_usuario, id_categoria: dados[a].id_categoria}, {}).then(date =>{	
 							let pala = this.converte(date.data);
 							let p = <HTMLDivElement> document.createElement('div');

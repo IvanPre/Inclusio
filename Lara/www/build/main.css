@@ -4872,6 +4872,10 @@ textarea::-webkit-input-placeholder {
   padding-left: 2px;
 }
 
+textarea:-ms-input-placeholder {
+  padding-left: 2px;
+}
+
 textarea::-ms-input-placeholder {
   padding-left: 2px;
 }
@@ -25698,6 +25702,31 @@ page-ajuda b {
   float: center;
 }
 
+.seta {
+  height: 20px;
+  float: left;
+}
+
+.linhas {
+  text-align: left;
+}
+
+.checkbox {
+  float: left;
+}
+
+label.palavras {
+  color: #602901;
+  font-size: 110%;
+  text-align: justify;
+  position: relative;
+  left: 10px;
+}
+
+.categoria {
+  text-align: left;
+}
+
 #titulo {
   float: left;
 }
@@ -26589,6 +26618,23 @@ page-listarcategoria .login {
   font-family: Arial;
 }
 
+page-listarcategoria .listar_cat {
+  padding-bottom: 8%;
+}
+
+page-listarcategoria #categorias {
+  background-color: #fff;
+  font-family: arial;
+  border-radius: 30px !important;
+  border: 1px solid #ffffff;
+  margin-top: 3%;
+  padding: 10%;
+  padding-top: 5%;
+  -webkit-box-shadow: 2px 2px 2px whitesmoke;
+  box-shadow: 2px 2px 2px whitesmoke;
+  text-align: center;
+}
+
 page-login .body_l {
   background-image: url("../assets/imgs/fundo.jpg");
   background-size: 100%;
@@ -26635,6 +26681,10 @@ page-login a.link_esqueci_cadastrese:hover, page-login a.link_esqueci_cadastrese
   float: center;
   text-decoration: none;
   margin-left: 400px;
+}
+
+.texto {
+  text-align: justify;
 }
 
 page-splash #custom-overlay {

@@ -1,71 +1,89 @@
+
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
-import { Component, Input, OnInit } from '@angular/core';
-import { NavController, NavParams, Button, MenuController } from 'ionic-angular';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { NavController, NavParams, Button} from 'ionic-angular';
 import { HTTP } from '@ionic-native/http';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/timeout';
+
 //sintetizador
 import { TextToSpeech } from '@ionic-native/text-to-speech';
+
+//imports da session:
 import { Storage } from "@ionic/storage";
-import { Configuracoes } from '../../app/models/configuracoes';
+
+//usuario
 import { SessionloginProvider } from '../../providers/sessionlogin/sessionlogin';
-import { SessionconfiguracoesProvider } from '../../providers/sessionconfiguracoes/sessionconfiguracoes';
 import { Usuario } from '../../app/models/usuario';
 
- 
 
+ //confifuracoes
+import { SessionconfiguracoesProvider } from '../../providers/sessionconfiguracoes/sessionconfiguracoes';
+import { Configuracoes } from '../../app/models/configuracoes';
+
+ 
+//@IonicPage()
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
 })
-export class HomePage implements OnInit
-{
+export class HomePage 
+{	
+	//SESSIONS:
+	//usuario
+	usuario: Usuario;
+	//configuragoes
+	configuracoes: Configuracoes ;
+	usuarioLogado:any;
+	usuarioConfig:any;
+
+	
+	palavratela: number;
+	imagem: string;
+
     palavras:any = {};
 	timeoutMS:any;
 	categorias:any= {};
 	public mostra_img: boolean = true;
 	resultados:any;
-	imagem:string = "https://img.olx.com.br/images/86/864708037631038.jpg";
 	fraseFormada ="";
 	
 	
 	endereco_select = "http://inclusio.engynios.com/api/read/id_usuario/categoria-null.php";
 
 	constructor(public navCtrl: NavController,
-		formBuilder: FormBuilder,
-		public navParams: NavParams,
-		public http: HTTP,
-		public session_login: SessionloginProvider, //session
-		public session_config: SessionconfiguracoesProvider, //session
-		public storage: Storage, //session
-		public tts: TextToSpeech,
-		public menu: MenuController)
+					 formBuilder: FormBuilder, 
+					 public navParams: NavParams, 
+					 public http: HTTP,  
+					 private tts: TextToSpeech,
+					 public session_login: SessionloginProvider,  //session
+					 public session_config: SessionconfiguracoesProvider, //session
+					 public storage: Storage)
 	{
-		this.menu.swipeEnable(true);
+		this.carrega_imagem();
 	}
 	
-	usuario: Usuario;
-	config: Configuracoes;
-
-		ngOnInit(){
-			this.session_login.get().then(
-				res =>
-				{
-					this.usuario = res;	
-					// alert(JSON.stringify(this.usuario));
-					// callback();
-					this.session_config.get().then(ret => {
-						this.config = ret;
-						document.getElementById('config').innerText = JSON.stringify(ret);
-						this.carrega_imagem();
-					}).catch(error => {
-						alert('Erro ao verificar as configurações do usuário ' + JSON.stringify(error));
+	ngOnInit() 
+	{
+	 
+		this.session_config.get().then(
+			res =>
+			{
+				this.usuarioConfig = res;	
+			
+			}
+		);
+				this.session_config.get().then(
+					
+					res => {this.usuarioConfig = new Configuracoes(res);
 					});
-				}
-			).catch(error => {
-				alert('Erro ao reconhecer o usuário ' + JSON.stringify(error));
-			});
-		}
+			
+				console.log(this.session_login.exist());
+				console.log(this.session_config.exist());
+				console.log(this.session_login.exist());
+				console.log(this.session_config.exist());
+				
+	}
 
 	voltar()
 	{
@@ -73,9 +91,9 @@ export class HomePage implements OnInit
 			document.getElementById('btn_voltar').hidden=true;
 			let table = document.createElement("tabela"); //cria uma tabela
 			table.setAttribute('id', 'tabela');
-			table.setAttribute('border', '1');
+			table.setAttribute('border', '1px');
 			let h1= document.getElementById("h1");
-			h1.innerText= "Nossas Categorias";
+			h1.innerHTML= "Nossas Categorias";
 		
 			let objeto = JSON.parse(document.getElementById('categorias').innerText);
 			
@@ -91,51 +109,53 @@ export class HomePage implements OnInit
 			for(let l=0;l<objeto.length(objeto)/2;l++)
 			{
 				
-				let tr = document.createElement("tr"); //cria um tr
-				table.appendChild(tr); //coloca o tr na tabela
+				let tr = document.createElement("tr"); 
+				table.appendChild(tr); 
 				for(let p=0;p<2 && l*2+p < objeto.length(objeto);p++)
 				{
 					var td = document.createElement("td");
-					// if(objeto[l*2+p]['imagem\\\\'] == undefined)
-					// 	alert(JSON.stringify(objeto[l*2+p]));
+					let div = document.createElement("div");
+					let img = document.createElement("img");
+
 					let s = objeto[l*2+p]['imagem\\\\'].replace(/\"/gi, "");
 					s= s.replace(/\\/gi, "");
 					s = s.replace(/\//gi, "/");
+					
 					td.setAttribute('id', objeto[l*2+p]['id_categoria\\\\']);
 					td.setAttribute('name', objeto[l*2+p]['nome_palavra\\\\']);
-					//alert(JSON.stringify(converter[l*2+p]));
+					td.setAttribute('style', 'max-height: 400px; max-width: 300px;');
+
+					div.setAttribute('id', 'div_imagem');
+					div.setAttribute('border', '1px');
+					div.setAttribute('style', 'max-height: 250px; max-width: 250px;float:center;');
+		
+					img.setAttribute('src', 'https://inclusio.engynios.com/imagens/'+s);
+					img.setAttribute('alt', 'imagemmm');
+					img.setAttribute('id', 'imagem'+l*2+p);
+
 					let nome = objeto[l*2+p]['nome_categoria\\\\'].replace(/\"/gi, "");
 					nome= nome.replace(/\\/gi, "");
 					nome = nome.replace(/\//gi, "/");
-					//alert(JSON.stringify(objeto));
-					td.innerText = ''+nome.toUpperCase()+'';
-					if(JSON.parse(document.getElementById('config').innerText).imagem == 's'){
-						let img = document.createElement("img");
-						img.setAttribute('src', 'https://inclusio.engynios.com/imagens/'+s);
-						img.setAttribute('alt', 'imagem');
-						img.setAttribute('style', 'max-width: 100px; max-heigth: 100px;');
-						img.setAttribute('id', 'imagem'+l*2+p);
-						td.appendChild(img); //coloca a img no td
-					}
+					td.innerHTML = ''+nome.toUpperCase()+'';
+					div.appendChild(img);
+					td.appendChild(div);
 					td.addEventListener('click', function()
 					{
+				
 						let pala = JSON.parse(document.getElementById('palavras').innerText)[this.id.replace(/\\\\\"/gi, "")];
 						
-						
-						//alert(JSON.stringify(pala));
 						document.getElementById('tabela').remove();
 						
 						document.getElementById('btn_voltar').hidden=false;
-						h1.innerText= "Nossas Palavras";
+						h1.innerHTML= "Nossas Palavras";
 						
-						//criação da tabela de palavras
-						
+					
 						let resultado = pala.length;
 						
-						// alert(JSON.stringify(converter));
-						let table = document.createElement("table"); //cria uma tabela
+					
+						let table = document.createElement("table"); 
 						table.setAttribute('id', 'tabela');
-						table.setAttribute('border', '1');
+						table.setAttribute('border', '1px');
 						
 
 						for(let l=0;l<resultado/2;l++)
@@ -147,32 +167,36 @@ export class HomePage implements OnInit
 							{
 								
 								var td = document.createElement("td");
-								// if(pala[l*2+p]['imagem\\\\'] == undefined)
-								// 	alert(JSON.stringify(pala[l*2+p]));
+								let div = document.createElement("div");
+								let img = document.createElement("img");
 								let s = pala[l*2+p]['imagem\\\\'].replace(/\"/gi, "");
 								s= s.replace(/\\/gi, "");
 								s = s.replace(/\//gi, "/");
+								
 								td.setAttribute('id', pala[l*2+p]['id_categoria\\\\']);
-								//alert(JSON.stringify( pala[l*2+p]['nome_palavra\\\\']));
+								td.setAttribute('style', 'max-height: 400px; max-width: 300px;');
+
+								div.setAttribute('id', 'div_imagem');
+								div.setAttribute('border', '1px');
+								div.setAttribute('style', 'max-height: 250px; max-width: 250px;float:center;');
+
+								img.setAttribute('src', 'https://inclusio.engynios.com/imagens/'+s);
+								img.setAttribute('alt', 'imagemmm');
+								img.setAttribute('id', 'imagem'+l*2+p);
+
 								let nome = pala[l*2+p]['nome_palavra\\\\'].replace(/\"/gi, "");
 								nome= nome.replace(/\\/gi, "");
 								nome = nome.replace(/\//gi, "/");
 
-								td.innerText = ''+nome.toUpperCase()+'';
-								if(JSON.parse(document.getElementById('config').innerText).imagem == 's'){
-									let img = document.createElement("img");
-									img.setAttribute('src', 'https://inclusio.engynios.com/imagens/'+s);
-									img.setAttribute('alt', 'imagem');
-									img.setAttribute('style', 'max-width: 100px; max-heigth: 100px;');
-									img.setAttribute('id', 'imagem'+l*2+p);
-									td.appendChild(img); //coloca a img no td
-								}
-								else
-									td.setAttribute('style', 'font-size: 2vw');
+								td.innerHTML = ''+nome.toUpperCase()+'';
+								div.appendChild(img);
+								td.appendChild(div); //coloca a div com a img no td
 								
 								td.addEventListener('click', function()
 								{
-									document.getElementById('texto').innerHTML += this.innerText.toUpperCase()+' ';
+									
+									document.getElementById('texto').innerHTML+=' '+nome.toUpperCase()+'';
+			
 								});
 								tr.appendChild(td);
 							}
@@ -186,11 +210,9 @@ export class HomePage implements OnInit
 			}
 
 			document.getElementById('botoes').appendChild(table);
-		
 
 	}
 		
-
 	converte(date)
 	{
 		let data = JSON.stringify(date);
@@ -209,7 +231,6 @@ export class HomePage implements OnInit
 		  {
 			let campo = str.substring(str.indexOf('"')+1, str.indexOf(':')-1);
 			str = str.substring(str.indexOf(':')+1);
-			// document.getElementById('resposta2').innerText += str;
 			let valor;
 			if(str.indexOf(',') == -1)
 			{
@@ -226,7 +247,7 @@ export class HomePage implements OnInit
 			else
 			  valor = valor + '"';
 			objeto[campo] = valor;
-			// document.getElementById('resposta2').innerText = str + str.lastIndexOf('}');
+	
 		  }
 		  retorno.push(objeto);
 		}
@@ -235,43 +256,34 @@ export class HomePage implements OnInit
 	
   carrega_imagem()
   {
-        let user ={
-			id_usuario: this.usuario.id_usuario
-		};
+        let teste =
+		{
+			id_usuario: null
 
-		this.http.get(this.endereco_select, user, {})
+		}
+		
+		this.http.get(this.endereco_select, teste, {})
 		.then(data => 
 		{	
-			
-			
-			//usar aqui
 			let converter = this.converte(data.data);
-			var np = [];
+
 			for(let a = 0; a < converter.length; a++){
 				this.http.get('https://inclusio.engynios.com/api/read/id/categoria-palavra.php', {id_categoria: converter[a]['id_categoria\\\\'].replace(/\\\\\"/gi, '"')}, {}).then(dados => {
-					// alert(JSON.stringify(this.converte(dados.data)));
-					// alert('a');
-					if(JSON.stringify(this.converte(dados.data)).length < 5){
-						// converter.splice(a, 1);
-						// a--;
-						np.push(a);
-					}else
-						this.palavras[converter[a]['id_categoria\\\\'].replace(/\\\\\"/gi, "").replace(/o!/gi, 'ó')] = this.converte(dados.data);
+					this.palavras[converter[a]['id_categoria\\\\'].replace(/\\\\\"/gi, "")] = this.converte(dados.data);
+					document.getElementById('palavras').innerText = JSON.stringify(this.palavras);
 				}).catch(e => {
-					alert('Erro ao acessar as palavras. Favor verificar a conexão com a internet ou contactar os desenvolvedores: ' + JSON.stringify(e));
+					alert(JSON.stringify(e + 'line 97'));
 				});
 			}
 			setTimeout(() => {
-				for(let i = 0; i < np.length; i++)
-					converter.splice(np[i], 1);
-				document.getElementById('palavras').innerText = JSON.stringify(this.palavras);
+				
 				this.resultados = converter.length;
-				// alert(JSON.stringify(converter));
 				let table = document.createElement("table"); //cria uma tabela
 				table.setAttribute('id', 'tabela');
-				table.setAttribute('border', '1');
+				table.setAttribute('border', '1px');
+				
 				let h1= document.getElementById("h1");
-				h1.innerText= "Nossas Categorias";
+				h1.innerHTML= "Nossas Categorias";
 				
 				for(let l=0;l<this.resultados/2;l++)
 				{
@@ -280,89 +292,109 @@ export class HomePage implements OnInit
 					for(let p=0;p<2 && l*2+p < converter.length;p++)
 					{
 						var td = document.createElement("td");
+						let div = document.createElement("div");
 						let img = document.createElement("img");
-						// if(converter[l*2+p]['imagem\\\\'] == undefined)
-						// 	alert(JSON.stringify(converter[l*2+p]));
+				
 						let s = converter[l*2+p]['imagem\\\\'].replace(/\"/gi, "");
 						s= s.replace(/\\/gi, "");
 						s = s.replace(/\//gi, "/");
+						
+						div.setAttribute('id', 'div_imagem');
+						div.setAttribute('border', '1px');
+						div.setAttribute('style', 'max-height: 250px; max-width: 250px;float:center;');
+					
+						img.setAttribute('src', 'https://inclusio.engynios.com/imagens/'+s);
+						img.setAttribute('alt', 'imagemmm');
+						img.setAttribute('id', 'imagem'+l*2+p);
+						
 						td.setAttribute('id', converter[l*2+p]['id_categoria\\\\']);
-						td.setAttribute('name', converter[l*2+p]['nome_palavra\\\\']);
+						td.setAttribute('style', 'max-height: 400px; max-width: 300px;');
+				
 						this.categorias[l*2+p] = {};
 						this.categorias[l*2+p]['nome_categoria\\\\'] = converter[l*2+p]['nome_categoria\\\\'];
 						this.categorias[l*2+p]['imagem\\\\'] = converter[l*2+p]['imagem\\\\'];
 						this.categorias[l*2+p]['id_categoria\\\\'] = converter[l*2+p]['id_categoria\\\\'];
 						document.getElementById('categorias').innerText = JSON.stringify(this.categorias);
-						//alert(JSON.stringify(converter[l*2+p]));
+		
 						let nome = converter[l*2+p]['nome_categoria\\\\'].replace(/\"/gi, "");
 						nome= nome.replace(/\\/gi, "");
 						nome = nome.replace(/\//gi, "/");
 
-						td.innerText = ''+nome.toUpperCase()+'';
-						if(this.config.imagem == 's'){
-							let img = document.createElement("img");
-							img.setAttribute('src', 'https://inclusio.engynios.com/imagens/'+s);
-							img.setAttribute('alt', 'imagem');
-							img.setAttribute('style', 'max-width: 100px; max-heigth: 100px;');
-							img.setAttribute('id', 'imagem'+l*2+p);
-							td.appendChild(img); //coloca a img no td
-						}
+						td.innerHTML = ''+nome.toUpperCase()+'';
+						td.appendChild(img); //coloca a img no td
 						td.addEventListener('click', function()
 						{
-							var pala = JSON.parse(document.getElementById('palavras').innerText)[this.id.replace(/\\\\"/gi, "")];
-							// alert(JSON.stringify(pala.length));
+							let pala = JSON.parse(document.getElementById('palavras').innerText)[this.id.replace(/\\\\"/gi, "")];
+					
 							document.getElementById('tabela').remove();
 							
 							document.getElementById('btn_voltar').hidden=false;
-							document.getElementById('h1').innerText= "Nossas Palavras";
-							//criação da tabela de palavras
-							// let resultado = pala.length;
-							// alert(JSON.stringify(converter));
-							let table = document.createElement("tabela"); //cria uma tabela
+							h1.innerHTML= "Nossas Palavras";
+							
+							
+							let resultado = pala.length;
+							let table = document.createElement("table"); //cria uma tabela
 							table.setAttribute('id', 'tabela');
-							table.setAttribute('border', '1');
+							table.setAttribute('border', '1px');
 
-							for(let l=0;l<pala.length/2;l++)
+							for(let l=0;l<resultado/2;l++)
 							{
 								
 								let tr = document.createElement("tr"); //cria um tr
 								table.appendChild(tr); //coloca o tr na tabela
+								
 								for(let p=0; p<2 && l*2+p < pala.length; p++)
 								{
 									
 									var td = document.createElement("td");
-									// if(pala[l*2+p]['imagem\\\\'] == undefined)
-									// 	alert(JSON.stringify(pala[l*2+p]));
+									let div = document.createElement("div");
+									let img = document.createElement("img");
+								
 									let s = pala[l*2+p]['imagem\\\\'].replace(/\"/gi, "");
 									s= s.replace(/\\/gi, "");
 									s = s.replace(/\//gi, "/");
+									
+
 									td.setAttribute('id', pala[l*2+p]['id_categoria\\\\']);
-									//alert(JSON.stringify( pala[l*2+p]['nome_palavra\\\\']));
+									td.setAttribute('border', '1px');
+								
+				
+									td.setAttribute('style', 'max-height: 200px; max-width: 200px;');
+									
+
+									div.setAttribute('id', 'div_imagem');
+									div.setAttribute('border', '1px');
+									div.setAttribute('style', 'height: 200px; width: 200px;float:center;');
+								
+
+									img.setAttribute('src', 'https://inclusio.engynios.com/imagens/'+s);
+									img.setAttribute('alt', 'imagemmm');
+									img.setAttribute('id', 'imagem'+l*2+p);
+									img.setAttribute('style', 'max-height: 170px; max-width: 170px;float:center;');
+								
 									let nome = pala[l*2+p]['nome_palavra\\\\'].replace(/\"/gi, "");
 									nome= nome.replace(/\\/gi, "");
 									nome = nome.replace(/\//gi, "/");
 
-									td.innerText = ''+nome.toUpperCase()+'';
+									img.setAttribute('alt', ''+nome+'');
+									td.innerHTML = ''+nome.toUpperCase()+'';
+								
+									div.appendChild(img);
+									td.appendChild(div); //coloca a div com a img no td
 
-									
-									if(JSON.parse(document.getElementById('config').innerText).imagem == 's'){
-										let img = document.createElement("img");
-										img.setAttribute('src', 'https://inclusio.engynios.com/imagens/'+s);
-										img.setAttribute('alt', 'imagem');
-										img.setAttribute('style', 'max-width: 100px; max-heigth: 100px;');
-										img.setAttribute('id', 'imagem'+l*2+p);
-										td.appendChild(img); //coloca a img no td
-									}
-									
 									td.addEventListener('click', function()
 									{
-										document.getElementById('texto').innerHTML += this.innerText.toUpperCase()+' ';
+										
+										document.getElementById('texto').innerHTML+=' '+nome.toUpperCase()+'';
+			
+										
 									});
 									tr.appendChild(td);
 								}
 							}
 			
 							document.getElementById('botoes').appendChild(table);
+
 						});
 						tr.appendChild(td);
 					}
@@ -374,35 +406,31 @@ export class HomePage implements OnInit
 		.catch(error => 
 		{
 			console.log(error.status);
-			alert('Erro ao carregar as categorias. Favor verificar a conexão com a internet ou contactar os desenvolvedores: ' + JSON.stringify(error));
+			alert(error + " linha 141");
 		});
-		
 
 	}
 	
 	sintetizador()
 	{
-		let frase = <HTMLTextAreaElement> document.getElementById('texto');
+		let frase = document.getElementById('texto');
+		
 		this.tts.speak(
 		{
 			text: frase.innerText, 
-			rate: 1,
+			rate: 0.75,
 			locale: 'pt-BR'
-		}).then(() => {
-			alert('Sucesso');
-		})
-		.catch(error => {
-			alert('Erro no sintetizador de voz: ' + JSON.stringify(error));
-		});
+			
+		}).then(() => console.log('Success'))
+		.catch((reason: any) => alert(reason));
 		
 	}
 	
 	limpar_texto()
 	{
-		document.getElementById('texto').innerText=null;
+		document.getElementById('texto').innerHTML=null;
 	}
 }
-	 
 
 	
 	

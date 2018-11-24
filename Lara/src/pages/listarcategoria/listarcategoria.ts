@@ -1,19 +1,19 @@
 ﻿import { Component, OnInit } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
 import { Validators, FormBuilder } from '@angular/forms';
-
-
-//banco
-import { HTTP } from '@ionic-native/http';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/timeout';
-import { BindingFlags } from '@angular/compiler/src/core';
+import { HomePage } from '../home/home';
 
 //imports da session:
 import { Storage } from "@ionic/storage";
 //usuario
 import { SessionloginProvider } from '../../providers/sessionlogin/sessionlogin';
 import { Usuario } from '../../app/models/usuario';
+
+//banco
+import { HTTP } from '@ionic-native/http';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/timeout';
+import { BindingFlags } from '@angular/compiler/src/core';
 
 @IonicPage()
 @Component({
@@ -38,8 +38,7 @@ export class ListarcategoriaPage {
   errornomeCategoria = false;
   errorImagem= false;
   palavrasG:any;
-  nomeCategoria:any;
-  usuarioLogado: Usuario;
+
   //mostrar coisa
   nome_cat: any = "";
   img_cat: any = "";
@@ -53,8 +52,9 @@ export class ListarcategoriaPage {
   constructor(public navCtrl: NavController,
   					 public navParams: NavParams, 
   					 //private ServiceProvider: ServiceProvider, //paginacao
+  					  public session_login: SessionloginProvider, //session	
              public http: HTTP, //banco
-             public session_login: SessionloginProvider, //session	
+             private alertCtrl: AlertController,
              formBuilder: FormBuilder, //form
   					) 
   					{
@@ -128,38 +128,45 @@ converte(date)
     	//primeiro as nossas categorias
 		//SELECIONAR
      	//precisa-se faze dois selects: um de id null e outro de id session
-     	
-     
+     this.session_login.get().then(res =>
+	{
+
+		this.usuarioLogado = new Usuario(res);
+		
+		//Indicando o caminho da api
+		this.caminho= 'https://inclusio.engynios.com/api/read/id_usuario/categoria.php';
+		//Faz um select (read), por id_usuario, na tabela categoria
      	
        //id null (nossas categorias)
-        this.session_login.get().then(res =>
-		 	{
-		 		this.usuarioLogado = new Usuario(res);
-		 			//Indicando o caminho da api
-				this.caminho= 'https://inclusio.engynios.com/api/read/id_usuario/categoria.php';
-				//Faz um select (read), por id_usuario, na tabela categoria
-				
-				let objeto =
-		       {
-		          id_usuario: this.usuarioLogado.id_usuario 
-		       };
-				
+       
+       let objeto =
+       {
+          id_usuario: this.usuarioLogado.id_usuario 
+       };
+
      	this.http.get(this.caminho,objeto, {})
 		.then(
 		data => 
 			{
+			
         //alert("ta certo mas ta errado");
+        
 				this.converter = this.converte(data.data);
-      //  alert(this.converter.length);			
+       
+       // alert(this.converter.length);				
+				
 			}
 			).catch(e => {
 					alert(JSON.stringify(e + 'line 97'));
         });
         
+
         setTimeout(() => 
         {
           let div = document.getElementById('categorias');
-          for(let a = 0; a < this.converter.length; a++)
+          if(this.converter.length<0 || this.converter.length!=""|| this.converter.length!=null)
+          {
+          	for(let a = 0; a < this.converter.length; a++)
 				  {
             //pegando as coisas
             this.nome = this.converter[a]['nome_categoria\\\\'];
@@ -191,21 +198,23 @@ converte(date)
           
             var p = document.createElement("p");
             p.setAttribute("id",this.id_cat); 
+            p.setAttribute("class","listar_cat"); 
             p.innerText = ''+ this.nome.toUpperCase()+'';
             //p.setAttribute("onclick", "this.vai();" /*"this.navCtrl.push(EditarcategoriaPage)"*/ );
             p.addEventListener('click', function()
             {
-              let input = document.getElementById('nomeCategoria');
+             // let input = document.getElementById('nomeCategoria');
               
               
               //let id_cat = document.getElementById("1");
               //alert(this.id);
 
-              input.innerText = JSON.stringify(this.innerText).replace(/\"/gi, ""); //tirar as aspas!!!
+            //  input.innerText = JSON.stringify(this.innerText).replace(/\"/gi, ""); //tirar as aspas!!!
               
               //let pala = document.getElementById('categorias');
               
               document.getElementById("categorias").hidden = true;
+              document.getElementById("principal").hidden = true;
               document.getElementById("caixa_cadastro").hidden = false;
               
               var p = document.getElementById("flag");
@@ -219,43 +228,32 @@ converte(date)
           
        
 				}	//for
+          } //if
+          else
+          {
+          	 var A= document.createElement("p");
+            A.setAttribute("class","listar_cat"); 
+            A.innerText = 'Você não possui nenhuma categoria sua :( <br> Deseja criar?';
+             div.appendChild(A); //coloca a p na div
+          }
+          
 
         }, 2000);
-		 	}).catch(error => {
-        alert('Erro: ' + JSON.stringify(error));
-       });
+		
+		
+	});   	
+     	
+
   }
   alterar()
   {
-    /*let nomes = [];
-		for(let n = 0;n<this.palavrasG.length;n++)
-			nomes.push(this.palavrasG[n]['nome_categoria'].toLowerCase());
 
-    let {palavra} = this.criarCategoriaForm.controls;
-    if (!this.criarCategoriaForm.valid)
-    {
-      this.errornomeCategoria = true;
-      this.messagenomeCategoria = "Campo obrigatorio";
-    }
-   else
-    {
-      if(nomes.indexOf(palavra.value.toLowerCase()) != -1){
-				this.errornomeCategoria = true;
-				this.messagenomeCategoria = "Já existe uma Categoria com esse nome";
-        return;
-      }
-      let id = document.getElementById("flag");
-      this.id_alterar = id.innerText.replace(/\"/gi, "");
-      let objeto = {
-      id_categoria: this.id_alterar,
-      nome_categoria:document.getElementById("nomeCategoria")
-      
-      };*/
-        this.session_login.get().then(res =>
-		{
+       this.session_login.get().then(res =>
+	{
 
 		this.usuarioLogado = new Usuario(res);
-		let id = document.getElementById("flag");
+		
+		 let id = document.getElementById("flag");
       let nome = this.nomeCategoria;
       //alert(nome);
       this.id_alterar = id.innerText.replace(/\"/gi, "");
@@ -270,35 +268,41 @@ converte(date)
         })
         .then(data => {
           alert("Palavra alterada!");
-         // this.navCtrl.push(HomePage);
+        this.navCtrl.setRoot(HomePage);
           //alert(JSON.stringify(data.data));
         }).catch(error => {
           alert(JSON.stringify(error)+"erro na alteração de categorias. Favor contactar os desenvolvedores");
         });
-		
-		}).catch(error => {
-      alert('Erro: ' + JSON.stringify(error));
-    });		
-      
-    }  
+             
+       });             
+  }
+  
   excluir()
   {
-	
-    let id = document.getElementById("flag");
-    this.id_deletar = id.innerText.replace(/\"/gi, "");
-    alert(this.id_deletar);
-    let objeto = {
-      id_categoria: this.id_deletar
-    };
-    this.http.post(this.endereco_del, objeto,
-      { headers: { 'Content-Type': 'application/json' }	  
-      })
-      .then(data => {
-        alert("Categoria excluída com sucesso!");
-        //this.navCtrl.push(HomePage);
-        //alert(JSON.stringify(data.data));
-      }).catch(error => {
-        alert(JSON.stringify(error)+"erro na exclusao de categorias. Favor contatar os desenvolvedores");
-      });
-  }   
+  
+  
+   let id = document.getElementById("flag");
+			    this.id_deletar = id.innerText.replace(/\"/gi, "");
+			    //alert(this.id_deletar);
+			    
+			    
+			 let objeto = {
+			      id_categoria: this.id_deletar
+			    };
+			    this.http.post(this.endereco_del, objeto,
+			      { headers: { 'Content-Type': 'application/json' }	  
+			      })
+			      .then(data => {
+			        alert("Categoria excluída com sucesso!");
+			      this.navCtrl.setRoot(HomePage);
+			        //alert(JSON.stringify(data.data));
+			      }).catch(error => {
+			        alert(JSON.stringify(error)+"erro na exclusao de categorias. Favor contatar os desenvolvedores");
+			      });
+			      
+  
+  }
+  
+
+     
 }

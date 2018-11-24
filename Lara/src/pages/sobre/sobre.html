@@ -1,16 +1,23 @@
 <ion-header>
   <ion-navbar>
-
+  
 	<!--caso a pag não tenha cabeçalho voc apaga tudo (a header e as coisas dentro-->
-  <ion-header>
-    <ion-navbar>
-      <button ion-button menuToggle>
-        <ion-icon name="menu"></ion-icon>
-      </button>
-      <span text-color = "fonte-laranja">Sobre</span>
-    </ion-navbar>
-  </ion-header>
-  	
+	   <div  id="topo">
+		   <div id="btn_menu">
+			<ion-buttons left> 
+				<button ion-button icon-only menuToggle> 
+					<p class="menu"><ion-icon name="menu"> </ion-icon></p>
+				</button>
+
+			</ion-buttons>
+				</div>
+			<div id="titulo">
+			<ion-title>
+			 <span text-color="fonte-laranja"> Sobre </span>
+			</ion-title>
+			</div>
+		</div>
+	
   </ion-navbar>
 </ion-header>
 
@@ -22,10 +29,15 @@
 	<div id="principal">
   
   <h1>O Aplicativo</h1>
-  
+  <br>
+  <br>
+
    <img class="sobre" src="../assets/imgs/logo_lara.png">
-  
-  <p> Lara CAA foi idealizada pela Inclusio, equipe desenvolvedora, que tinha como
+   <br>
+   <br>
+
+
+  <p class="texto"> Lara CAA foi idealizada pela Inclusio, equipe desenvolvedora, que tinha como
   propósito a aumentar a acessibilidade e eficiência dos já existentes aplicativos de mesma função, 
   priorisando sempre o usuário e as palavras que compõe seu universo. </p>
   
@@ -33,17 +45,23 @@
   <br>
   
   <h1>A Equipe</h1>
-  
+  <br>
+  <br>
   <img class="sobre" src="../assets/imgs/logo_equipe.png">
+  <br>
+  <br>
   
-  <p>Fundada em 2018, a Inclusio buscou para que cada detalhe de seu projeto refletissem os valores de inclusão e
+  
+  <p class="texto">Fundada em 2018, a Inclusio buscou para que cada detalhe de seu projeto refletissem os valores de inclusão e
   empatia.</p>
-  
+  <br>
   <br>
   
   <img class="sobre" src="../assets/imgs/equipe.jpg">
+  <br>
+  <br>
   
-  <p>
+  <p class="texto">
      A equipe é composta por: Ana Laura Maffei, Beatriz Dinat, Gabriela Miyajima, Gabriela Guimarães, 
       Ivan Prearo, Joana Cuesta, Leonardo Caldas e Maria Eduarda Corrêa.</p>
       
@@ -51,13 +69,20 @@
   <br>
   
   <h1>Apoio</h1>
-  
+  <br>
+  <br>
    <img class="sobre" src="../assets/imgs/logo_cti.png">
-    <p> Um agradecimento ao Colégio Técnico Industrial Prof. Isaac Portal Roldán e aos professores coordenadores do projeto: 
+   <br>
+   <br>
+   
+    <p class="texto"> Um agradecimento ao Colégio Técnico Industrial Prof. Isaac Portal Roldán e aos professores coordenadores do projeto: 
     André Bicudo, Celso Kawashima, Jovita Baenas, Rodrigo Ferreira e Vitor Simeão.</p>
-    
+    <br>
+    <br>
    <img class="sobre" src="../assets/imgs/logo_sorri.png">
-    <p> Um agradecimento especial também a instituição Sorri Bauru que abraçou o projeto, em especial o Luís Fernando M. Bento Gestor de TI </p>
+   <br>
+   <br>
+    <p class="texto"> Um agradecimento especial também a instituição Sorri Bauru que abraçou o projeto, em especial o Luís Fernando M. Bento Gestor de TI </p>
   
   </div> <!--principal-->
 

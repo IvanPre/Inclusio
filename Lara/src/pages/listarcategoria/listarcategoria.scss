@@ -113,4 +113,24 @@ page-listarcategoria {
           font-family: Arial;
          }
     
+    
+    .listar_cat{
+    
+    padding-bottom: 8%;
+    
+    }
+    
+         #categorias //caixa onde ficam os itens para o cadastro
+        {
+            background-color: #fff;
+            font-family: arial;
+            border-radius: 30px !important; //define o quão arrendodado serão as caixas de texto        
+            border: 1px solid #ffffff;
+            margin-top:3%;     
+            padding: 10%;
+            padding-top: 5%;
+            box-shadow: 2px 2px 2px whitesmoke;
+            text-align: center;
+         
+        }
 }

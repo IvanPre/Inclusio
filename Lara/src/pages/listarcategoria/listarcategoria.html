@@ -13,7 +13,7 @@
 				</div>
 			<div id="titulo">
 			<ion-title>
-			 <span text-color="fonte-laranja"> Categorias </span>
+			 <span text-color="fonte-laranja">Minhas Categorias </span>
 			</ion-title>
 			</div>
 		</div>
@@ -23,12 +23,12 @@
 <ion-content padding>
 
 
-<ion-content >
-  <div id="main">
+<ion-content class="body" padding>
+
     <div id="categorias"> <!--listar todas as categorias-->
-	
-		</div>
+	</div>
 		
+
 		<div id="caixa_cadastro" hidden>
 				&nbsp; &nbsp;  <!--p class="icon"><ion-icon ios="ios-person" md="md-person"></ion-icon></p> <!-- <h1>Criar Categoria</h1>-->
 				<form  [formGroup]="criarCategoriaForm" novalidate>
@@ -38,7 +38,7 @@
 									<div id="input_form">
 							<div id="texto"> Categoria:</div>
 						<ion-item>
-							<ion-input [(ngModel)]="nomeCategoria" id="nomeCategoria" value="" formControlName="nomeCategoria" type="textarea"  id="nomeCategoria" clearInput clearOnEdit="false"></ion-input>
+							<ion-input [(ngModel)]="nomeCategoria" id="nomeCategoria" value="" formControlName="nomeCategoria" type="textarea" placeholder="Categoria" id="nomeCategoria" clearInput clearOnEdit="false"></ion-input>
 									</ion-item>
 						<h6 *ngIf="errornomeCategoria" class="error"> {{messagenomeCategoria}}</h6>
 						<br>
@@ -68,7 +68,6 @@
 							</div>
 						</ion-row>
 				</form>
-			</div>
+			</div>  
 
-  </div>
 </ion-content>

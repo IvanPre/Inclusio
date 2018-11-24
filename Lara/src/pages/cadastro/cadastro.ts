@@ -1,4 +1,5 @@
-﻿import { Validators, FormBuilder, FormGroup, FormControl, AlertController} from '@angular/forms';
+﻿import { Validators, FormBuilder, FormGroup, FormControl} from '@angular/forms';
+import { AlertController } from 'ionic-angular';
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { HTTP } from '@ionic-native/http';
@@ -27,6 +28,7 @@ export class CadastroPage
 	
 	endereco ="http://inclusio.engynios.com/api/insert/usuario.php";
 	endereco_select = "http://inclusio.engynios.com/api/read/login/usuario.php";
+	endereco_email = "http://inclusio.engynios.com/api/read/login/cadastro.php";
 
     constructor(public navCtrl: NavController, private alertCtrl: AlertController,formBuilder: FormBuilder, public navParams: NavParams, public http: HTTP)
     {
@@ -216,35 +218,69 @@ export class CadastroPage
 						}
 						else 
 						{
-						
-							let objeto = {
-								login_usuario: nome.value,
-								senha: password.value,
+							let testar =
+							{
 								email: email.value
 								
-							};
-			
-					
-							this.http.post(this.endereco, objeto,
+							}
+							this.http.get(this.endereco_email, testar, {})
+							.then(data => 
 							{
-							  
-							  headers: { 'Content-Type': 'application/json' }
-							  
-							})
+								if(data.data.length > 2)
+								{
+									
+									let alerta = this.alertCtrl.create(
+										{
+											title: 'E-mail',
+											message: 'Esse e-mail já é cadastrado!',
+											buttons: [{text: 'Ok', handler: () => {this.limpar(); }}]
+										}
+									);
+									alerta.present();
+
+								}
+								else 
+								{
+								
+									let objeto = {
+										login_usuario: nome.value,
+										senha: password.value,
+										email: email.value
+										
+									};
+					
 							
-							.then(data => {
-								let alerta = this.alertCtrl.create(
+									this.http.post(this.endereco, objeto,
 									{
-										title: 'Cadastro realizado!',
-										buttons: [{text: 'Ok', handler: () => {this.navCtrl.setRoot(LoginPage);}}]
-									}
-								);
-								alerta.present();
+									  
+									  headers: { 'Content-Type': 'application/json' }
+									  
+									})
+									
+									.then(data => {
+										let alerta = this.alertCtrl.create(
+											{
+												title: 'Cadastro realizado!',
+												buttons: [{text: 'Ok', handler: () => {this.navCtrl.setRoot(LoginPage);}}]
+											}
+										);alerta.present();
+										
+									}).catch(error => {
+									
+									  alert(JSON.stringify(error));
+									});
+								}
 							}).catch(error => {
-							
-							  alert(JSON.stringify(error));
+								
+							  console.log(error.status);
+							  
 							});
+							
+							
+							
+							
 						}
+					
 					})
 					.catch(error => {
 						

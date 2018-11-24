@@ -1,5 +1,5 @@
 ﻿import { Component, OnInit } from '@angular/core';
-import { IonicPage, NavController, NavParams, MenuController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams } from 'ionic-angular';
 
 //banco
 import { HTTP } from '@ionic-native/http';
@@ -32,10 +32,7 @@ export class PerfilPage implements OnInit
 	email="";
 	//usuarioLogado:any;
   constructor(public navCtrl: NavController, public navParams: NavParams,  public http: HTTP, 
-		public session_login: SessionloginProvider, public session_config: SessionconfiguracoesProvider, public storage: Storage,
-		public  menu: MenuController) {
-			menu.swipeEnable(true);
-		}
+    public session_login: SessionloginProvider, public session_config: SessionconfiguracoesProvider, public storage: Storage) {}
 
 		ngOnInit()
 		{

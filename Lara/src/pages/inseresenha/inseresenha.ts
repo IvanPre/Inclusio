@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
 import {Validators, FormBuilder, FormGroup, FormControl} from '@angular/forms';
 import {HTTP} from '@ionic-native/http';
 import { Storage } from "@ionic/storage";
@@ -24,7 +24,7 @@ export class InseresenhaPage {
   senha_conf:any;
   endereco ="http://inclusio.engynios.com/api/update/altera_senha_1.php";
   
-  constructor(public navCtrl: NavController, formBuilder: FormBuilder, public navParams: NavParams, public http: HTTP, public session_login: SessionloginProvider,  public storage: Storage) 
+  constructor(public navCtrl: NavController, private alertCtrl: AlertController, formBuilder: FormBuilder, public navParams: NavParams, public http: HTTP, public session_login: SessionloginProvider,  public storage: Storage) 
   {
   this.alteraSenhaForm = formBuilder.group(
     {
@@ -132,8 +132,13 @@ export class InseresenhaPage {
           headers: {'Content-Type': 'application/json'}
       })
         .then(data => {
-        alert("Senha Alterada!");
-        this.navCtrl.push(LoginPage);
+        let alerta = this.alertCtrl.create(
+          {
+            title: 'Senha Alterada!',
+            buttons: [{text: 'Ok', handler: () => {this.navCtrl.setRoot(LoginPage);}}]
+          }
+        );
+        alerta.present();
         }).catch(error => {
         alert(JSON.stringify(error));
         });

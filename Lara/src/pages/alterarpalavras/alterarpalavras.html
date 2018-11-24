@@ -32,26 +32,27 @@
 				<ion-row>
 					<ion-col>
 						<ion-list inset>
-						 <div id = "input_form">
-						 
-							<div id="texto">Palavra:</div>
-							<ion-item>
-								<ion-input [(ngModel)]="palavra" formControlName="palavra" type="textarea" clearInput clearOnEdit="false"></ion-input>
-							</ion-item>
-							<h6 *ngIf="errorPalavra" class="error"> {{messagePalavra}}</h6>
+							<div id = "input_form" >
+								<div id="forms" hidden>
+									<div id="texto">Palavra:</div>
+									<ion-item>
+										<ion-input [(ngModel)]="palavra" formControlName="palavra" type="textarea" clearInput clearOnEdit="false"></ion-input>
+									</ion-item>
+									<h6 *ngIf="errorPalavra" class="error"> {{messagePalavra}}</h6>
 
-							<div id="texto"> Imagem:</div>
-							<button ion-button full (click)="captureImage()">Acessar a galeria</button>
-							<button ion-button full (click)="takePicture()">Tirar Foto</button>
-							<ion-card>
-							<ion-card-header>Imagem</ion-card-header>
-							<ion-card-content>
-								<img src = "{{base64Image}}"/> 
-							</ion-card-content>
-					  </ion-card>
-							
-					<div id="texto" *ngIf="mostra_alterar"> Palavras disponíveis:</div>
-					<div id="div_categorias" class="div_categorias" *ngIf="mostra_alterar"></div>
+									<div id="texto"> Imagem:</div>
+									<button ion-button full (click)="captureImage()">Acessar a galeria</button>
+									<button ion-button full (click)="takePicture()">Tirar Foto</button>
+									<ion-card>
+										<ion-card-header>Imagem</ion-card-header>
+										<ion-card-content>
+											<img src = "{{base64Image}}"/> 
+										</ion-card-content>
+									</ion-card>
+								</div>
+									
+					<div id="disponivel"  text-color="fonte-laranja" > Palavras disponíveis:</div>
+					<div id="div_categorias" class="div_categorias" ></div>
 				</div>
 	
 			</ion-list>  
@@ -60,8 +61,9 @@
 
 	<ion-row>
 	<div id="botoes"> 	
-		<button ion-button round class="botao" (click)="alterar()" >Alterar</button>
-    	<button ion-button round class="botao" (click)="excluir()">Excluir</button>  
+		<button ion-button round class="botao" id="btn1"  (click)="alterar()" hidden>Alterar</button>
+		<button ion-button round class="botao" id="btn2" (click)="alterar2()" >Alterar</button>
+    	<button ion-button round class="botao" (click)="excluir()" id="excluir">Excluir</button>  
     	<button ion-button round class="botao" (click)="limpar()">Limpar</button>
  	</div>
  	</ion-row>

@@ -8,7 +8,9 @@ import { SessionloginProvider } from '../../providers/sessionlogin/sessionlogin'
 import { Usuario } from '../../app/models/usuario';
 //confifuracoes
 import { SessionconfiguracoesProvider } from '../../providers/sessionconfiguracoes/sessionconfiguracoes';
-import { Configuracoes } from '../../app/models/configuracoes'
+import { Configuracoes } from '../../app/models/configuracoes';
+import { AlertController } from 'ionic-angular';
+
 
 @IonicPage()
 @Component({
@@ -32,7 +34,7 @@ export class ConfiguracoesPage implements OnInit  {
   constructor( public navCtrl: NavController,
 				   public navParams: NavParams, 
 				   public session_login: SessionloginProvider,  //session
-				   public session_config: SessionconfiguracoesProvider, //session
+				   public session_config: SessionconfiguracoesProvider,private alertCtrl: AlertController, //session
 				   public storage: Storage){}
   
   	//assim que o component existir capture a sessco do usuario
@@ -161,8 +163,15 @@ export class ConfiguracoesPage implements OnInit  {
      	
      	//disparando a sessco:
 	    this.session_config.create(this.configuracoes);
-	    alert("Configurações aplicadas com sucesso!");
-  			
+		let alerta = this.alertCtrl.create(
+			{
+				title: 'Configuração',
+				message: 'Configurações aplicadas com sucesso!',
+				buttons: [{text: 'Ok'}]
+			}
+		);
+		alerta.present();		
+					
   }
   
   

@@ -1,5 +1,5 @@
 ﻿import { Component, OnInit } from '@angular/core';
-import { IonicPage, NavController, NavParams, LoadingController, ToastController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, LoadingController, ToastController, AlertController } from 'ionic-angular';
 import { Validators, FormBuilder } from '@angular/forms';
 //banco
 import { HTTP } from '@ionic-native/http';
@@ -17,6 +17,7 @@ import { Configuracoes } from '../../app/models/configuracoes';
 import { FileTransfer, FileUploadOptions, FileTransferObject } from '@ionic-native/file-transfer';
 //camera
 import { Camera, CameraOptions } from '@ionic-native/camera';
+import { HomePage } from '../home/home';
 
 @IonicPage()
 @Component({
@@ -31,8 +32,6 @@ export class CriarcatPage implements OnInit //implementar OnInit
     messageImagem = "";
 	errornomeCategoria = false;
     errorImagem= false;
-	// variável que será o src da imagem mostrada (mickey putaço)
-	imagem:string = "https://img.olx.com.br/images/86/864708037631038.jpg";
 	usuario: Usuario;
 	categoriasG:any;
 	imageURI: any;
@@ -51,15 +50,14 @@ export class CriarcatPage implements OnInit //implementar OnInit
 		public session_config: SessionconfiguracoesProvider, //session
 		public storage: Storage, //session
 		public camera: Camera,
+		private alertCtrl: AlertController,
 		public loadingCtrl: LoadingController,
 		public toastCtrl: ToastController	
 	)
   {
   		 this.criarCategoriaForm = formBuilder.group(
       {
-        nomeCategoria: ['', Validators.compose([Validators.required, Validators.pattern('^[a-zA-Z]+$')])],
-		// txtimg: ['',Validators.required],
-		
+        nomeCategoria: ['', Validators.compose([Validators.required, Validators.pattern('^[a-zA-Z"]+$')])],
       });
   }
 
@@ -76,7 +74,6 @@ converte(date){
       while(str.lastIndexOf('}') != -1){
         let campo = str.substring(str.indexOf('"')+1, str.indexOf(':')-1);
         str = str.substring(str.indexOf(':')+1);
-        // document.getElementById('resposta2').innerText += str;
         let valor;
         if(str.indexOf(',') == -1){
           valor = str.substring(str.indexOf(':')+1, str.indexOf('}')-1);
@@ -91,8 +88,6 @@ converte(date){
           valor = valor.replace(/\"/gi, "");
 			valor = valor.replace(/_/gi, " ");
 		}objeto[campo] = valor;
-		// alert(valor);
-        // document.getElementById('resposta2').innerText = str + str.lastIndexOf('}');
       }
       retorno.push(objeto);
     }
@@ -106,7 +101,6 @@ converte(date){
 	  quality : 25,
 	  targetWidth: 512,
 	  targetHeight: 512,
-	  //encodingType: 1,
 	  correctOrientation: true
 	}
 	this.camera.getPicture(options).then((imageData) => {
@@ -114,7 +108,6 @@ converte(date){
 		this.imgHidden = false;
 	}, (err) => {
 			console.log(err);
-	  // Handle error
 	  console.log('Image error: ', err);
 	});
   }
@@ -124,9 +117,8 @@ converte(date){
 		quality: 25,
 		targetWidth: 512,
 		targetHeight: 512,
-	  //  encodingType: 1
+	
 	}).then((imageData) => {
-	  // imageData is a base64 encoded string
 		this.imageURI = "data:image/jpeg;base64," + imageData;
 		this.imgHidden = false;
 	}, (err) => {
@@ -194,40 +186,20 @@ converte(date){
 			let objeto = {
 				nome_categoria:nomeCategoria.value,
 				id_usuario: this.usuario.id_usuario,			
-				//imagem_categoria: null
+				
 			};
 
-			/*this.http.post('https://api.imgur.com/oauth2/token', {
-				response_type: 'token',
-				client_id: '1da58bd02bd879f',
-				client_secret: 'f436db7e06038e7d455c0c5f6cf8e993d6a61c6a',
-				grant_type: 'refresh_token',
-				refresh_token: 'c043f11b2af7be4cec8a067bd394674860d921e0'
-			}, {headers: { 'Content-Type': 'application/json' }})
-			.then(access_token => {
-				let token = access_token.data.substring(16, access_token.data.indexOf(','));
-				let header = {
-					'Content-Type': 'application/json', 
-					'Authorization': ('Bearer ' + token).replace(/\"/gi, '')
-				}
-				alert(JSON.stringify(header));
-				this.http.post(this.imgAPI, {image: this.imageURI}, {headers: header})
-				.then(imgRet => {
-					alert(JSON.stringify(imgRet.data));*/
 					this.http.post(this.endereco, objeto, { headers: { 'Content-Type': 'application/json' }})
 					.then(() => {
 						this.http.get('http://inclusio.engynios.com/api/read/nome/categoria.php', {nome_categoria: '"'+nomeCategoria.value+'"'}, {headers: { 'Content-Type': 'application/json' }})
 						.then(data => {
 							let dados = this.converte(data.data);
-							if(!f)
 								for(let a = 0; a < palavras.length; a++){
-						
 									let ad = {
-										id_categoria: dados[dados.length-1]['id_categoria'],//pegar a ultima categoria
+										id_categoria: dados[dados.length-1]['id_categoria'],
 										id_palavra: palavras[a],
 										id_usuario: this.usuario.id_usuario
 									}
-			
 									this.http.post('http://inclusio.engynios.com/api/insert/uniao.php', ad, {headers: { 'Content-Type': 'application/json' }})
 									.then().catch(error => {
 										alert("Erro na inclusão de palavras na categoria. Favor contactar os desenvolvedores:\n" + JSON.stringify(error));
@@ -241,20 +213,15 @@ converte(date){
 					}).catch(error => {
 						alert(JSON.stringify(error) + " erro na inclusão de categorias. Favor contactar os desenvolvedores");
 							return;
-					});/*
-				})
-				.catch(error => {
-					alert("Erro no envio da imagem:\n" + JSON.stringify(error));
-					return;
-				});
-			})
-			.catch(error => {
-				alert("Erro ao requisitar token:\n" + JSON.stringify(error));
-				return;
-			});*/
-
-			setTimeout(() => {
-				alert('Categoria criada com sucesso!');
+					});
+	
+					setTimeout(() => {
+				let alerta = this.alertCtrl.create(
+					{
+						title: 'Cadastro de Categoria Realizado!',
+						buttons: [{text: 'Ok', handler: () => {this.navCtrl.setRoot(HomePage);}}]
+					}
+				);alerta.present();
 			}, 5000);
 		}
 	}
@@ -272,18 +239,11 @@ converte(date){
 			{
 				this.usuario = res;	
 			}
-		);//session			
+		);			
 	}
 
-	// limpa todos os campos
 	limpar(){
-		
-		// limpa o campo de nome da categoria
 		this.nomeCategoria= null;
-		// nomeCategoria.nodeValue = null;
-		
-		// limpa o campo do link da imagem
-		// let {txtimg}= this.criarCategoriaForm.controls;
 		this.imageURI=null;
 		let f = false;
 		let ckbs = document.getElementsByClassName('checkbox');
@@ -305,10 +265,6 @@ converte(date){
 			let div = document.getElementById('div_categorias');
 
 			for(let a = 0; a < dados.length; a++){
-				// if(dados[a].nome_palavra.indexOf('capa_') != -1 || dados[a].nome_palavra.indexOf('capa ') != -1)
-				// 	continue;
-				// dados[a].nome_palavra = dados[a].nome_palavra.replace(/_/gi, " ");
-
 				let ion = document.createElement('ion-item');
 				ion.className = 'palavra';
 				let seta = <HTMLImageElement> document.createElement('img');
@@ -329,7 +285,6 @@ converte(date){
 					let pala = this.converte(date.data);
 					let p = <HTMLDivElement> document.createElement('div');
 					p.hidden = true;
-					// p.className = 'categoria';
 					p.id = 'p'+dados[a].id_categoria;
 					p.className = 'linhas';
 					for(let count = 0; count < pala.length; count++){
@@ -356,7 +311,6 @@ converte(date){
 					ion.appendChild(cat);
 					ion.appendChild(p);
 					div.appendChild(ion);	
-					// div.appendChild(document.createElement('br'));
 				}).catch(e=>{
 					alert(JSON.stringify(e) + 'erro de select palavras');
 				});

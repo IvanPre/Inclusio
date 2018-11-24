@@ -18,6 +18,9 @@ import { Configuracoes } from '../../app/models/configuracoes';
 //camera
 import { Camera, CameraOptions } from '@ionic-native/camera';
 import { convertToView } from 'ionic-angular/navigation/nav-util';
+import { AlertController } from 'ionic-angular';
+import { HomePage } from '../home/home';
+
 @IonicPage()
 @Component({
   selector: 'page-criarpal',
@@ -36,7 +39,7 @@ export class CriarpalPage {
 	endereco ="http://inclusio.engynios.com/api/insert/palavra.php";
 		constructor(public navCtrl: NavController, formBuilder: FormBuilder, public navParams: NavParams,
 			public http: HTTP, public camera: Camera, public session_login: SessionloginProvider, //session
-			public session_config: SessionconfiguracoesProvider, //session
+			public session_config: SessionconfiguracoesProvider, private alertCtrl: AlertController, //session
 			public storage: Storage )
     {
       this.criarPalavraForm = formBuilder.group(
@@ -58,7 +61,6 @@ export class CriarpalPage {
     this.camera.getPicture(options).then((imageData) => {
 		this.base64Image = "data:image/jpeg;base64," + imageData;    }, (err) => {
 			console.log(err);
-      // Handle error
       console.log('Image error: ', err);
     });
   }
@@ -68,7 +70,6 @@ export class CriarpalPage {
         targetWidth: 1000,
         targetHeight: 1000
     }).then((imageData) => {
-      // imageData is a base64 encoded string
         this.base64Image = "data:image/jpeg;base64," + imageData;
     }, (err) => {
         console.log(err);
@@ -105,8 +106,6 @@ export class CriarpalPage {
         else
           valor = valor + '"';
 		objeto[campo] = valor;
-		// alert(valor);
-        // document.getElementById('resposta2').innerText = str + str.lastIndexOf('}');
       }
       retorno.push(objeto);
     }
@@ -154,14 +153,17 @@ export class CriarpalPage {
 				}
 			}
 			if(!f){
-				alert("Selecione no minimo um checkbox!");
-				return;
+				let alerta = this.alertCtrl.create(
+					{
+						title: 'Criação',
+						message: 'Selecione no minimo um radiobutton!',
+						buttons: [{text: 'Ok'}]
+					}
+				);
+				alerta.present();		
+			return;	
 			}
-	/*	if (this.base64Image==null)
-			{
-				alert("Campo imagem obrigatorio");
-				return;
-			}*/
+
 			let id_categoria = [];
 			for(let a = 0; a < ckbs.length; a++){
 				let ckb = <HTMLInputElement> ckbs[a];
@@ -199,14 +201,23 @@ export class CriarpalPage {
 					alert("Erro no acesso ao banco. Favor verificar a conexão com a internet ou contactar os desenvolvedores: " + JSON.stringify(error));
 					return;
 				});
-			  //alert(JSON.stringify(data.data));
+			 
 			}).catch(error => {
 				alert("Erro na inclusão de palavras. Favor verificar a conexão com a internet ou contactar os desenvolvedores: " + JSON.stringify(error));
 				return;
 			});
 		
 			setTimeout(() => {
-				alert("Palavra criada!");
+				let alerta = this.alertCtrl.create(
+					{
+						title: 'Criação',
+						message: 'Palavra criada',
+						buttons: [{text: 'Ok'}]
+					}
+				);
+				alerta.present();		
+				this.limpar();
+				this.navCtrl.setRoot(HomePage);
 			}, 3000);
 		}
 	}
@@ -216,7 +227,7 @@ export class CriarpalPage {
 			{
 				this.usuario = res;	
 			}
-		);//session			
+		);		
 	}
 	ngOnInit() {
 		this.session_login.get().then(
@@ -259,7 +270,6 @@ export class CriarpalPage {
 		let path = 'https://inclusio.engynios.com/api/read/id_usuario/categoria.php';
 		this.http.get(path, objeto, {}).then(data =>{
 			let dados = this.converte(data.data);
-			//this.palavrasG = dados;
 			let div = document.getElementById('div_categorias');	
 
 			for(let a = 0; a < dados.length; a++){
@@ -270,9 +280,7 @@ export class CriarpalPage {
 				ckb.id = "ckb"+dados[a]['id_categoria'];
 				ckb.className = 'checkbox';
 				let cat = <HTMLLabelElement> document.createElement('label');
-				// alert(JSON.stringify(dados[a]));
 				cat.innerText = dados[a]['nome_categoria'].replace(/\"/gi, "");
-			//	alert('entrou7');
 				cat.setAttribute('for', 'ckb' + dados[a]['id_categoria']);
 				cat.className = 'categorias';
 				cat.appendChild(document.createElement('br'));

@@ -1,7 +1,7 @@
 ﻿import {Component} from '@angular/core';
 import {Validators, FormBuilder, FormGroup, FormControl} from '@angular/forms';
 import {HTTP} from '@ionic-native/http';
-import {IonicPage, NavController, NavParams} from 'ionic-angular';
+import {IonicPage, NavController, NavParams, AlertController} from 'ionic-angular';
 import {LoginPage} from '../login/login';
 @IonicPage()
 @Component({
@@ -13,7 +13,9 @@ export class EsquecisenhaPage{
   messageEmail = "";
   errorEmail = false;
   endereco ="http://inclusio.engynios.com/api/read/verifica-email.php";
-  constructor(public navCtrl: NavController, formBuilder: FormBuilder, public navParams: NavParams, public http: HTTP) 
+  endereco_email = "http://inclusio.engynios.com/api/read/testa_email.php";
+  
+  constructor(public navCtrl: NavController, formBuilder: FormBuilder, public navParams: NavParams,  private alertCtrl: AlertController, public http: HTTP) 
   {
     this.esqueciForm = formBuilder.group(
       {
@@ -81,19 +83,49 @@ export class EsquecisenhaPage{
     }
     if(this.esqueciForm.valid)
     {
-        let objeto = {
-        email: email.value
-        };
-       this.http.post(this.endereco, objeto,
-       {
-          headers: {'Content-Type': 'application/json'}
-      })
-        .then(data => {
-        alert("Email enviado!");
-        this.navCtrl.push(LoginPage);
-        }).catch(error => {
-        alert(JSON.stringify(error));
-        });
-    }  
+      let testar = {email: email.value}
+      this.http.get(this.endereco_email, testar, {})
+      .then(data => 
+      {
+      if(data.data.length > 2)
+      {  
+          let objeto = {email: email.value};
+          this.http.post(this.endereco, objeto,
+          {
+            headers: {'Content-Type': 'application/json'}
+          })
+          .then(data => {
+            let alerta = this.alertCtrl.create(
+              {
+                title: 'E-mail',
+                message: 'E-mail enviado!',
+                buttons: [{text: 'Ok'}]
+              }
+            );
+            alerta.present();
+            this.navCtrl.setRoot(LoginPage);
+          }).catch(error => {
+          alert(JSON.stringify(error));
+          });
+      }  
+      else
+      {
+        let alerta = this.alertCtrl.create(
+          {
+            title: 'E-mail',
+            message: 'Esse e-mail não é cadastrado!',
+            buttons: [{text: 'Ok', handler: () => {this.limpar(); }}]
+          }
+        );
+        alerta.present();
+      }    
+    }).catch(error => {
+      console.log(error.status);
+    });
   }
+}
+limpar()
+{
+  this.email= null;
+}
 }
