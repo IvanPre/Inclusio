@@ -116,8 +116,7 @@ converte(date){
 		destinationType: this.camera.DestinationType.DATA_URL,
 		quality: 25,
 		targetWidth: 512,
-		targetHeight: 512,
-	
+		targetHeight: 512
 	}).then((imageData) => {
 		this.imageURI = "data:image/jpeg;base64," + imageData;
 		this.imgHidden = false;
@@ -182,30 +181,36 @@ converte(date){
 				if(ckb.checked)
 					palavras.push(ckb.id.substring(3));
 			}
+
+			let ig = {
+				fileName: ('categorias_usuarios/'+this.usuario.id_usuario+"_"+nomeCategoria.value).replace(/\"/gi, ""),
+				imageURI: this.imageURI
+			};
 	
 			let objeto = {
 				nome_categoria:nomeCategoria.value,
-				id_usuario: this.usuario.id_usuario,			
-				
+				id_usuario: this.usuario.id_usuario,	
 			};
 
-					this.http.post(this.endereco, objeto, { headers: { 'Content-Type': 'application/json' }})
-					.then(() => {
-						this.http.get('http://inclusio.engynios.com/api/read/nome/categoria.php', {nome_categoria: '"'+nomeCategoria.value+'"'}, {headers: { 'Content-Type': 'application/json' }})
-						.then(data => {
-							let dados = this.converte(data.data);
-								for(let a = 0; a < palavras.length; a++){
-									let ad = {
-										id_categoria: dados[dados.length-1]['id_categoria'],
-										id_palavra: palavras[a],
-										id_usuario: this.usuario.id_usuario
-									}
-									this.http.post('http://inclusio.engynios.com/api/insert/uniao.php', ad, {headers: { 'Content-Type': 'application/json' }})
-									.then().catch(error => {
-										alert("Erro na inclusão de palavras na categoria. Favor contactar os desenvolvedores:\n" + JSON.stringify(error));
-										return;
-									});
+			this.http.post('http://inclusio.engynios.com/api/insert/imagem.php', ig, { headers: { 'content-type': 'application/json' }})
+			.then(data => {
+				this.http.post(this.endereco, objeto, { headers: { 'Content-Type': 'application/json' }})
+				.then(() => {
+					this.http.get('http://inclusio.engynios.com/api/read/nome/categoria.php', {nome_categoria: '"'+nomeCategoria.value+'"'}, {headers: { 'Content-Type': 'application/json' }})
+					.then(data => {
+						let dados = this.converte(data.data);
+							for(let a = 0; a < palavras.length; a++){
+								let ad = {
+									id_categoria: dados[dados.length-1]['id_categoria'],
+									id_palavra: palavras[a],
+									id_usuario: this.usuario.id_usuario
 								}
+								this.http.post('http://inclusio.engynios.com/api/insert/uniao.php', ad, {headers: { 'Content-Type': 'application/json' }})
+								.then().catch(error => {
+									alert("Erro na inclusão de palavras na categoria. Favor contactar os desenvolvedores:\n" + JSON.stringify(error));
+									return;
+								});
+							}
 						}).catch(error => {
 							alert("Erro no acesso ao banco. Favor contactar os desenvolvedores:\n" + JSON.stringify(error));
 							return;
@@ -214,8 +219,11 @@ converte(date){
 						alert(JSON.stringify(error) + " erro na inclusão de categorias. Favor contactar os desenvolvedores");
 							return;
 					});
-	
-					setTimeout(() => {
+				}).catch(e => {
+					alert('Erro no upload da imagem: ' + JSON.stringify(e));
+					return;
+				})
+				setTimeout(() => {
 				let alerta = this.alertCtrl.create(
 					{
 						title: 'Cadastro de Categoria Realizado!',
