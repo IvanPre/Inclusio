@@ -54,8 +54,8 @@ export class CriarpalPage {
     sourceType: this.camera.PictureSourceType.PHOTOLIBRARY,
 	  destinationType: this.camera.DestinationType.DATA_URL,
 	  quality : 100,
-	  targetWidth: 1000,
-	  targetHeight: 1000,
+	  targetWidth: 512,
+	  targetHeight: 512,
 	  correctOrientation: true
     }
     this.camera.getPicture(options).then((imageData) => {
@@ -67,8 +67,8 @@ export class CriarpalPage {
   takePicture(){
     this.camera.getPicture({
         destinationType: this.camera.DestinationType.DATA_URL,
-        targetWidth: 1000,
-        targetHeight: 1000
+        targetWidth: 512,
+        targetHeight: 512
     }).then((imageData) => {
         this.base64Image = "data:image/jpeg;base64," + imageData;
     }, (err) => {
@@ -156,7 +156,7 @@ export class CriarpalPage {
 				let alerta = this.alertCtrl.create(
 					{
 						title: 'Criação',
-						message: 'Selecione no minimo um radiobutton!',
+						message: 'Selecione no minimo uma opção!',
 						buttons: [{text: 'Ok'}]
 					}
 				);
@@ -175,35 +175,45 @@ export class CriarpalPage {
 				id_usuario:this.usuario.id_usuario,
 				versao:"1.0"
 			};
-	
-			this.http.post(this.endereco, objeto,
-			{ headers: { 'Content-Type': 'application/json' }	  
-			})
-			.then(data => {
-				this.http.get('http://inclusio.engynios.com/api/read/nome/palavra.php', {nome_palavra: '"'+nomePalavra.value+'"'}, {headers: { 'Content-Type': 'application/json' }})
-				.then(data => {
-					let dados = this.converte(data.data);
-					for(let a = 0; a < id_categoria.length; a++){
-	
-						let ad = {							
-							id_categoria: id_categoria[a],
-							id_palavra: dados[dados.length-1]['id_palavra'],//pegar a ultima palavra
-							id_usuario: this.usuario.id_usuario
-						}
 
-						this.http.post('http://inclusio.engynios.com/api/insert/uniao.php', ad, {headers: { 'Content-Type': 'application/json' }})
-						.then().catch(error => {
-							alert("Erro na associação da palavra com a categoria. Favor contactar os desenvolvedores: " + JSON.stringify(error));
-							return;
-						});
-					}
+			let ig = {
+				fileName: ('palavras_usuarios/'+this.usuario.id_usuario+"_"+nomePalavra.value).replace(/\"/gi, ""),
+				imageURI: this.base64Image
+			};
+			this.http.post('http://inclusio.engynios.com/api/insert/imagem.php', ig, { headers: { 'content-type': 'application/json' }})
+			.then(data => {
+				this.http.post(this.endereco, objeto,
+				{ headers: { 'Content-Type': 'application/json' }	  
+				})
+				.then(data => {
+					this.http.get('http://inclusio.engynios.com/api/read/nome/palavra.php', {nome_palavra: '"'+nomePalavra.value+'"'}, {headers: { 'Content-Type': 'application/json' }})
+					.then(data => {
+						let dados = this.converte(data.data);
+						for(let a = 0; a < id_categoria.length; a++){
+		
+							let ad = {							
+								id_categoria: id_categoria[a],
+								id_palavra: dados[dados.length-1]['id_palavra'],//pegar a ultima palavra
+								id_usuario: this.usuario.id_usuario
+							}
+
+							this.http.post('http://inclusio.engynios.com/api/insert/uniao.php', ad, {headers: { 'Content-Type': 'application/json' }})
+							.then().catch(error => {
+								alert("Erro na associação da palavra com a categoria. Favor contactar os desenvolvedores: " + JSON.stringify(error));
+								return;
+							});
+						}
+					}).catch(error => {
+						alert("Erro no acesso ao banco. Favor verificar a conexão com a internet ou contactar os desenvolvedores: " + JSON.stringify(error));
+						return;
+					});
+				
 				}).catch(error => {
-					alert("Erro no acesso ao banco. Favor verificar a conexão com a internet ou contactar os desenvolvedores: " + JSON.stringify(error));
+					alert("Erro na inclusão de palavras. Favor verificar a conexão com a internet ou contactar os desenvolvedores: " + JSON.stringify(error));
 					return;
 				});
-			 
-			}).catch(error => {
-				alert("Erro na inclusão de palavras. Favor verificar a conexão com a internet ou contactar os desenvolvedores: " + JSON.stringify(error));
+			}).catch(e => {
+				alert('Erro no upload da imagem: ' + JSON.stringify(e));
 				return;
 			});
 		

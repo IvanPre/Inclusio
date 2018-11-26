@@ -222,7 +222,7 @@ converte(date){
 				}).catch(e => {
 					alert('Erro no upload da imagem: ' + JSON.stringify(e));
 					return;
-				})
+				});
 				setTimeout(() => {
 				let alerta = this.alertCtrl.create(
 					{
