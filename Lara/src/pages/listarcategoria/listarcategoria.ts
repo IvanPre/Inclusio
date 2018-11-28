@@ -1,4 +1,4 @@
-﻿import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
 import { Validators, FormBuilder } from '@angular/forms';
 import { HomePage } from '../home/home';
@@ -279,30 +279,43 @@ converte(date)
   
   excluir()
   {
-  
-  
-   let id = document.getElementById("flag");
-			    this.id_deletar = id.innerText.replace(/\"/gi, "");
-			    //alert(this.id_deletar);
-			    
-			    
-			 let objeto = {
-			      id_categoria: this.id_deletar
-			    };
-			    this.http.post(this.endereco_del, objeto,
-			      { headers: { 'Content-Type': 'application/json' }	  
-			      })
-			      .then(data => {
-			        alert("Categoria excluída com sucesso!");
-			      this.navCtrl.setRoot(HomePage);
-			        //alert(JSON.stringify(data.data));
-			      }).catch(error => {
-			        alert(JSON.stringify(error)+"erro na exclusao de categorias. Favor contatar os desenvolvedores");
-			      });
-			      
-  
+    let alerta = this.alertCtrl.create({
+      title: 'Exclusão-Categoria',
+      message: 'Deseja realmente excluir essa categoria?',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancelar',
+          handler: () => {
+            console.log('Cancel clicked');
+          }
+        },
+        {
+          text: 'Excluir',
+          handler: () => {
+            let id = document.getElementById("flag");
+            this.id_deletar = id.innerText.replace(/\"/gi, "");
+            //alert(this.id_deletar);
+            
+            
+         let objeto = {
+              id_categoria: this.id_deletar
+            };
+            this.http.post(this.endereco_del, objeto,
+              { headers: { 'Content-Type': 'application/json' }	  
+              })
+              .then(data => {
+                alert("Categoria excluída com sucesso!");
+              this.navCtrl.setRoot(HomePage);
+                //alert(JSON.stringify(data.data));
+              }).catch(error => {
+                alert(JSON.stringify(error)+"erro na exclusao de categorias. Favor contatar os desenvolvedores");
+              });
+          }
+        }
+      ]
+    });
+    alerta.present();
   }
-  
-
-     
 }
+
