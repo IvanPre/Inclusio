@@ -48,7 +48,7 @@
 							<ion-card>
 								<ion-card-header>Imagem</ion-card-header>
 								<ion-card-content>
-										<img [src]="base64Image" id="imagem">
+										<img [src]="imageURI" id="imagem" alt="imagem">
 								</ion-card-content>
 							</ion-card>
 							<button ion-button full (click)="captureImage()">Acessar a galeria</button>
@@ -60,7 +60,8 @@
 						</ion-list>  
 							</ion-col>
 						</ion-row>		
-					<p id="flag" hidden></p>
+						<p id="flag" hidden></p>
+						<p id="nome_categ" hidden></p>
 						<ion-row>
 							<div id="botoes">
 								<button ion-button round class="botaoCad" (click)="alterar()">Alterar</button>

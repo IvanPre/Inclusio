@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
 import { Validators, FormBuilder } from '@angular/forms';
 import { HomePage } from '../home/home';
+import { Camera, CameraOptions } from '@ionic-native/camera';
 
 //imports da session:
 import { Storage } from "@ionic/storage";
@@ -38,6 +39,8 @@ export class ListarcategoriaPage {
   errornomeCategoria = false;
   errorImagem= false;
   palavrasG:any;
+  imageURI:any;
+  usuarioLogado:Usuario;
 
   //mostrar coisa
   nome_cat: any = "";
@@ -56,14 +59,13 @@ export class ListarcategoriaPage {
              public http: HTTP, //banco
              private alertCtrl: AlertController,
              formBuilder: FormBuilder, //form
+             public camera: Camera
   					) 
   					{
              
               this.criarCategoriaForm = formBuilder.group(
                 {
-                  nomeCategoria: ['', Validators.compose([Validators.required, Validators.pattern('^[a-zA-Z]+$')])],
-              // txtimg: ['',Validators.required],
-              
+                  nomeCategoria: ['', Validators.compose([Validators.required, Validators.pattern('^[a-zA-Z]+$')])]
                 });
               
   					this.carregacategoria();
@@ -80,7 +82,36 @@ export class ListarcategoriaPage {
    //document.getElementById("caixa_cadastro").hidden = true;
   }
 //fun��o para converter dados do banco
-	
+  
+captureImage() {
+	const options: CameraOptions = {
+	  sourceType: this.camera.PictureSourceType.PHOTOLIBRARY,
+	  destinationType: this.camera.DestinationType.DATA_URL,
+	  quality : 25,
+	  targetWidth: 512,
+	  targetHeight: 512,
+	  correctOrientation: true
+	}
+	this.camera.getPicture(options).then((imageData) => {
+		this.imageURI = "data:image/jpeg;base64," + imageData; 
+	}, (err) => {
+			console.log(err);
+	  console.log('Image error: ', err);
+	});
+  }
+  takePicture(){
+	this.camera.getPicture({
+		destinationType: this.camera.DestinationType.DATA_URL,
+		quality: 25,
+		targetWidth: 512,
+		targetHeight: 512
+	}).then((imageData) => {
+		this.imageURI = "data:image/jpeg;base64," + imageData;
+	}, (err) => {
+		console.log(err);
+	});
+  }
+
 converte(date)
 {
   let data = JSON.stringify(date);
@@ -181,14 +212,15 @@ converte(date)
 
             this.id_cat = this.id_cat.replace(/\\/gi, "");
             this.id_cat = this.id_cat.replace(/\//gi, "/");
-            this.img_cat = this.img_cat.replace(/\//gi, "/");
 
-            this.img_cat= this.img_cat.replace(/\\/gi, "");
+            this.img_cat = this.img_cat.replace(/\//gi, "/");
+            this.img_cat = this.img_cat.replace(/\\/gi, "");
+            this.img_cat = this.img_cat.replace(/\"/gi, "");
             
 
           //criando
           
-            let img = document.createElement("img");
+            // let img = document.createElement("img");
 
             //img.setAttribute('src', 'https://inclusio.engynios.com/imagens/'+this.img_cat);
 					  //img.setAttribute('alt', 'imagem');
@@ -197,6 +229,12 @@ converte(date)
            
           
             var p = document.createElement("p");
+            var q = document.createElement("p");
+            q.hidden = true;
+            q.innerText = this.img_cat;
+            // alert(q.innerText);
+            q.className = this.id_cat;
+            div.appendChild(q);
             p.setAttribute("id",this.id_cat); 
             p.setAttribute("class","listar_cat"); 
             p.innerText = ''+ this.nome.toUpperCase()+'';
@@ -214,12 +252,15 @@ converte(date)
               //let pala = document.getElementById('categorias');
               
               document.getElementById("categorias").hidden = true;
-              document.getElementById("principal").hidden = true;
+              // document.getElementById("principal").hidden = true;
               document.getElementById("caixa_cadastro").hidden = false;
               
               var p = document.getElementById("flag");
               //p.hidden =true;
-              var img = document.getElementById("img");
+              var img = <HTMLImageElement> document.getElementById("imagem");
+              var image = document.getElementsByClassName(this.id);
+              let ig = <HTMLParagraphElement> image[0];
+              img.setAttribute('src', 'http://inclusio.engynios.com/imagens/' + ig.innerText);
               p.innerText=""+this.id.replace(/\"/gi, "");
              // alert(p.innerText);
             });
@@ -253,8 +294,30 @@ converte(date)
 
 		this.usuarioLogado = new Usuario(res);
 		
-		 let id = document.getElementById("flag");
-      let nome = this.nomeCategoria;
+     let id = document.getElementById("flag");
+     let {nomeCategoria} = this.criarCategoriaForm.controls;
+      let nome = nomeCategoria;
+      if (!this.criarCategoriaForm.valid)
+        {
+			if (!nomeCategoria.valid)
+			{
+				if(	nomeCategoria.value== null || nomeCategoria.value=="")
+				{
+					this.errornomeCategoria = true;
+					this.messagenomeCategoria = "Campo obrigatorio";
+				}
+				else
+				{
+					this.errornomeCategoria= true;
+					this.messagenomeCategoria = "Deve conter apenas letras";
+				}
+				
+				
+			}
+			
+		}
+		else
+		{
       //alert(nome);
       this.id_alterar = id.innerText.replace(/\"/gi, "");
       let objeto = {
@@ -273,8 +336,8 @@ converte(date)
         }).catch(error => {
           alert(JSON.stringify(error)+"erro na alteração de categorias. Favor contactar os desenvolvedores");
         });
-             
-       });             
+      }
+    });             
   }
   
   excluir()

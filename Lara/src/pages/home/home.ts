@@ -27,7 +27,7 @@ import { Configuracoes } from '../../app/models/configuracoes';
   selector: 'page-home',
   templateUrl: 'home.html'
 })
-export class HomePage 
+export class HomePage implements OnInit
 {	
 	//SESSIONS:
 	//usuario
@@ -60,11 +60,12 @@ export class HomePage
 					 public session_config: SessionconfiguracoesProvider, //session
 					 public storage: Storage)
 	{
-		this.carrega_imagem();
+		// this.carrega_imagem();
 	}
 	
 	ngOnInit() 
 	{
+			this.getSession();
 	 
 		this.session_config.get().then(
 			res =>
@@ -73,16 +74,29 @@ export class HomePage
 			
 			}
 		);
-				this.session_config.get().then(
-					
-					res => {this.usuarioConfig = new Configuracoes(res);
-					});
+		this.session_config.get().then(
 			
-				console.log(this.session_login.exist());
-				console.log(this.session_config.exist());
-				console.log(this.session_login.exist());
-				console.log(this.session_config.exist());
-				
+			res => {this.usuarioConfig = new Configuracoes(res);
+			});
+	
+		console.log(this.session_login.exist());
+		console.log(this.session_config.exist());
+		console.log(this.session_login.exist());
+		console.log(this.session_config.exist());
+		
+
+		setTimeout(() => {
+			this.carrega_imagem();
+		}, 3000);
+	}
+
+	getSession(){
+		this.session_login.get().then(
+			res =>
+			{
+				this.usuario = res;	
+			}
+		);			
 	}
 
 	voltar()
@@ -258,7 +272,7 @@ export class HomePage
   {
         let teste =
 		{
-			id_usuario: null
+			id_usuario: this.usuario.id_usuario
 
 		}
 		
